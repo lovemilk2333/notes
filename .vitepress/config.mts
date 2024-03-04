@@ -28,7 +28,7 @@ export default defineConfig({
       AutoSidebar({
         ignoreList: ['node_modules', '.vitepress', '.github', '.git', 'public'],
         path: '.',
-        titleFromFile: true,
+        // titleFromFile: true,
         sideBarItemsResolved(data) {
           const res: DefaultTheme.SidebarItem[] = []
 
