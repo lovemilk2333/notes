@@ -4,7 +4,6 @@ import AutoSidebar from 'vite-plugin-vitepress-auto-sidebar';
 const nav: DefaultTheme.NavItem[] = [
   { text: '主页', link: '/' },
 ]
-const srcDir = 'markdowns'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -13,7 +12,6 @@ export default defineConfig({
       'link', { rel: 'icon', 'href': '/favicons.svg' }
     ]
   ],
-  srcDir,
   lang: "zh-CN",
   title: "我的笔记",
   description: "本项目用于备份和公开我的笔记",
@@ -27,7 +25,7 @@ export default defineConfig({
   vite: {
     plugins: [
       AutoSidebar({
-        path: srcDir,
+        path: '.',
         titleFromFile: true
       }),
     ]
