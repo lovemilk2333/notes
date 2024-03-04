@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.44"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "dependencies": {
+    "@types/node": "^20.11.24",
+    "vite-plugin-vitepress-auto-sidebar": "^1.6.2"
+  }
+}
