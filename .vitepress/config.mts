@@ -1,4 +1,5 @@
 import { defineConfig, DefaultTheme } from 'vitepress'
+import { extname } from 'path'
 import AutoSidebar from 'vite-plugin-vitepress-auto-sidebar';
 
 const nav: DefaultTheme.NavItem[] = [
@@ -25,8 +26,25 @@ export default defineConfig({
   vite: {
     plugins: [
       AutoSidebar({
+        ignoreList: ['node_modules', '.vitepress', '.github', '.git', 'public'],
         path: '.',
-        titleFromFile: true
+        titleFromFile: true,
+        sideBarItemsResolved(data) {
+          const res: DefaultTheme.SidebarItem[] = []
+
+          for (let file of data) {
+            let name = file.link?.toLocaleLowerCase() ?? '.md.html'
+            let ext = extname(name.endsWith('.html') ? name.slice(0, -5) : name)
+            console.log(file, ext)
+            if (!['', '.html', '.md', '.markdown'].includes(ext)) {
+              continue
+            }
+
+            res.push(file)
+          }
+          
+          return res
+        }
       }),
     ]
   },
