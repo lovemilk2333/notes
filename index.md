@@ -6,13 +6,16 @@ hero:
   image:
     src: /favicons.svg
     alt: VitePress
-  name: 我的笔记
-  text: 本项目用于备份和公开我的笔记
+  name: 牛奶の笔记
+  text: 本项目用于备份和公开牛奶の笔记
   tagline: 我是个萌新, 大佬不要喷哦~ 有问题提 issue
   actions:
     - theme: brand
       text: 让我们开始吧!
       link: /guild
+    - theme: alt
+      text: 周记
+      link: /weekly-article/
 
 
 # features:

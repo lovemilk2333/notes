@@ -8,7 +8,9 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
+    "@types/markdown-it-footnote": "^3.0.4",
     "@types/node": "^20.11.24",
+    "markdown-it-footnote": "^4.0.0",
     "vite-plugin-vitepress-auto-sidebar": "^1.6.2"
   }
 }

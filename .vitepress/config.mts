@@ -1,6 +1,7 @@
 import { defineConfig, DefaultTheme } from 'vitepress'
 import { extname } from 'path'
 import AutoSidebar from 'vite-plugin-vitepress-auto-sidebar';
+import footnotePlugin from "markdown-it-footnote";
 
 const nav: DefaultTheme.NavItem[] = [
   { text: '主页', link: '/' },
@@ -14,14 +15,19 @@ export default defineConfig({
     ]
   ],
   lang: "zh-CN",
-  title: "我的笔记",
-  description: "本项目用于备份和公开我的笔记",
+  title: "牛奶の笔记",
+  description: "本项目用于备份和公开牛奶の笔记",
   themeConfig: {
     nav,
     socialLinks: [
       { icon: 'github', link: 'https://github.com/zhuhansan666/notes' }
     ],
     logo: '/favicons.svg'
+  },
+  markdown: {  // 支持脚注
+    config(md) {
+        md.use(footnotePlugin)
+    },
   },
   vite: {
     plugins: [
@@ -35,14 +41,13 @@ export default defineConfig({
           for (let file of data) {
             let name = file.link?.toLocaleLowerCase() ?? '.md.html'
             let ext = extname(name.endsWith('.html') ? name.slice(0, -5) : name)
-            console.log(file, ext)
             if (!['', '.html', '.md', '.markdown'].includes(ext)) {
               continue
             }
 
             res.push(file)
           }
-          
+
           return res
         }
       }),
