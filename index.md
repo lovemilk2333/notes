@@ -11,7 +11,7 @@ hero:
   tagline: 我是个萌新, 大佬不要喷哦~ 有问题提 issue
   actions:
     - theme: brand
-      text: 让我们开始吧!
+      text: 编程笔记
       link: /guild
     - theme: alt
       text: 周记
