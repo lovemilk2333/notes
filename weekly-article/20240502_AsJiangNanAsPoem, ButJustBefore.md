@@ -2,8 +2,6 @@
 
 <!-- > <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=2154102056&auto=1&
 height=66"></iframe> -->
-<!-- > <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?muted=0&autoplay=1&danmaku=0&mutedmuted=0&hasMuteButton=0&hideCoverInfo=1&hideDanmakuButton=1&noFullScreenButton=1&aid=1204445882&bvid=BV1Tf421m7iW&cid=1540397448&p=1&t=6" scrolling="no" border="0" frameborder="no" framespacing="0" 
-allowfullscreen="false" style="width: 600px; height: 320px;"></iframe> -->
 
 > 背景音乐:
 > 《希望有羽毛和翅膀》<br>
@@ -12,8 +10,11 @@ allowfullscreen="false" style="width: 600px; height: 320px;"></iframe> -->
 > &emsp;编曲 Arranger: 王可鑫 Eli.W (HOYO-MiX) <br>
 > &emsp;制作人 Producer: 王可鑫 Eli.W (HOYO-MiX) <br>
 > &emsp;人声 Vocal Artist: Chevy <br>
->
-<audio src="http://api.lovemilk.top:39000/BV1Tf421m7iW_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" autoplay loop></audio>
+> <br>
+> <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?autoplay=1&danmaku=0&hasMuteButton=0&hideCoverInfo=1&hideDanmakuButton=1&noFullScreenButton=1&aid=1204445882&bvid=BV1Tf421m7iW&cid=1540397448&p=1&t=6" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="false" style="width: 200px; height: 100px;" align="center"></iframe>
+
+<!-- TODO: 把音频整活, 目前是因为没有 HTTPS 无法加载 -->
+<!-- <audio src="http://api.lovemilk.top:39000/BV1Tf421m7iW_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" autoplay loop></audio> -->
 
 
 经过了疫情的洗礼, 习以为常的家乡也显得格外新鲜; 全面放开了, 这正是个好机会踏上归家的旅途, 踏上时间的归途.
