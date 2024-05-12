@@ -13,7 +13,7 @@ allowfullscreen="false" style="width: 600px; height: 320px;"></iframe> -->
 > &emsp;制作人 Producer: 王可鑫 Eli.W (HOYO-MiX) <br>
 > &emsp;人声 Vocal Artist: Chevy <br>
 >
-<audio src="/audio/BV1Tf421m7iW_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" autoplay loop></audio>
+<audio src="http://api.lovemilk.top:39000/BV1Tf421m7iW_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" autoplay loop></audio>
 
 
 经过了疫情的洗礼, 习以为常的家乡也显得格外新鲜; 全面放开了, 这正是个好机会踏上归家的旅途, 踏上时间的归途.
