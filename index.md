@@ -12,7 +12,10 @@ hero:
   actions:
     - theme: brand
       text: 编程笔记
-      link: /guild
+      link: /coding-guild
+    - theme: brand
+      text: 服务部署
+      link: /dispositions/
     - theme: alt
       text: 周记
       link: /weekly-article/
