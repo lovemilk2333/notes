@@ -29,6 +29,7 @@ export default defineConfig({
         md.use(footnotePlugin)
     },
   },
+  srcDir: './contents/',
   vite: {
     plugins: [
       AutoSidebar({
