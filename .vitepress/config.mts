@@ -36,21 +36,21 @@ export default defineConfig({
         ignoreList: ['node_modules', '.vitepress', '.github', '.git', 'public'],
         path: './contents/',
         // titleFromFile: true,
-        sideBarItemsResolved(data) {
-          const res: DefaultTheme.SidebarItem[] = []
+        // sideBarItemsResolved(data) {
+        //   const res: DefaultTheme.SidebarItem[] = []
 
-          for (let file of data) {
-            let name = file.link?.toLocaleLowerCase() ?? '.md.html'
-            let ext = extname(name.endsWith('.html') ? name.slice(0, -5) : name)
-            if (!['', '.html', '.md', '.markdown'].includes(ext)) {
-              continue
-            }
+        //   for (let file of data) {
+        //     let name = file.link?.toLocaleLowerCase() ?? '.md.html'
+        //     let ext = extname(name.endsWith('.html') ? name.slice(0, -5) : name)
+        //     if (!['', '.html', '.md', '.markdown'].includes(ext)) {
+        //       continue
+        //     }
 
-            res.push(file)
-          }
+        //     res.push(file)
+        //   }
 
-          return res
-        }
+        //   return res
+        // }
       }),
     ]
   },

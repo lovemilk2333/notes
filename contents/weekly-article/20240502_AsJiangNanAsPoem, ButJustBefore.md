@@ -11,10 +11,9 @@ height=66"></iframe> -->
 > &emsp;制作人 Producer: 王可鑫 Eli.W (HOYO-MiX) <br>
 > &emsp;人声 Vocal Artist: Chevy <br>
 > <br>
-> <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?autoplay=1&danmaku=0&hasMuteButton=0&hideCoverInfo=1&hideDanmakuButton=1&noFullScreenButton=1&aid=1204445882&bvid=BV1Tf421m7iW&cid=1540397448&p=1&t=6" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="false" style="width: 200px; height: 100px;" align="center"></iframe>
+> <audio src="https://res.lovemilk.top:9000/files/BV1Tf421m7iW_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" autoplay loop></audio>
 
-<!-- TODO: 把音频整活, 目前是因为没有 HTTPS 无法加载 -->
-<!-- <audio src="http://api.lovemilk.top:39000/BV1Tf421m7iW_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" autoplay loop></audio> -->
+<!-- > <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?autoplay=1&danmaku=0&hasMuteButton=0&hideCoverInfo=1&hideDanmakuButton=1&noFullScreenButton=1&aid=1204445882&bvid=BV1Tf421m7iW&cid=1540397448&p=1&t=6" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="false" style="width: 200px; height: 100px;" align="center"></iframe> -->
 
 
 经过了疫情的洗礼, 习以为常的家乡也显得格外新鲜; 全面放开了, 这正是个好机会踏上归家的旅途, 踏上时间的归途.
