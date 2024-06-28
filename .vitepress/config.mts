@@ -20,7 +20,19 @@ export default defineConfig({
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "my2muxb80z");`
-    ]
+    ],
+    [
+      // Google Analytics
+      'script', { async: 'true', src: 'https://www.googletagmanager.com/gtag/js?id=G-V7BNXRCZVT' }, ``
+    ],
+    [
+      // Google Analytics also
+      'script', { type: 'text/javascript' }, `window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-V7BNXRCZVT');`
+    ],
   ],
   lang: "zh-CN",
   title: "牛奶の笔记",
@@ -34,7 +46,7 @@ export default defineConfig({
   },
   markdown: {  // 支持脚注
     config(md) {
-        md.use(footnotePlugin)
+      md.use(footnotePlugin)
     },
   },
   srcDir: './contents/',
