@@ -1,4 +1,4 @@
-## OpenClash 配置
+# OpenClash 配置
 
 > 为保证 VRChat 可以直连, 需将除 `files.vrchat.cloud` 的 `*.vrchat.com`, `*.vrchat.cloud` 直连, 否则可能因代理 IP 污染无法访问 VRChat.
 
