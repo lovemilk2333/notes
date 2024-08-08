@@ -7,6 +7,8 @@ const nav: DefaultTheme.NavItem[] = [
   { text: '主页', link: '/' },
 ]
 
+const rootPath = './contents/'
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   head: [
@@ -49,13 +51,13 @@ export default defineConfig({
       md.use(footnotePlugin)
     },
   },
-  srcDir: './contents/',
+  srcDir: rootPath,
   vite: {
     plugins: [
       AutoSidebar({
         // ignoreList: ['node_modules', '.vitepress', '.github', '.git', 'public'],
         ignoreList: ['p', 'docs'],
-        path: './contents/',
+        path: rootPath,
         titleFromFile: true,
         // sideBarItemsResolved(data) {
         //   const res: DefaultTheme.SidebarItem[] = []
