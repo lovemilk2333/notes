@@ -16,6 +16,9 @@ hero:
     - theme: brand
       text: 服务部署
       link: /dispositions/
+    - theme: brand
+      text: App 配置备忘录
+      link: /apps/
     - theme: alt
       text: 周记
       link: /weekly-article/
