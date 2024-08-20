@@ -4,7 +4,7 @@ layout: home
 
 hero:
   image:
-    src: /favicons.svg
+    src: /favicon.svg
     alt: VitePress
   name: 牛奶の笔记
   text: 本项目用于备份和公开牛奶の笔记

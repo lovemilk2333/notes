@@ -13,9 +13,6 @@ const rootPath = './contents/'
 export default defineConfig({
   head: [
     [
-      'link', { rel: 'icon', 'href': '/favicons.svg' }
-    ],
-    [
       // Microsoft Clarity
       'script', { type: 'text/javascript' }, `(function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
