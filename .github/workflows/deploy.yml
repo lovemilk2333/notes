@@ -44,7 +44,11 @@ jobs:
       - name: Install dependencies
         run: yarn install # 或 pnpm install / yarn install / bun install
       - name: Build with VitePress
-        run: npm run docs:build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
+        run: yarn docs:build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
+      - name: move something required to dist
+        run: |  # 将一些文件复制到 dist 目录以便客户端直接 fetch
+          cp contents/p/lovemilk-telemetry-EULA.md .vitepress/dist/p/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

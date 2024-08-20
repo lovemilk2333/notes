@@ -1,3 +1,5 @@
+# Lovemilk Telemetry 终端用户协议 & 隐私政策
+
 ## 引言 / 关于本协议
 1. 本协议是您 (以下简称 "用户") 与 Lovemilk Telemetry (以下简称 "我们") 之间的协议. 本协议规定了您使用 Lovemilk Telemetry 提供的服务应当遵守的条款和条件. <br>
 Lovemilk Telemetry 插件提供了遥测服务 (以下简称 "遥测"), 该服务竭旨为用户提供更好的使用体验和产品质量, 提升开发者调试质量和效率, 为用户带来福祉.
