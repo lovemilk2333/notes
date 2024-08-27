@@ -1,6 +1,6 @@
 # 江南似如诗歌, 往日早已不在
 
-<!-- > <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=2154102056&auto=1&
+<!-- > <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=2154102056&auto=0&
 height=66"></iframe> -->
 
 > 背景音乐:
@@ -11,9 +11,9 @@ height=66"></iframe> -->
 > &emsp;制作人 Producer: 王可鑫 Eli.W (HOYO-MiX) <br>
 > &emsp;人声 Vocal Artist: Chevy <br>
 > <br>
-> <audio src="https://res.lovemilk.top:9000/files/BV1Hz421m7AH_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" autoplay loop></audio>
+> <audio src="https://res.lovemilk.top:9000/files/BV1Hz421m7AH_cut.mp4" type="audio/mp4" oncontextmenu="return false;" controls controlslist="nodownload" loop></audio>
 
-<!-- > <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?autoplay=1&danmaku=0&hasMuteButton=0&hideCoverInfo=1&hideDanmakuButton=1&noFullScreenButton=1&aid=1204445882&bvid=BV1Tf421m7iW&cid=1540397448&p=1&t=6" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="false" style="width: 200px; height: 100px;" align="center"></iframe> -->
+<!-- > <iframe src="//www.bilibili.com/blackboard/html5mobileplayer.html?autoplay=0&danmaku=0&hasMuteButton=0&hideCoverInfo=1&hideDanmakuButton=1&noFullScreenButton=1&aid=1204445882&bvid=BV1Tf421m7iW&cid=1540397448&p=1&t=6" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="false" style="width: 200px; height: 100px;" align="center"></iframe> -->
 
 
 经过了疫情的洗礼, 习以为常的家乡也显得格外新鲜; 全面放开了, 这正是个好机会踏上归家的旅途, 踏上时间的归途.

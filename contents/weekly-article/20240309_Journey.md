@@ -9,7 +9,7 @@
 | :-: | :-: |
 | 作者 (笔名) | 爱喝牛奶 |
 | 指导老师 | 无 |
-| 协议 | <https://static.lovemilk.top/docs/LICENSE> |
+| 协议 | <https://aka.lovemilk.top/67> |
 
 ## 正文
 > [!Important]
