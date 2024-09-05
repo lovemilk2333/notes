@@ -2,3 +2,4 @@
 /.yarn/
 .vitepress/*
 !.vitepress/config.mts
+!.vitepress/theme/
