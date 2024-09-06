@@ -53,7 +53,7 @@ export default defineConfig({
     plugins: [
       AutoSidebar({
         // ignoreList: ['node_modules', '.vitepress', '.github', '.git', 'public'],
-        ignoreList: ['p', 'docs', 'license'],
+        ignoreList: ['p', 'docs', 'license', 'questionnaires'],
         path: rootPath,
         titleFromFile: true,
         // sideBarItemsResolved(data) {

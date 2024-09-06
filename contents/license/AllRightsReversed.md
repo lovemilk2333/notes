@@ -1,6 +1,6 @@
 All Rights Reserved
 
-Copyright (c) 2023 Lovemilk
+Copyright (c) Lovemilk
 
 All rights reserved. This software and associated documentation files (the "Software") may not be used, copied, modified, merged, published, distributed, sublicensed, and/or sold without prior written permission from the copyright holder.
 
