@@ -31,6 +31,8 @@
 
 2. 为保证人性调查, 可根据具体情况酌情小范围修改包括但不限于调查方式, 问卷内容, 问卷统计方式等.
 
+---
+
 [All Rights Reversed. Copyright (c) 2024, lovemilk](https://aka.lovemilk.top/68)
 
 [^1]: <https://zjjcmspublic.oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/jcms_files/jcms1/web3011/site/attach/0/585e113b75134646ac16b1fcd1f26805.pdf> 2.1学生素质

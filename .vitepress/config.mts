@@ -1,5 +1,7 @@
 import { defineConfig, DefaultTheme } from 'vitepress'
-import { extname } from 'path'
+import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite';
+import {PrimeVueResolver} from '@primevue/auto-import-resolver';
 import AutoSidebar from 'vite-plugin-vitepress-auto-sidebar';
 import footnotePlugin from "markdown-it-footnote";
 
@@ -53,7 +55,7 @@ export default defineConfig({
     plugins: [
       AutoSidebar({
         // ignoreList: ['node_modules', '.vitepress', '.github', '.git', 'public'],
-        ignoreList: ['p', 'docs', 'license', 'questionnaires'],
+        ignoreList: ['p', 'docs', 'license', 'satisfaction-survey'],
         path: rootPath,
         titleFromFile: true,
         // sideBarItemsResolved(data) {
@@ -72,6 +74,11 @@ export default defineConfig({
         //   return res
         // }
       }),
+      Components({
+        resolvers: [
+          PrimeVueResolver()
+        ]
+      })
     ]
   },
 })
