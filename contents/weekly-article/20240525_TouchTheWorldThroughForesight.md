@@ -1,0 +1,23 @@
+# 用望远镜看世界
+> Touch the world through foresight
+
+看, 那最远方的弧线, 便是地平线了. 不过由于地球是一个两极稍扁, 赤道略鼓的球体[^theShapeOfTheEarth], 无论如何即使在晴朗天气, 假设地面海报恒为 0M, 站在海拔 100M 上也只能至多看到远方 38.48 KM 的地方[^geographicalViewingDistance], 就如人生一般, 谁也不知道明天和意外, 谁先来; 谁也不知道, 重大变故, 是否会在下一刻...
+
+当你通过望远镜远眺世界之时, 由于光路可逆[^ReversibilityOfLight], 世界, 也不妨在眺望你. 生活, 其实没什么可用放大镜和显微镜看的, Instead, 如果你过于细致认真对待它, 你可能会发现它不再纯粹了, 彼时认为的一切美好, 可能已全然消散, 或根本未曾出现过.
+
+但使用望远镜去看世界, 粗略品味生活, 有意识地忽略不必要的细节, 或许会让你生活地更加美好. 也有事情又何必深究呢? 人情世故的东西没有所谓"标准答案", 做你想做, 走你想走, 就以你自己的意志, 抵达结局吧! "Can't make what they say, We'll find our way, we'll find our way!"[^Song_HopeIsTheThingWithFeathers], 既然听不懂他们的注解, 那就由我们找寻自己该走的路!
+
+拿起属于你自己的望远镜, 朝向无尽的远方, 去欣赏吧! 无论提起时是 "我才" 还是 "我曾经"[^BV_BV1os421w738]! 
+
+遍体鳞伤那又怎样, 尝试过, 才能将燃起心中的, 失望.
+
+[^theShapeOfTheEarth]: https://zh.wikipedia.org/wiki/%E5%9C%B0%E7%90%83#%E5%BD%A2%E6%80%81 地球大致呈椭球形。地球自转的效应使得沿贯穿两极的地轴方向稍扁，赤道附近略有隆起
+
+[^geographicalViewingDistance]: https://baike.baidu.com/item/%E5%9C%B0%E7%90%86%E8%A7%86%E8%B7%9D/4956750 地理视距是目标或来自光源的光当只受地球曲率、大气折射、目标或灯标的海拔高度和观察者的眼高限制时，理论上能被观察者看到的最大距离
+
+[^ReversibilityOfLight]: https://zh.wikipedia.org/wiki/%E5%85%89#%E5%85%89%E8%B7%AF%E5%8F%AF%E9%80%86%E5%8E%9F%E7%90%86 在干涉与衍射可忽略的情况中，入射光线与反射光线的可交换性。就是在一条光径的终点，发出反方向的光，此光可沿原路径回到原来的起点。在介质分界面处应用光路的可逆性可导出关于反射率和折射率的斯托克斯关系。
+
+[^Song_HopeIsTheThingWithFeathers]: https://zh.moegirl.org.cn/zh-hans/%E5%B8%8C%E6%9C%9B%E6%9C%89%E7%BE%BD%E6%AF%9B%E5%92%8C%E7%BF%85%E8%86%80_Hope_Is_the_Thing_With_Feathers (歌词) Can't make what they say 既然听不懂他们的注解,
+We'll find our way we'll find our way 那就由我们找寻自己该走的路
+
+[^BV_BV1os421w738]: https://www.bilibili.com/video/BV1os421w738?t=4 (歌词, 有改编) 前缀是「我才」还是「我已经」
