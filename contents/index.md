@@ -20,8 +20,11 @@ hero:
       text: App 配置备忘录
       link: /apps/
     - theme: alt
+      text: 作文 (原周记)
+      link: /passages/
+    - theme: alt
       text: 周记
-      link: /weekly-article/
+      link: /weekly-articles/
 
 
 # features:
