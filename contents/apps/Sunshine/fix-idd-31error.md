@@ -9,8 +9,8 @@
 
 ## 解决方案
 ### 通过 Regedit 删除 Windows 记忆的显示器配置
-1. 打开注册表编的 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Configuration`
-2. 删除 `Connectivity` 文件夹
+1. 打开注册表编的 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\`
+2. 删除 `Configuration` 和 `Connectivity` 文件夹
 ::: warning
 ↑ 这会删除所有历史显示器配置
 :::
