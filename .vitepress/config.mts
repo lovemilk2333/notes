@@ -46,6 +46,7 @@ export default defineConfig({
     logo: '/favicons.svg'
   },
   markdown: {  // 支持脚注
+    lineNumbers: true,
     config(md) {
       md.use(footnotePlugin)
     },

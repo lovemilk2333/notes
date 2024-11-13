@@ -15,7 +15,7 @@ hero:
       link: /programming/
     - theme: brand
       text: 服务部署
-      link: /dispositions/
+      link: /deployment/
     - theme: brand
       text: App 配置备忘录
       link: /apps/
