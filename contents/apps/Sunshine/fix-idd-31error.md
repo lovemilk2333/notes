@@ -10,9 +10,15 @@
 ## 解决方案
 ### 通过 Regedit 删除 Windows 记忆的显示器配置
 1. 打开注册表编的 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\`
-2. 删除 `Configuration` 和 `Connectivity` 文件夹
+2. 删除 `Configuration` 和 `Connectivity` 文件夹 <br>
+(其实一般仅删除 `Connectivity` 方可, 这样可以保留其他显示器配置)
 ::: warning
 ↑ 这会删除所有历史显示器配置
 :::
-3. 禁用后启用虚拟显示器
+3. 禁用再启用虚拟显示器
 4. 必要时重启 Sunshine
+
+## 注意
+1. 在使用虚拟显示器下意外退出 Sunshine 会导致本问题发生
+2. 对于主屏幕缩放与虚拟显示器不同的可能导致切换显示器时发生较大卡顿
+3. 不建议使用禁用其他显示器的方案, 出现问题可能性较高
