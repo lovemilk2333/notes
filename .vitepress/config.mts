@@ -1,5 +1,4 @@
 import { defineConfig, DefaultTheme } from 'vitepress'
-import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite';
 import {PrimeVueResolver} from '@primevue/auto-import-resolver';
 import AutoSidebar from 'vite-plugin-vitepress-auto-sidebar';
@@ -41,7 +40,7 @@ export default defineConfig({
   themeConfig: {
     nav,
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/zhuhansan666/notes' }
+      { icon: 'github', link: 'https://github.com/lovemilk2333/notes' }
     ],
     logo: '/favicons.svg'
   },
@@ -81,5 +80,5 @@ export default defineConfig({
         ]
       })
     ]
-  },
+  }
 })
