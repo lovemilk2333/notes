@@ -24,7 +24,7 @@ ctx.emit('manager/reload', parent, pluginid, config?)
 ```
 其中, `parent` 为父插件, `pluginid` 为 `shortname` + `:` + `inden`, `config` 为新的配置对象
 
-## 向 `Command.Action` 的第一个参数 (`Argv`) 注入内容
+## 向 `Command.Action` 的第一个参数 (`Argv`) 注入类型
 ```ts
 declare module 'koishi' {
     interface Argv {

@@ -1,3 +1,5 @@
+# Jellyfin DOCKER 部署教程及后续问题修复方法
+
 ## 1. 按照 [官方文档](https://jellyfin.org/docs/general/installation/container/#docker) 部署
 
 ## 2. 修复局域网客户端只能访问第一次

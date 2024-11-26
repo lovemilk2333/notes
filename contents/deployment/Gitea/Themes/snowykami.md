@@ -19,7 +19,7 @@
 ```
 > 上述目录结构为 docker container 内部的 `/data` 映射文件夹的 `tree`, 其他方式部署的 Gitea 应保证 ` $GITEA_CUSTOM` 所指向目录的结构与上述 `gitea/` 目录下结构相同
 
-## 修改配置文件 (位于 `conf/app.ini`)
+## 修改配置文件 (位于 `$GITEA_CUSTOM/conf/app.ini`)
 在 `ui.THEMES` 添加 `snowykami,liteyuki-magipoke`, 如果没有安装其他第三方主题, 复制粘贴如下内容即可
 ```ini
 [ui]
@@ -32,7 +32,8 @@ DEFAULT_THEME = liteyuki-magipoke
 
 # 修改主题
 ## 禁用单击弹出文字
-按照 HTML 格式删除 `templates/base/head.tmpl` 中的 64-113 行 (有变动请删除文件内 `// 创建雪花容器` 所在函数)
+按照 HTML 格式删除 `templates/base/head.tmpl` 中的 64-113 行
+> 如文件有变动请删除文件内 `// 创建雪花容器` 所在函数 即可禁用
 
 ## 修改页脚
 按照 HTML 格式修改 `templates/base/footer_content.tmpl`
