@@ -9,11 +9,11 @@
 
 ## 解决方案
 ### 通过 Regedit 删除 Windows 记忆的显示器配置
-1. 打开注册表编的 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\`
+1. 打开注册表编辑器并转到路径 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\`
 2. 删除 `Configuration` 和 `Connectivity` 文件夹 <br>
 (其实一般仅删除 `Connectivity` 方可, 这样可以保留其他显示器配置)
 ::: warning
-↑ 这会删除所有历史显示器配置
+↑ 删除 `Configuration` 文件夹会删除所有历史显示器配置
 :::
 3. 禁用再启用虚拟显示器
 4. 必要时重启 Sunshine
