@@ -22,12 +22,12 @@
 | 本地仓库 | Local Repository Git 存储代码和版本信息的主要位置 | `.git/objects` |
 
 ### 文件状态
-| 名称 | 介绍 | 备注 |
-| :-: | :- | :- |
-| 未追踪 | Untrack / 新创建未被 Git 管理的文件 | |
-| 未修改 | Unmodified / 已被 Git 管理但内容未发生变化的文件 | |
-| 已修改 | Modified / 已被 Git 管理且内容已发生变化且未添加至暂存区的文件 | |
-| 已暂存 | Staged / 已被 Git 管理且内容已发生变化且已添加至暂存区的文件 | |
+| 名称 | 介绍 |
+| :-: | :- |
+| 未追踪 | Untrack / 新创建未被 Git 管理的文件 |
+| 未修改 | Unmodified / 已被 Git 管理但内容未发生变化的文件 |
+| 已修改 | Modified / 已被 Git 管理且内容已发生变化且未添加至暂存区的文件 |
+| 已暂存 | Staged / 已被 Git 管理且内容已发生变化且已添加至暂存区的文件 |
 
 <!-- ↓ 直接把图片当作链接的 content ↓ -->
 > 来着 [【GeekHour】一小时Git教程@BiliBili p04-03:30
@@ -43,10 +43,13 @@
 
 ## 添加与提交文件
 * `git status` 查看仓库当前状态
+* `git status -s` 查看仓库当前状态, 以精简内容显示
 * `git add <file>` 将 (未追踪的) 文件添加至暂存区. 并且, 该命令支持使用通配符 (包含但不限于 `*`) 添加 (多个) 文件; 同时, 也可以直接添加文件夹, 会直接将整个文件夹包括其所有层级子目录内的文件全部添加至暂存区
 * `git rm --cached <file>` 将 (已暂存的) 文件移除暂存区
 * `git commit -m <message>` 提交修改 (仅提交暂存区的文件). 若不指定 `-m` 参数, 则会进入一个交互式页面, 默认使用 `vim` 编辑提交信息
 * `git log` 查看提交记录. 使用 `--oneline` 参数查看简洁的提交记录, 仅显示提交的 HASH 和提交信息
+* `git commit -a` 提交时添加所有文件 (类似于 `git add .`)
+> Git 默认不会添加空文件夹至仓库, 包括空文件夹内仅含空文件夹
 
 ## 回退版本与恢复文件
 ### `git reset` 回退版本
@@ -82,7 +85,7 @@
 | :-: | :- |
 | `git diff` | 比较工作区与暂存区的差异 |
 | `git diff <commit>` | 比较指定版本 (与当前工作区与暂存区) 的差异 |
-| `git diff --cached` | 比较暂存区和版本的差异 |
+| `git diff --cached` 或 `git diff --staged` | 比较暂存区和版本的差异 |
 | `git diff <commit_a> <commit_b>` | 比较两个版本间的差异 |
 | `git diff <branch_a> <branch_b>` | 比较两个分支间的差异 (详见分支笔记) |
 | `git diff <file>` | 比较指定文件的差异 |
@@ -91,10 +94,18 @@
 差异输出示例:  (`#` 后为注解内容)
 ```diff
 diff --git a/test.file b/test.file  # 发生变更的文件
-index 3c0eb7a..cf294a0 100644  # index 文件哈希 权限
+index 3c0eb7a..cf294a0 100644  # `index` 文件哈希 权限
 --- a/test.file
 +++ b/test.file
 @@ -1 +1,2 @@
  test_file
 +this is something new  # 修改的内容
 ```
+
+## 删除文件
+| 命令 | 行为 |
+| :-: | :- |
+| `rm` (Linux), `del` (CMD) 或 `rm` Powershell, 后使用 `git add <file>` | 删除工作区和暂存区指定文件. `git add <file>` 同步暂存区与工作区状态, 使得文件在暂存区也被删除 |
+| `git rm` | 同时删除暂存区和工作区文件 |
+| `git rm --cached` | 仅删除暂存区文件, 保留工作区文件 |
+> 使用 `-r` 递归删除指定文件夹
