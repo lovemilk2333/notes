@@ -22,7 +22,7 @@ b/
 ```sh
 *.log
 ```
-> 注意: `.gitignore` 不会对已被添加至 Git 的文件生效, 如需该文件忽略, 请先[删除文件](./BasicUseage.md#删除文件)
+> 注意: `.gitignore` 不会对已被添加至 Git 的文件生效, 如需该文件忽略, 请先[删除文件](./0-BasicUseage.md#删除文件)
 
 ## `.gitignore` 规则概览
 * 以 `#` 开头内容为注释
