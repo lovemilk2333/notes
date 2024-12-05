@@ -17,7 +17,7 @@ hero:
       text: 服务部署
       link: /deployment/
     - theme: brand
-      text: App 配置备忘录
+      text: 软件配置 与 教程备忘录
       link: /apps/
     - theme: alt
       text: 作文 (原周记)
