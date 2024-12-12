@@ -87,7 +87,7 @@
 | `git diff <commit>` | 比较指定版本 (与当前工作区与暂存区) 的差异 |
 | `git diff --cached` 或 `git diff --staged` | 比较暂存区和版本的差异 |
 | `git diff <commit_a> <commit_b>` | 比较两个版本间的差异 |
-| `git diff <branch_a> <branch_b>` | 比较两个分支间的差异 (详见分支笔记) |
+| `git diff <branch_a> <branch_b>` | 比较两个分支间的差异 |
 | `git diff <file>` | 比较指定文件的差异 |
 > 某些命令可以组合使用, 例如可以使用 `git diff <commit_a> <commit_b> <file>` 查看指定文件的指定版本间的差异
 
@@ -105,7 +105,7 @@ index 3c0eb7a..cf294a0 100644  # `index` 文件哈希 权限
 ## 删除文件
 | 命令 | 行为 |
 | :-: | :- |
-| `rm` (Linux), `del` (CMD) 或 `rm` Powershell, 后使用 `git add <file>` | 删除工作区和暂存区指定文件. `git add <file>` 同步暂存区与工作区状态, 使得文件在暂存区也被删除 |
+| `rm` (Linux), `del` (CMD) 或 `Remove-Item` (Powershell), 后使用 `git add <file>` | 删除工作区和暂存区指定文件. `git add <file>` 同步暂存区与工作区状态, 使得文件在暂存区也被删除 |
 | `git rm` | 同时删除暂存区和工作区文件 |
 | `git rm --cached` | 仅删除暂存区文件, 保留工作区文件 |
 > 使用 `-r` 递归删除指定文件夹
