@@ -1,7 +1,7 @@
 # 修复 Epic Game 登录 500 错误
 
 ## 原因
-`store.epicgames.com`, `www.twinmotion.com` 与 `www.fortnite.com` 获取的 API 客户端 IP 不一样造成鉴权失败
+`store.epicgames.com`, `www.twinmotion.com` 与 `www.fortnite.com` API 获取的 客户端 IP 不一样造成鉴权失败
 
 ## 修复
 在 rules 添加如下内容, 并保证其使用同一个节点 (推荐 `DIRECT`)  
@@ -19,5 +19,5 @@
 ## 扩展
 要在 Linux 上使用 Epic Online Service, 可以使用第三方客户端 [*Heroic Games Launcher*](https://heroicgameslauncher.com/) 或 [*Lutris*](https://lutris.net/)
 ::: danger 危险
-使用第三方客户端造成账户安全性问题须由用户自行负责
+使用第三方客户端造成账户安全性问题须由用户自行承担
 :::
