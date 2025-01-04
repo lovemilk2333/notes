@@ -10,7 +10,7 @@
 2. 克隆 `digimend-kernel-drivers` 仓库
     该仓库提供了数位板的驱动
     ::: tip 提示
-    虽然参考的文章说需要修改几个文件, 但是本文撰写时的 20250104 (commit `f3c7c7f`) 以内置需要修改的内容, 直接构建安装即可
+    虽然参考的文章说需要修改几个文件, 但是本文撰写时的 20250104 (commit `f3c7c7f`) 已内置需要修改的内容, 直接构建安装即可
     :::
     ```sh
     git clone git@github.com:DIGImend/digimend-kernel-drivers.git
