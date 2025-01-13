@@ -10,7 +10,7 @@
     cd mmcai_rs
     ```
 
-2. 构建可执行文件
+2. 构建可执行文件  
     关于如何安装 rust 编译环境 (cargo), 请参阅 [Getting started - Rust Programming Language](https://www.rust-lang.org/learn/get-started)
     ```sh
     cargo build --release
@@ -20,10 +20,10 @@
     cp ./target/release/mmcai_rs /path/to/mmcai_rs
     ```
 
-3. 在 `/path/to/mmcai_rs` 的同级目录下放置 `authlib-injector`
+3. 在 `/path/to/mmcai_rs` 的同级目录下放置 `authlib-injector`  
     从 [这里](https://github.com/yushijinhun/authlib-injector/releases/latest) 下载最新版的 `authlib-injector-\d.\d.\d.jar` (`\d` 代表任意整数), 直接放置于 `/path/to/mmcai_rs` 的同级目录, **不要重命名文件**
 
-4. 编辑 MC 实例配置
+4. 编辑 MC 实例配置  
     打开 Prism Launcher/MultiMC编辑实例, 进入 `设置 > 自定义命令`, 在 `包装器命令` 中填入如下内容:
     ```sh
     /path/to/mmcai_rs <username> <password> <yggdrasil_api_endpoint>
