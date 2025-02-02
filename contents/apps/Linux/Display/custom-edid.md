@@ -7,19 +7,10 @@
 ::: danger 危险
 本教程仅提供一个可能的解决方案, 内容可能并不适用于所有的设备, 后果须由用户自行承担
 
-本人的 NVIDIA 驱动就无法加载编辑后的 `EDID` 文件, 找到的 [issue#11](https://github.com/akatrevorjay/edid-generator/issues/11) 好像也没有什么解决方法
+经过实测, NVIDIA 驱动加载非标准分辨率比率的显示器会使得显示器无法连接;  
+加载标准分辨率比率但刷新率过高的显示器时会导致显卡掉驱动:
 ```log
-[    3.977294] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
-[    3.977382] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
-[    3.977504] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
-[    3.977582] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
-[    4.070439] [drm] Initialized nvidia-drm 0.0.0 for 0000:01:00.0 on minor 0
-[    4.070525] Console: switching to colour dummy device 80x25
-[    4.070550] nvidia 0000:01:00.0: vgaarb: deactivate vga console
-[    4.154474] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
-[    4.154478] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
-[    4.154497] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
-[    4.154499] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
+[141.637776] nvidia-modeset: ERROR: GPU:0: Idling display engine timed out: 0x0000c67e:6:0:1176
 ```
 :::
 
@@ -93,11 +84,11 @@
     $ cp 2400x1080.bin /usr/lib/firmware/edid/
     ```
     并在内核参数加上
-    ```
+    ```conf
     drm.edid_firmware=<显示器标识>:edid/<`.bin`文件路径>
     ```
     例如
-    ```
+    ```conf
     drm.edid_firmware=DP-2:edid/2400x1080.bin
     ```
     > GRUB 用户可以修改 `/etc/default/grub` 的 `GRUB_CMDLINE_LINUX_DEFAULT` 并更新引导  
@@ -115,9 +106,39 @@
     ```
     :::
 
-7. 重启系统
+7. 修改 `/etc/mkinitcpio.conf` 并生成配置
+    修改 `/etc/mkinitcpio.conf` 中的 `FILES` 字段, 添加新的 `EDID` 文件路径
+    ```conf
+    FILES=(/usr/lib/firmware/edid/<`.bin`文件路径>)
+    ```
+    例如:
+    ```conf
+    FILES=(/usr/lib/firmware/edid/2400x1080.bin)
+    ```
+
+    后重新生成配置
+    ```sh
+    $ sudo mkinitcpio -P
+    ```
+
+8. 重启系统
     ::: warning 警告
-    如果重启系统后显示器未连接, 请查看 `dmesg`, 可能 `EDID` 文件未能成功加载!
+    如果重启系统后显示器未连接, 可能是您使用了非标准分辨率比率显示器造成的
+
+    如果在 `dmesg` 中出现 `[CONNECTOR:110:<显示器标识>] Requesting EDID firmware "edid/<`.bin`文件路径>" failed (err=-2)`, 可能是遗漏了 ```7. 修改 `/etc/mkinitcpio.conf` 并生成配置``` 造成的
+    ```log
+    [    3.977294] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
+    [    3.977382] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
+    [    3.977504] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
+    [    3.977582] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
+    [    4.070439] [drm] Initialized nvidia-drm 0.0.0 for 0000:01:00.0 on minor 0
+    [    4.070525] Console: switching to colour dummy device 80x25
+    [    4.070550] nvidia 0000:01:00.0: vgaarb: deactivate vga console
+    [    4.154474] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
+    [    4.154478] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
+    [    4.154497] nvidia 0000:01:00.0: Direct firmware load for edid/2400x1080.bin failed with error -2
+    [    4.154499] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:110:DP-2] Requesting EDID firmware "edid/2400x1080.bin" failed (err=-2)
+    ```
     :::
 
 ## 参考
@@ -128,3 +149,5 @@
 3. How to override the EDID data of a monitor under Linux | foosel.net: <https://foosel.net/til/how-to-override-the-edid-data-of-a-monitor-under-linux/>
 
 4. Error: invalid operands (\*UND* and \*ABS* sections) for `<<' · Issue #19 · akatrevorjay/edid-generator: <https://github.com/akatrevorjay/edid-generator/issues/19>
+
+5. archlinux交流群 (1039561926@QQ) 群友 `Norman`
