@@ -4,7 +4,7 @@
 
 在 `设置自定义规则（优先匹配）` 添加如下规则 (注意规则由上到下优先级)
 ```yaml
-- DOMAIN-SUFFIX,files.vrchat.cloud,<Proxy>
+- DOMAIN,files.vrchat.cloud,<Proxy>
 - DOMAIN,file-variants.vrchat.cloud,<Proxy>
 
 # - DOMAIN-SUFFIX,vrchat.com,DIRECT  # 如果多次尝试连不上或者网页上不去再解除注释
