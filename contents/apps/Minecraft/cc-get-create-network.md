@@ -26,3 +26,5 @@ local createNetwork = nbt['Network']
     Size: int, -- 网络大小 (定义未知)
 }
 ```
+
+当 `Stress` > `Capacity` 时, 应力过载
