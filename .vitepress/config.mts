@@ -44,8 +44,9 @@ export default defineConfig({
     ],
     logo: '/favicons.svg'
   },
-  markdown: {  // 支持脚注
-    lineNumbers: true,
+  markdown: {
+    math: true,  // 支持数学公式
+    lineNumbers: true, // 支持脚注
     config(md) {
       md.use(footnotePlugin)
     },

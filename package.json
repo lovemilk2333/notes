@@ -2,6 +2,7 @@
   "devDependencies": {
     "@primevue/auto-import-resolver": "^4.0.5",
     "@vue/language-server": "^2.1.6",
+    "markdown-it-mathjax3": "^4.3.2",
     "unplugin-vue-components": "^0.27.4",
     "vitepress": "^1.0.0-rc.44"
   },
