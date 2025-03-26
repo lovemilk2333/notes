@@ -1,0 +1,9 @@
+.main p {
+    /* 默认作文缩进 */
+    text-indent: 2em;
+}
+
+.main blockquote p {
+    /* 不为 markdown `> ` 内容缩进 */
+    text-indent: inherit;
+}
