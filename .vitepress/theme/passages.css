@@ -1,9 +1,19 @@
-.main p {
+.text-indent .main p {
     /* 默认作文缩进 */
     text-indent: 2em;
 }
 
-.main blockquote p {
+.text-indent .main blockquote p {
     /* 不为 markdown `> ` 内容缩进 */
-    text-indent: inherit;
+    text-indent: inherit !important;
+}
+
+.custom-block p, .github-alert p {
+    /* 不为 自定义容器 内容缩进 */
+    text-indent: inherit !important;
+}
+
+.footnote-item p {
+    /* 不为 角标 内容缩进 */
+    text-indent: inherit !important;
 }
