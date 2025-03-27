@@ -17,7 +17,6 @@ router.onAfterPageLoad = (to) => {
     const app = document.getElementById('app');
 
     if (!!passagePaths.some((targetPath) => to.startsWith(targetPath))) {
-        console.log('add', to)
         // @ts-ignore
         app.classList.add("text-indent");
     } else {
