@@ -5,3 +5,5 @@
 # [C++ 笔记](./cpp/20230711-index.md)  
 
 # [前端 MUI 笔记](./frontend/mui/20250306-basic.md)  
+
+# [ECharts 笔记](./frontend/echarts/20250318-basic.md)  
