@@ -1,7 +1,7 @@
 import { defineConfig, DefaultTheme } from 'vitepress'
 import Components from 'unplugin-vue-components/vite';
-import {PrimeVueResolver} from '@primevue/auto-import-resolver';
-import AutoSidebar from 'vite-plugin-vitepress-auto-sidebar';
+import { PrimeVueResolver } from '@primevue/auto-import-resolver';
+import AutoSidebarPlugin from 'vitepress-auto-sidebar-plugin'
 import footnotePlugin from "markdown-it-footnote";
 
 const nav: DefaultTheme.NavItem[] = [
@@ -54,26 +54,11 @@ export default defineConfig({
   srcDir: rootPath,
   vite: {
     plugins: [
-      AutoSidebar({
+      AutoSidebarPlugin({
+        srcDir: rootPath,
         // ignoreList: ['node_modules', '.vitepress', '.github', '.git', 'public'],
         ignoreList: ['p', 'docs', 'license', 'satisfaction-survey'],
-        path: rootPath,
-        titleFromFile: true,
-        // sideBarItemsResolved(data) {
-        //   const res: DefaultTheme.SidebarItem[] = []
-
-        //   for (let file of data) {
-        //     let name = file.link?.toLocaleLowerCase() ?? '.md.html'
-        //     let ext = extname(name.endsWith('.html') ? name.slice(0, -5) : name)
-        //     if (!['', '.html', '.md', '.markdown'].includes(ext)) {
-        //       continue
-        //     }
-
-        //     res.push(file)
-        //   }
-
-        //   return res
-        // }
+        useH1Title: true,
       }),
       Components({
         resolvers: [
