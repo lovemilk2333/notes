@@ -21,6 +21,8 @@
     ```sh
     sudo make dkms_install
     ```
+    > 在 Linux 高版本内核 (个人使用 6.15.x) 时, 由于内核函数被重命名, 造成编译错误, 请参见 [此 PR](https://github.com/DIGImend/digimend-kernel-drivers/pull/714) 修改源代码以继续
+
     ::: warning 警告
     如果安装过 `digimend` 驱动, 须先行卸载:
     ```sh
