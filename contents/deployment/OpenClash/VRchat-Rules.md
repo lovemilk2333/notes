@@ -4,8 +4,10 @@
 
 在 `设置自定义规则（优先匹配）` 添加如下规则 (注意规则由上到下优先级)
 ```yaml
+# 下面的是下载模型和地图的域名, 使用代理较快
 - DOMAIN,files.vrchat.cloud,<Proxy>
 - DOMAIN,file-variants.vrchat.cloud,<Proxy>
+- DOMAIN,assets.vrchat.com,<Proxy>
 
 # - DOMAIN-SUFFIX,vrchat.com,DIRECT  # 如果多次尝试连不上或者网页上不去再解除注释
 - DOMAIN-SUFFIX,vrchat.cloud,DIRECT

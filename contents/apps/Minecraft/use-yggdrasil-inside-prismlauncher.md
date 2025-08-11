@@ -39,7 +39,7 @@
     填写该命令后, 启动器内设置的账户将无法应用于该实例, 如果需要使用启动器内置的账户, 请删除该配置
     :::
     例如:
-    ```
+    ```sh
     /path/to/mmcai_rs user passwd https://littleskin.cn/api/yggdrasil
     ```
 
