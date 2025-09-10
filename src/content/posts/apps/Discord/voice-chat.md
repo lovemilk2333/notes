@@ -1,0 +1,15 @@
+---
+title: Discord 语音配置
+published: 2025-09-10
+tags: [Discord, VoiceChat]
+category: app::discord
+---
+
+为避免接受的音频发出类似电流声, 需要在 `Discord` 设置中更改如下
+
+## 修改 `APP设置 > 语音和视频 > 高级设置`
+* ### `视频编解码器`
+    1. 关闭 `OpenH264 Video Codec 由 CiscoSystems, Inc. 提供`
+    2. 关闭 `硬件加速`
+* ### `服务质量`
+    1. 开启 `开启服务品质（QoS）数据包最高优先权`

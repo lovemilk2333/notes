@@ -1,0 +1,14 @@
+/docs/LICENSE /posts/license/art/
+/docs/LICENSE.html /posts/license/art/
+
+/deployment/OpenClash/PortForward-KeepSource /posts/deployment/openwrt/portforward-keepsource/
+/deployment/OpenClash/PortForward-KeepSource.html /posts/deployment/openwrt/portforward-keepsource/
+
+/deployment/Koishi/ctx /posts/apps/koishi/ctx/
+/deployment/Koishi/ctx.html /posts/apps/koishi/ctx/
+
+/programming/* /posts/programming/:splat/
+/deployment/* /posts/deployment/:splat/
+/apps/* /posts/apps/:splat/
+/passages/* /posts/passages/:splat/
+/weekly-articles/* /posts/weekly-articles/:splat/

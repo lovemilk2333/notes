@@ -1,3 +1,6 @@
 # shellcheck shell=bash
 
-cp contents/p/lovemilk-telemetry-EULA.md .vitepress/dist/p/
+if [[ ! -d dist/p/ ]]; then
+    mkdir dist/p/
+fi
+cp src/content/posts/p/lovemilk-telemetry-EULA.md dist/p/
