@@ -8,6 +8,7 @@
 /deployment/Koishi/ctx.html /posts/apps/koishi/ctx/
 
 /*.html /:splat/
+/*.md /:splat/
 
 /programming/* /posts/programming/:splat/
 /deployment/* /posts/deployment/:splat/
