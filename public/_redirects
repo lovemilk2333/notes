@@ -7,6 +7,8 @@
 /deployment/Koishi/ctx /posts/apps/koishi/ctx/
 /deployment/Koishi/ctx.html /posts/apps/koishi/ctx/
 
+/*.html /:splat/
+
 /programming/* /posts/programming/:splat/
 /deployment/* /posts/deployment/:splat/
 /apps/* /posts/apps/:splat/
