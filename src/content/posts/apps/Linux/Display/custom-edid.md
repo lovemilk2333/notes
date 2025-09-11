@@ -89,11 +89,11 @@ category: app::linux::display
     $ cp 2400x1080.bin /usr/lib/firmware/edid/
     ```
     并在内核参数加上
-    ```conf
+    ```ini
     drm.edid_firmware=<显示器标识>:edid/<`.bin`文件路径>
     ```
     例如
-    ```conf
+    ```ini
     drm.edid_firmware=DP-2:edid/2400x1080.bin
     ```
     > GRUB 用户可以修改 `/etc/default/grub` 的 `GRUB_CMDLINE_LINUX_DEFAULT` 并更新引导  
@@ -113,11 +113,11 @@ category: app::linux::display
 
 7. 修改 `/etc/mkinitcpio.conf` 并生成配置
     修改 `/etc/mkinitcpio.conf` 中的 `FILES` 字段, 添加新的 `EDID` 文件路径
-    ```conf
+    ```ini
     FILES=(/usr/lib/firmware/edid/<`.bin`文件路径>)
     ```
     例如:
-    ```conf
+    ```ini
     FILES=(/usr/lib/firmware/edid/2400x1080.bin)
     ```
 

@@ -17,7 +17,7 @@ hook 是一个位于 `/etc/pacman.d/hooks/` 的 `.hook` 配置文件, 通过得�
 ## 创建并写入 hook 文件
 创建一个任意名称的 `.hook` (以 `discord.hook` 为例) 位于 `/etc/pacman.d/hooks/`, 写入如下内容
 
-```conf
+```ini
 # 触发器
 [Trigger]
 Operation = Install  # 在安装时

@@ -13,7 +13,7 @@ sudo chmod o+r /sys/class/powercap/intel-rapl\:0/energy_uj
 ```
 
 为免更新后权限恢复, 可在 `/etc/systemd/system` 中添加如下 `.service` System Unit 配置文件, 并 `enable`
-```conf
+```ini
 [Service]
 Type=oneshot
 RemainAfterExit=true

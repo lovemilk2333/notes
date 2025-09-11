@@ -8,7 +8,7 @@ category: app::linux::system
 在 `/etc/udev/rules.d/` 创建一个 `.rules` 文件, 文件名称合法即可
 > 一般为 `dd-描述.rules`, `dd` 是一个两位十进制数, 数字越大越在靠后的时刻加载
 
-```conf
+```ini
 SUBSYSTEM=="hidraw*", ATTRS{idVendor}=="<vendor-id>", ATTRS{idProduct}=="<product-id>", MODE="0666", GROUP="<user-group>"
 ```
 `<vendor-id>` 与 `<product-id>` 可以使用 `lsusb` 查看:

@@ -8,7 +8,7 @@ category: app::linux::system
 > <https://www.linuxquestions.org/questions/linux-hardware-18/problem-with-any-bluetooth-device-4175631846>  
 > <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=355497>
 
-```conf
+```ini
 # Defaults for bluez
 # start bluetooth on boot?
 # compatibility note: If this variable is not found bluetooth will
