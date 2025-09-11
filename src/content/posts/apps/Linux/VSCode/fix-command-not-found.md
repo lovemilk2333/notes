@@ -1,8 +1,8 @@
 ---
 title: 修复 VSCode 中, `zsh` 终端无法找到某些从 `.zshrc` 中加载的命令
 published: 2025-09-10
-tags: [Linux, shell, VSCode, M$, zsh]
-category: app::linux::the-greatest-editor-VSCode
+tags: [Linux, shell, VSCode, TheGreatestEditorVSCode, M$, zsh]
+category: app::linux::vscode
 ---
 
 ## 问题
