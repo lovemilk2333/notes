@@ -28,4 +28,4 @@ category: deployment::openwrt
    - 后保存并重启防火墙即可, 命令行使用请 `/etc/init.d/firewall restart` 重启. (如果需要同时转发 TCP/UDP, 再添加并将其中的 `tcp` 改为 `udp` 即可)
 
 ## 命令行工具
-参见 [lovemilk2333/openwrt-iptables-forward-adder](https://github.com/lovemilk2333/openwrt-iptables-forward-adder?tab=readme-ov-file)
+参见 [lovemilk2333/openwrt-iptables-forward-adder](https://aka.lovemilk.top/github/openwrt-iptables-forward-adder?tab=readme-ov-file)

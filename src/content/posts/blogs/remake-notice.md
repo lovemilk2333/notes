@@ -17,7 +17,7 @@ category: blog
 ## 迁移制约
 受到旧框架文件编写差异和迁移成本的制约, 本网站迁移后可能有部分链接失效, 可尝试删除 URL 中的 `.md` 和在 URL 路径部分最后加上 `/` 解决, 带来的不便敬请谅解  
 
-同时, 原站点的 "编程笔记" 部分, 应迁移时间成本高, 难度稍大等的问题, 暂已停止提供. 但是, 您仍可以在我们的的 GitHub 仓库看到原始的 Markdown 文件 ([参阅此处](https://github.com/lovemilk2333/notes/tree/main/archive/programming)), 感谢您的理解
+同时, 原站点的 "编程笔记" 部分, 应迁移时间成本高, 难度稍大等的问题, 暂已停止提供. 但是, 您仍可以在我们的的 GitHub 仓库看到原始的 Markdown 文件 ([参阅此处](https://aka.lovemilk.top/github/notes/tree/main/archive/programming)), 感谢您的理解
 
 ## 署名
 lovemilk  

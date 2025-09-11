@@ -10,7 +10,7 @@ category: _internal
 1. 本协议是您 (以下简称 "用户") 与 Lovemilk Telemetry (以下简称 "我们") 之间的协议. 本协议规定了您使用 Lovemilk Telemetry 提供的服务应当遵守的条款和条件. <br>
 Lovemilk Telemetry 插件提供了遥测服务 (以下简称 "遥测"), 该服务竭旨为用户提供更好的使用体验和产品质量, 提升开发者调试质量和效率, 为用户带来福祉.
 
-2. 若本协议多语言版本与 中文 (简体) 版本存在歧义的, 一律以 中文 (简体) 版本为准. 并且, 本协议最终归属权有 Lovemilk Telemetry 插件 作者所有, 本协议最终解释权由 [Lovemilk](https://github.com/lovemilk2333), [Lovemilk Team](https://github.com/Lovemilk-Team) 以及上述个人或组织认可的个人或组织所有.
+2. 若本协议多语言版本与 中文 (简体) 版本存在歧义的, 一律以 中文 (简体) 版本为准. 并且, 本协议最终归属权有 Lovemilk Telemetry 插件 作者所有, 本协议最终解释权由 [Lovemilk](https://aka.lovemilk.top/github), [Lovemilk Team](https://aka.lovemilk.top/orggithub) 以及上述个人或组织认可的个人或组织所有.
 
 3. 本协议修改或更新时将不会另行通知, 请以最新版本协议为准, 对于本协议更新须知, 请参阅 [本隐私政策的查阅和更新](#本隐私政策的查阅和更新). <br>
 
