@@ -17,7 +17,7 @@ category: app::sunshine
 1. 打开注册表编辑器并转到路径 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\`
 2. 删除 `Configuration` 和 `Connectivity` 文件夹 <br>
 (其实一般仅删除 `Connectivity` 方可, 这样可以保留其他显示器配置)
-::: warning
+:::warning
 ↑ 删除 `Configuration` 文件夹会删除所有历史显示器配置
 :::
 3. 禁用再启用虚拟显示器

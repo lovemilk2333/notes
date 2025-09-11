@@ -5,7 +5,7 @@ tags: [Docker, k8s, container]
 category: app::docker
 ---
 
-运行如下命令, 讲网桥的流量绕过 `iptables`
+运行如下命令, 将网桥的流量绕过 `iptables`
 ```sh
 sudo sysctl -w net.bridge.bridge-nf-call-iptables=0
 ```

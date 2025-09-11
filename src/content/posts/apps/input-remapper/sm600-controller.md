@@ -1,7 +1,7 @@
 ---
 title: 使用 Input Remapper 将 凤凰模拟器 SM600 遥控器 的轴映射为 PS5 手柄操作方式
 published: 2025-09-10
-tags: [InputRemapper, Gamepad]
+tags: [InputRemapper, Gamepad, HID]
 category: app::input-remapper
 ---
 
@@ -17,7 +17,8 @@ sudo systemctl enable --now input-remapper
 
 ## 连接遥控器
 将遥控器模式修改至 `PhoenixRC`, 打开开关 (若修改模式前已开启, 请关闭再打开)
-::: tip 注
+
+:::tip
 理论上修改为任意模式方可, 但不同模式的输入轴可能不同
 :::
 
@@ -41,8 +42,8 @@ sudo systemctl enable --now input-remapper
 
 6. 测试完成后, 在 `Rename` (`重命名`) 输入框内填入映射名称, 并单击右侧的保存按钮, 配置文件将被保存在 `~/.config/input-remapper-2/presets/<device>/<name>.json`. 其中, `<device>` 字样是你的设备名称, `<name>` 是你的映射名称
 
-::: tip 注意
-如果发现左侧摇杆向上移动至中心位置输入已达到 `1.0`, 请前往 `PhoenixRC` 航模模拟器进行校准
+:::tip
+如果发现左侧摇杆向上移动至中心位置输入已达到 `1.0`, 请前往 `PhoenixRC` 航模模拟器进行校准  
 
 一个可能的下载链接 (第三方网站, 不保证安全性和可访问性, 后果自负): <https://www.flugsimulatoren.ch/Phoenix-RC.php>
 :::
@@ -56,7 +57,6 @@ sudo systemctl enable --now input-remapper
 
 如果需要导入, 请直接复制内容并在 `~/.config/input-remapper-2/presets/<device>/` 下新建任意合法名称的 `JSON` 文件. 其中, `<device>` 字样是你的设备名称, 如果设备名称文件夹没有被创建, 可以按照 步骤 2 新建并保存后, 再找到设备名称文件夹
 
-::: details 单击展开配置文件
 ```json
 [
     {
@@ -126,4 +126,3 @@ sudo systemctl enable --now input-remapper
     }
 ]
 ```
-:::

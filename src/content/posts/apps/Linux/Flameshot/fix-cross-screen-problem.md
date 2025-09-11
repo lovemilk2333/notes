@@ -13,6 +13,6 @@ category: app::linux::flameshot
 ```sh
 env QT_QPA_PLATFORM=xcb flameshot gui
 ```
-::: warning 警告
+:::warning
 wayland 用户切勿将其加入 `/etc/environment` 中, 可能会导致 KDE (或其他依赖于 QT 的桌面环境或软件) 无法正常显示
 :::

@@ -35,11 +35,11 @@ category: app::minecraft
     /path/to/mmcai_rs <username> <password> <yggdrasil_api_endpoint>
     ```
     其中, `<username>` 是你的外置登录账户名, `<password>` 是你的外置登录密码, `<yggdrasil_api_endpoint>` 是你的 Yggdrasil API 地址  
-    ::: danger 危险
+    :::caution
     由于会提供账户和密码给该可执行文件, 本人无法确保起不会造成隐私泄露, 在使用前请再三甄别, 否则造成的后果由用户承担
     :::
 
-    ::: tip 提示
+    :::tip
     LittleSkin 用户的账户名 是 登录时填写的邮箱地址, 而不是角色名称  
 
     填写该命令后, 启动器内设置的账户将无法应用于该实例, 如果需要使用启动器内置的账户, 请删除该配置

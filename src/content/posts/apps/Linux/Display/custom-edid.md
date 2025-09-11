@@ -9,7 +9,7 @@ category: app::linux::display
 使用显卡欺骗器 (FakeDisplay) 时无法使用自定义的分辨率刷新率, 使得串流时无法适配客户端分辨率刷新率
 
 ## 解决
-::: danger 危险
+:::caution
 本教程仅提供一个可能的解决方案, 内容可能并不适用于所有的设备, 后果须由用户自行承担
 
 经过实测, NVIDIA 驱动加载非标准分辨率比率的显示器会使得显示器无法连接;  
@@ -23,7 +23,7 @@ category: app::linux::display
 
 1. 下载脚本或 `clone` 仓库  
     对于 `Archlinux` 用户, 可以使用 AUR 的 `edid-generator` 包
-    ::: warning 警告
+    :::warning
     `edid-generator` 包存在小问题, 使用 stdin 的文件输入会导致没有办法退出 (`Ctrl+C` 退出后无法自动运行 `make`), 可以手动 `cd /tmp/edid-generator-<4个任意字母>` 文件夹下手动运行 `make`
     :::
 
@@ -64,7 +64,7 @@ category: app::linux::display
     ```sh
     $ make
     ```
-    ::: tip 提示
+    :::tip
     该脚本 **支持的标准分辨率比率** 包括: 4:3, 16:10, 5:4, 16:9  
     如果使用非标准分辨率比率, 可能会遇到 ```Error: invalid operands (*UND* and *ABS* sections) for `<<'``` 问题  
     (参见 [issue#19](https://github.com/akatrevorjay/edid-generator/issues/19))  
@@ -79,7 +79,7 @@ category: app::linux::display
     ```
     后运行 `make`
     
-    ::: warning 警告
+    :::warning
     `0b<任意不重复的数值>` 为显示器比率识别码, 进行自定义可能造成部分老旧的 `EDID` 解析器无法识别
     :::
 
@@ -104,7 +104,7 @@ category: app::linux::display
     > drm.edid_firmware=VGA-1:edid/your_edid.bin,VGA-2:edid/your_other_edid.bin
     > ```
 
-    ::: tip 提示
+    :::tip
     显示器标识请使用如下命令获取
     ```sh
     $ for p in /sys/class/drm/*/status; do con=${p%/status}; echo -n "${con#*/card?-}: "; cat $p; done
@@ -127,7 +127,7 @@ category: app::linux::display
     ```
 
 8. 重启系统
-    ::: warning 警告
+    :::warning
     如果重启系统后显示器未连接, 可能是您使用了非标准分辨率比率显示器造成的
 
     如果在 `dmesg` 中出现 `[CONNECTOR:110:<显示器标识>] Requesting EDID firmware "edid/<`.bin`文件路径>" failed (err=-2)`, 可能是遗漏了 ```7. 修改 `/etc/mkinitcpio.conf` 并生成配置``` 造成的

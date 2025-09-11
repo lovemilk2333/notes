@@ -5,7 +5,7 @@ tags: [Linux, display, OSD]
 category: app::linux::display
 ---
 
-::: warning 警告
+:::warning
 这可能并不适用于所以显示器, 请优先寻找售后服务支持, 或自行酌情决定是否使用
 :::
 
@@ -46,7 +46,7 @@ Display 2
 ```
 
 3. 重置对应显示器
-::: warning 警告
+:::warning
 这可能会导致显示器 OSD 界面重置或消失 进入出厂较色模式, 解决方案参见 步骤4
 :::
 

@@ -25,7 +25,7 @@ category: app::linux::system
     `/path/to/mount-point` 为目标挂载点, 即在本机的路径, 如 `/mnt/smb/your_host/sda1` (需要预先创建)
     `-o` 后为挂载选项, 由于大部分的 samba 需要 auth, 则 `<username>` 为你的 samba 用户, `<password>` 同理为密码
 
-    :::tip 提示
+    :::tip
     解除挂载请使用
     ```sh
     sudo umount /path/to/mount-point

@@ -15,7 +15,7 @@ category: app::linux::system
 
 2. 克隆 `digimend-kernel-drivers` 仓库
     该仓库提供了数位板的驱动
-    ::: tip 提示
+    :::tip
     虽然参考的文章说需要修改几个文件, 但是本文撰写时的 20250104 (commit `f3c7c7f`) 已内置需要修改的内容, 直接构建安装即可
     :::
     ```sh
@@ -29,7 +29,7 @@ category: app::linux::system
     ```
     > 在 Linux 高版本内核 (个人使用 6.15.x) 时, 由于内核函数被重命名, 造成编译错误, 请参见 [此 PR](https://github.com/DIGImend/digimend-kernel-drivers/pull/714) 修改源代码以继续
 
-    ::: warning 警告
+    :::warning
     如果安装过 `digimend` 驱动, 须先行卸载:
     ```sh
     sudo make dkms_uninstall

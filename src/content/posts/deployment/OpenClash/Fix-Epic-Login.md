@@ -26,6 +26,6 @@ category: deployment::openclash
 ## 扩展
 
 要在 Linux 上使用 Epic Online Service, 可以使用第三方客户端 [_Heroic Games Launcher_](https://heroicgameslauncher.com/) 或 [_Lutris_](https://lutris.net/)
-::: danger 危险
+:::caution
 使用第三方客户端造成账户安全性问题须由用户自行承担
 :::
