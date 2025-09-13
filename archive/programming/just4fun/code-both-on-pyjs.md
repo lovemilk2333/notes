@@ -1,6 +1,6 @@
 # 一段高可读性的同时符合 Python 和 JavaScript 语法的代码
 > > 题外话 \
-> > 我找 BiliBili 如何跳转到制定评论的历程 ( \
+> > 我找 BiliBili 如何跳转到指定评论的历程 ( \
 > > <https://www.bilibili.com/opus/560310743264138945> \
 > > <https://github.com/the1812/Bilibili-Evolved/issues/690> \
 > > <https://www.bilibili.com/opus/257068374085096308> \

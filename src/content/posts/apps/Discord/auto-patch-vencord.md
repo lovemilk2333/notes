@@ -23,7 +23,7 @@ hook 是一个位于 `/etc/pacman.d/hooks/` 的 `.hook` 配置文件, 通过得�
 Operation = Install  # 在安装时
 Operation = Upgrade  # 在更新时
 Type = Package  # 触发器目标类型为 包
-Target = discord  # 制定包为 `discord`
+Target = discord  # 指定包为 `discord`
 
 # 执行的操作
 [Action]
