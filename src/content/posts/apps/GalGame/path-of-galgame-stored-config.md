@@ -11,7 +11,9 @@ category: app::galgame
 启动日文原版正常, 而启动汉化版显示无法加载字体
 
 ## 解决方法
-可以启动日文原版, 并将字体改为你的 Wine/Proton (或者 `C:\Windows\Fonts`) 中有的字体 (它的默认 fallback 字体是日文版Windows独有的, 我的 Proton 里没有), 然后再启动汉化版
+可以启动日文原版, 并将字体改为你的 Wine/Proton (或者 `C:\Windows\Fonts`) 中有的字体 (除 MS Gothic 外, 它的 fallback 字体是日文版 Windows 独有的 MS Gothic, 我的 Proton 里没有), 然后再启动汉化版
+
+如果进行上述操作后单击 `save` 或者 `load` 按钮进入保存/加载界面出现同样的崩溃问题, 请尝试在 Wine/Proton 的 winetricks 上安装 `corefonts`
 
 ## 配置文件存储位置
 我为了 debug 尝试在 `AppData` 和 `文档`, 游戏根目录下找了好久, 还是没有发现游戏把配置文件存在哪里惹, 通过一番 `strace -e open,openat -f -o <output-log-file> <command>` 之后, 发现改游戏会在退出时候写入游戏根目录下的 `BGI.gdb`, 并且删除该文件后无法启动, 将原始的该文件替换后发现配置重置
