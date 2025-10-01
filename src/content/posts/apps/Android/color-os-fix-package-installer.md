@@ -32,4 +32,4 @@ description: 修复 ColorOS 锁定默认软件包安装程序, 无法切换为�
 貌似进入安全模式会重置和修复一部分的系统软件及其权限, 这就是为什么能够修好系统
 
 ---
-最后, 感谢 Google 的大手要求安卓合规必须要过 [CTS](https://source.android.com/docs/compatibility/cts)
+最后, 感谢 Google 的大手要求安卓合规必须要过 [CTS](https://source.android.google.cn/docs/compatibility/cts)
