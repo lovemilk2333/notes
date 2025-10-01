@@ -22,6 +22,7 @@ local nbt = observer.read_nbt()
 local createNetwork = nbt['Network']
 ```
 `createNetwork` 即为 机械动力应力网路的信息 (Table 类型)
+
 4. 通过 `createNetwork` 变量获取具体信息即可, 如下为各 key 的意义:
 ```lua
 {
@@ -32,4 +33,4 @@ local createNetwork = nbt['Network']
 }
 ```
 
-当 `Stress` > `Capacity` 时, 应力过载
+当 `Stress > Capacity` 时, 应力过载
