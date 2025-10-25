@@ -29,7 +29,7 @@ sudo optimus-manager --cleanu
 
 2. 卸载 *optimus*
 ```sh
-yay -R optimus-manager-qt <real-package-name-of-optimus-manager
+yay -R optimus-manager-qt <real-package-name-of-optimus-manager>
 ```
 
 3. 重新生成 initfs
