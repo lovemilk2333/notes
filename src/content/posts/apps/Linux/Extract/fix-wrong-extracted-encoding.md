@@ -5,6 +5,11 @@ tags: [Linux, extract, compress]
 category: app::linux::extract
 ---
 
+## 使用 7z 的 `-mcp` 指定编码 (推荐)
+```sh
+# 936 是 GBK
+7z x -mcp=936 /path/to/compressed.zip -o/path/to/extracted
+```
 
 ## 使用 `convmv` 修复解压出来的文件夹乱码
 1. 安装
