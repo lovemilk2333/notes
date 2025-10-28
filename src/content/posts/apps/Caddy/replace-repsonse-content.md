@@ -1,5 +1,5 @@
 ---
-title: 替换响应内容
+title: Caddy | 替换响应内容
 published: 2025-09-10
 tags: [Caddy, ReversedProxy]
 category: app::caddy
