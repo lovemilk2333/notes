@@ -5,10 +5,14 @@ tags: [Linux, extract, compress]
 category: app::linux::extract
 ---
 
-## 使用 7z 的 `-mcp` 指定编码 (推荐)
+## 使用 unzip 的 `-I` / `-O` 指定编码 (推荐)
 ```sh
-# 936 是 GBK
-7z x -mcp=936 /path/to/compressed.zip -o/path/to/extracted
+# -O CHARSET  specify a character encoding for DOS, Windows and OS/2 archives
+# -I CHARSET  specify a character encoding for UNIX and other archives
+
+# CP936 is GBK or GB18030
+
+unzip -O CP936 /path/to/compressed.zip -d /path/to/extracted
 ```
 
 ## 使用 `convmv` 修复解压出来的文件夹乱码
