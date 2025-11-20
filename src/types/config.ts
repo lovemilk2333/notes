@@ -64,6 +64,7 @@ export type ProfileConfig = {
 	avatar?: string;
 	name: string;
 	bio?: string;
+	copyrightStartYear?: number;
 	links: {
 		name: string;
 		url: string;
@@ -100,3 +101,9 @@ export type BlogPostData = {
 export type ExpressiveCodeConfig = {
 	theme: string;
 };
+
+export type CustomConfigs = {
+	chinesePassageComment: {
+		totalScore: number;
+	}
+}

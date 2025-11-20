@@ -1,4 +1,5 @@
 import type {
+	CustomConfigs,
 	ExpressiveCodeConfig,
 	LicenseConfig,
 	NavBarConfig,
@@ -78,6 +79,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "/favicon/lovemilk2333-460.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "lovemilk (lovemilk233, lovemilk2333)",
+	copyrightStartYear: 2025,
 	bio: ">_",
 	links: [
 		// {
@@ -111,3 +113,9 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	// Please select a dark theme, as this blog theme currently only supports dark background color
 	theme: "github-dark",
 };
+
+export const customConfigs: CustomConfigs = {
+	chinesePassageComment: {
+		totalScore: 100
+	}
+}
