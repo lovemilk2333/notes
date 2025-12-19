@@ -1,10 +1,10 @@
 <template>
-    <div v-if="score !== null && $slots.default"
+    <div v-if="!!$slots.default"
         class="x-chinese-passage-comment-root x-chinese-passage-comment-text-wrap">
         <h2>
             {{ source }}{{ i18n(I18nKey.xPassageComment) }}
         </h2>
-        <em v-if="score >= 0">
+        <em v-if="!!score && score >= 0">
             <span class="x-chinese-passage-comment-text-red x-chinese-passage-comment-score">{{ score }}</span>
             <span class="x-chinese-passage-comment-total-score">/{{ totalScore ?? config.totalScore }}</span>
         </em>
@@ -28,7 +28,7 @@ const { chinesePassageComment: config } = customConfigs;
 const isDev = import.meta.env.DEV
 
 const props = defineProps({
-    score: { type: Number, required: true, default: null },
+    score: { type: Number, default: null },
     source: { type: String, default: null },
     totalScore: { type: Number, default: null },
 })
