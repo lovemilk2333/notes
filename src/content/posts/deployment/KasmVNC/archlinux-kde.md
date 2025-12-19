@@ -110,10 +110,10 @@ exec dbus-run-session bash -c launch_session
 ## 尝试运行
 运行如下命令后, 会在上方配置的 `network.websocket_port` 端口启动位于 X11 的 DISPLAY 0 的 WebVNC
 ```sh
-vncserver :0
+kasmvncserver :0
 ```
 
-如果该命令较长时间未能成功, 或显示 `Failed to get public IP, please specify it with -publicIP` 字样, 请修改配置文件的 `network.udp.public_ip` 字段, 或在启动 `vncserver` 时使用 `-publicIP <public-ipaddr>` 指定 公网 IP 地址 (没有者尝试填写内网地址)
+如果该命令较长时间未能成功, 或显示 `Failed to get public IP, please specify it with -publicIP` 字样, 请修改配置文件的 `network.udp.public_ip` 字段, 或在启动 `kasmvncserver` 时使用 `-publicIP <public-ipaddr>` 指定 公网 IP 地址 (没有者尝试填写内网地址)
 
 经测试: 位于反向代理后的 KasmVNC 将 `network.udp.public_ip` 字段配置为内网地址是通过反向代理访问的
 
@@ -138,8 +138,7 @@ Type=simple
 
 Environment="XDG_SESSION_TYPE=x11"
 Environment="XDG_CURRENT_DESKTOP=KDE"
-# `-fg` to run at foreground
-ExecStart=/usr/bin/bash -c "/usr/bin/vncserver :0 -fg"
+ExecStart=/usr/bin/bash -c "/usr/bin/kasmvncserver :0 -fg"
 
 Restart=on-failure
 RestartSec=5

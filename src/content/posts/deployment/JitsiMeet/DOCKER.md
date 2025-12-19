@@ -5,7 +5,7 @@ tags: [Docker, k8s, container, JitsiMeet]
 category: deployment::JitsiMeet
 ---
 
-最近在和同事(学)一起做项目, 需要在内地可以快速访问的在线会议, 故搭建了 JitsiMeet
+最近在和同事(学)一起做项目, 需要在中国大陆可以快速访问的在线会议, 故搭建了 JitsiMeet
 
 ## 部署
 > <https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-docker>
