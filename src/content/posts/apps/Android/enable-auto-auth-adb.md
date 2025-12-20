@@ -8,7 +8,7 @@ category: app::android
 > <https://stackoverflow.com/questions/44817341/always-allow-adb-on-android>
 
 ## 背景
-我的 Redmi K40 屏幕损坏了, 导致只能使用 Srccpy 连接, 但是由于长时间不用导致 ADB 授权失效了
+我的 Redmi K40 屏幕损坏了, 导致只能使用 Scrcpy 连接, 但是由于长时间不用导致 ADB 授权失效了
 
 ## 先决条件
 1. 设备已解锁 Bootloader
