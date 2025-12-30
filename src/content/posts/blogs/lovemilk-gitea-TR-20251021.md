@@ -1,6 +1,6 @@
 ---
 title: Lovemilk Gitea 发生重大数据安全事故通报
-published: 2025-10-21
+published: 2025-12-30
 tags: [notice, Lovemilk, LovemilkGitea]
 category: blog
 ---
@@ -55,6 +55,16 @@ Gitea 服务恢复, 但仓库 `lovemilk-race/vue-zz039-0926-timesmode` 显示 40
 
 ## 原因分析
 貌似因为机械硬盘敲盘, 造成 PostgresQL 数据库的某块文件发生损坏
+
+### 20251230 (UTC+8) 补
+2025年12月26日 UTC+8, 本人尝试彻底解决该硬盘问题.
+
+半小时后, 本人最终确认硬盘并非因自身原因, 而是 SATA 数据连接线出现问题导致硬盘频繁断链或挂载无效, 故更换了 SATA 数据连接线
+
+两小时后, `smartctl` 的 long test 成功 (先前总会被未知原因 Abort 该测试), 测试显示硬盘无异常情况
+
+最终基本上确认了 "硬盘问题" (实质上并非为硬盘问题) 由 SATA 数据连接线导致
+
 
 ## 预防故障
 1. 未来资金充裕时, 使用 RAID 阵列作为数据库存储位置进行透明备份
