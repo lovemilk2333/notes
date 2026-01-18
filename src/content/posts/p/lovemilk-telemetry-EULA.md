@@ -1,7 +1,7 @@
 ---
 title: ""
 published: 2025-09-10
-category: _internal
+category: internal
 ---
 
 # Lovemilk Telemetry 终端用户协议 & 隐私政策

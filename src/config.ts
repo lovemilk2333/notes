@@ -80,6 +80,7 @@ export const profileConfig: ProfileConfig = {
 	avatar: "/favicon/lovemilk2333-460.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "lovemilk (lovemilk233, lovemilk2333)",
 	copyrightStartYear: 2025,
+	// copyrightLink: 'https://aka.lovemilk.top/68',
 	bio: ">_",
 	links: [
 		// {
@@ -117,5 +118,8 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 export const customConfigs: CustomConfigs = {
 	chinesePassageComment: {
 		totalScore: 100
-	}
+	},
+	ignoreCategories: [
+		'internal'
+	]
 }

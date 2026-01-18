@@ -1,8 +1,7 @@
 ---
-title: ""
-published: 2025-09-10
-category: _internal
-description: ""
+title: "test"
+published: 2029-09-10
+category: internal
 ---
 
 # 你好呀学弟学妹
@@ -12,5 +11,5 @@ description: ""
 
 可能这些内容我会时不时更新, 所以无聊可以常来康康捏.
 
-[网站主页在这里哦](/), 随便逛逛吧. 其实主要记录的还是编程的[笔记之类](/programming/)的, 还有我写的[作文](/passages/).
+[网站主页在这里哦](/), 随便逛逛吧. 其实主要记录的还是编程的[笔记之类](/posts/blogs/remake-notice/#迁移制约)的, 还有我写的[作文](/archive/?tag=passage).
 N

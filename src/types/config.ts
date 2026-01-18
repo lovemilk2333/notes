@@ -5,16 +5,16 @@ export type SiteConfig = {
 	subtitle: string;
 
 	lang:
-		| "en"
-		| "zh_CN"
-		| "zh_TW"
-		| "ja"
-		| "ko"
-		| "es"
-		| "th"
-		| "vi"
-		| "tr"
-		| "id";
+	| "en"
+	| "zh_CN"
+	| "zh_TW"
+	| "ja"
+	| "ko"
+	| "es"
+	| "th"
+	| "vi"
+	| "tr"
+	| "id";
 
 	themeColor: {
 		hue: number;
@@ -65,6 +65,7 @@ export type ProfileConfig = {
 	name: string;
 	bio?: string;
 	copyrightStartYear?: number;
+	copyrightLink?: string;
 	links: {
 		name: string;
 		url: string;
@@ -102,8 +103,10 @@ export type ExpressiveCodeConfig = {
 	theme: string;
 };
 
+export type ignoreCategoryCallback = (category: string) => boolean;
 export type CustomConfigs = {
 	chinesePassageComment: {
 		totalScore: number;
 	}
+	ignoreCategories?: (string | ignoreCategoryCallback)[];
 }

@@ -30,7 +30,6 @@ const style = Astro.props.style;
 >
     {
         categories
-            .filter((c) => !c.name.trim().startsWith("_"))
             .map((c) => (
                 <ButtonLink
                     url={c.url}
