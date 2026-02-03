@@ -15,6 +15,11 @@ category: app::linux::extract
 unzip -O CP936 /path/to/compressed.zip -d /path/to/extracted
 ```
 
+如果您的 unzip 不支持 `-I` / `-O` 参数指定编码, 可以使用更为强大的 unar 工具
+```sh
+unar -e GBK /path/to/compressed.zip -o /path/to/extracted
+```
+
 ## 使用 `convmv` 修复解压出来的文件夹乱码
 1. 安装
 ```sh
