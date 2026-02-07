@@ -1,6 +1,6 @@
 ---
 title: Lovemilk 关于 “lovemilkArch Btrfs (根目录) 出现不可恢复错误” 情况记录
-published: 2026-02-01
+published: 2026-02-07
 tags: [notice, Lovemilk, Linux]
 category: blog
 ---
@@ -83,6 +83,18 @@ checksum verify failed on xxx wanted 0xxxx found 0xxxx
 
 目前来说, 我还未擦除硬盘该分区的数据, 如果有能力者可以尝试在 [Github Discussions](https://aka.lovemilk.top/github/notes/discussions) 发出你的解决方法, 至少可以给我一线生机吧...
 
+## 最终结果 / After Story
+**2026 年 02 月 07 日上午 8 时 30 分许**, 本人决定擦除硬盘数据并售后, 更换新的硬盘
+
+为我的没有备份的数据默哀 3 秒钟...
+> ~~话说应该是默哀 3 ns 才对, at least for the CPU~~
+
+本人已经在学习如何使用 Kopia[^kopia] 对文件进行快照记录以免被意外覆盖, 并加大 Syncthing[^syncthing] 备份范围与力度, 减少不必要的数据损失
+
 [^ssdinfo]: 长江存储官网: https://www.ymtc.com / 致态 TiPlus5000: https://baike.baidu.com/item/致态TiPlus5000/61815836
 
-[^why-device-changed]: 在下文中, 设备可能变为了 `nvme0n1p4`, 这是重新拆装硬盘并启动到 ISO 镜像环境导致的, 实际上指同一块分区, 并且有且仅有该硬盘的分区达到了 `p4`, 其余至多 `2`
+[^why-device-changed]: 在下文中, 设备可能变为了 `nvme0n1p4`, 这是重新拆装硬盘并启动到 ISO 镜像环境导致的, 实际上指同一块分区. 并且有且仅有该硬盘的分区达到了 `p4`, 其余至多 `2`, 这也作证了为同一块物理磁盘
+
+[^kopia]: https://kopia.io/ Fast and Secure Open-Source Backup Software
+
+[^syncthing]: https://syncthing.net/ Syncthing is a continuous file synchronization program

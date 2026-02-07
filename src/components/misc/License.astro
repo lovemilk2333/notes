@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import { licenseConfig, profileConfig } from "../../config";
+import { licenseConfig, profileConfig, siteConfig } from "../../config";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
@@ -23,17 +23,39 @@ if (!copyright || !Object.keys(copyright).length) {
     licenseConf = typeof copyright === "string" ? { name: copyright } : copyright;
 }
 const licenseHasURL = !!licenseConf.url;
-const licenseMaybeCC = licenseConf.name.toLocaleLowerCase().includes('cc-')
-const postUrl = decodeURIComponent(Astro.url.toString());
+const licenseMaybeCC = licenseConf.name.toLocaleLowerCase().includes("cc-");
+// const postUrl = decodeURIComponent(Astro.url.toString());
+// LOVEMILK: change link to permalink
+const url = Astro.url;
+if (!!siteConfig.permalink) {
+    const base = siteConfig.permalink.base;
+
+    const placeholder = siteConfig.permalink.placeholder;
+    if (!!placeholder && !!placeholder.length) {
+        url.href = base.href.replace(placeholder, url.pathname + url.search);
+    } else {
+        url.protocol = base.protocol;
+        url.host = base.host;
+        url.port = base.port
+        url.pathname = base.pathname + url.pathname;
+        base.searchParams.forEach((val, key) => {
+            url.searchParams.set(key, val);
+        });
+    }
+}
+const postUrl = decodeURIComponent(url.href);
 ---
 
 <div class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
     <div class="transition font-bold text-black/75 dark:text-white/75">
         {title}
     </div>
-    <a href={postUrl} class="link text-[var(--primary)]">
-        {postUrl}
-    </a>
+    <div class="transition text-black/30 dark:text-white/30 text-sm">
+        {i18n(I18nKey.xPermalink)}
+        <a href={postUrl} class="link text-[var(--primary)]">
+            {postUrl}
+        </a>
+    </div>
     <div class="flex gap-6 mt-2">
         <div>
             <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
@@ -56,8 +78,14 @@ const postUrl = decodeURIComponent(Astro.url.toString());
             }
         </div>
     </div>
-    {licenseMaybeCC ? <Icon
-        name="fa6-brands:creative-commons"
-        class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"
-    /> : void 0}
+    {
+        licenseMaybeCC ? (
+            <Icon
+                name="fa6-brands:creative-commons"
+                class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"
+            />
+        ) : (
+            void 0
+        )
+    }
 </div>

@@ -36,5 +36,6 @@ export const en: Translation = {
 	[Key.publishedAt]: "Published at",
 	[Key.license]: "License",
 
-	[Key.xPassageComment]: "Passage Comment"
+	[Key.xPassageComment]: "Passage Comment",
+	[Key.xPermalink]: "Permalink"
 };

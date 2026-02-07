@@ -36,5 +36,6 @@ export const zh_CN: Translation = {
 	[Key.publishedAt]: "发布于",
 	[Key.license]: "许可协议",
 
-	[Key.xPassageComment]: "文章评价"
+	[Key.xPassageComment]: "文章评价",
+	[Key.xPermalink]: "永久链接"
 };

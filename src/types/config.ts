@@ -36,6 +36,19 @@ export type SiteConfig = {
 	};
 
 	favicon: Favicon[];
+
+	/**
+	 * LOVEMILK: 
+	 * By default, replace base's `host`, `port` and `protocol`, append pathname with search at the end of base's pathname
+	 * 
+	 * if `placeholder` provides, use `base.href.replace(placeholder, pathname with search)` instead
+	 * 
+	 * `pathname` starts with `/`
+	 */
+	permalink?: {
+		base: URL,
+		placeholder?: string | null
+	}
 };
 
 export type Favicon = {

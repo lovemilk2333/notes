@@ -56,7 +56,10 @@ export const siteConfig: SiteConfig = {
 			src: '/favicon/lovemilk2333.png',
 			sizes: '320x320'
 		}
-	]
+	],
+	permalink: {
+		base: new URL("https://aka.lovemilk.top/notes")
+	}
 };
 
 export const navBarConfig: NavBarConfig = {

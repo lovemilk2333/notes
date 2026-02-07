@@ -33,7 +33,8 @@ enum I18nKey {
 	publishedAt = "publishedAt",
 	license = "license",
 
-	xPassageComment = 'xPassageComment'
+	xPassageComment = 'xPassageComment',
+	xPermalink = 'xPermalink'
 }
 
 export default I18nKey;
