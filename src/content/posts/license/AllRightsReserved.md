@@ -2,6 +2,7 @@
 title: License - All Rights Reserved
 published: 2025-09-10
 category: static
+permalink: { base: https://aka.lovemilk.top/68, placeholder: false }
 ---
 
 All Rights Reserved

@@ -2,6 +2,7 @@
 title: License - 爱喝牛奶著作转载协议
 published: 2026-01-18
 category: static
+permalink: { base: https://aka.lovemilk.top/67, placeholder: false }
 ---
 
 # 爱喝牛奶著作转载协议

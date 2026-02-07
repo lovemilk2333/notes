@@ -1,5 +1,6 @@
 import { defineCollection, z } from "astro:content";
 
+// LOVEMILK: Add fields for post metadata at here
 const postsCollection = defineCollection({
 	schema: z.object({
 		title: z.string(),
@@ -19,6 +20,13 @@ const postsCollection = defineCollection({
 				url: z.string(),
 			})
 		]).optional(),
+		permalink: z.object({
+			base: z.string().url(),
+			placeholder: z.union([
+				z.string(),
+				z.literal(false)
+			]).nullable().optional()
+		}).optional(),
 
 		/* For internal use */
 		prevTitle: z.string().default(""),

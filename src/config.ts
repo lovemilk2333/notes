@@ -58,7 +58,7 @@ export const siteConfig: SiteConfig = {
 		}
 	],
 	permalink: {
-		base: new URL("https://aka.lovemilk.top/notes")
+		base: "https://aka.lovemilk.top/notes"
 	}
 };
 

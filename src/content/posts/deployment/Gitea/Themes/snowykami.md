@@ -3,6 +3,7 @@ title: "部署 Gitea 主题: `snowykami` 和 `liteyuki-magipoke`"
 published: 2025-09-10
 tags: [Gitea, Git, Themes, UI, GUI]
 category: deployment::gitea::themes
+permalink: { base: https://aka.lovemilk.top/t/giteatheme/snowykam, placeholder: false }
 ---
 
 > 主题项目仓库地址: <https://github.com/snowykami/gitea-themes>

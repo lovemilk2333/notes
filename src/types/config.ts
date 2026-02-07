@@ -42,12 +42,13 @@ export type SiteConfig = {
 	 * By default, replace base's `host`, `port` and `protocol`, append pathname with search at the end of base's pathname
 	 * 
 	 * if `placeholder` provides, use `base.href.replace(placeholder, pathname with search)` instead
+	 * if `placeholder` is false, use `base.href` instead
 	 * 
 	 * `pathname` starts with `/`
 	 */
 	permalink?: {
-		base: URL,
-		placeholder?: string | null
+		base: string | URL,
+		placeholder?: string | null | false
 	}
 };
 
