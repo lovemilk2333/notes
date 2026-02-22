@@ -59,7 +59,7 @@ echo "Downloading Installer..."
 
 set -- "XDG_CONFIG_HOME=$XDG_CONFIG_HOME"
 
-# 下载安装期至临时路径
+# 下载安装器至临时路径
 curl -sS https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-Linux \
   --output "$outfile" \
   --location \

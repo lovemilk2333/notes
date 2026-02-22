@@ -18,8 +18,10 @@ category: app::caddy
     // 全局配置
     servers {
 		listener_wrappers {
-			http_redirect  // 自动重定向的 wrapper
-			tls  // 保留以保证 TLS 正常
+			// 自动重定向的 wrapper
+			http_redirect
+			// 保留 TLS 层
+			tls
 		}
 	}
 }

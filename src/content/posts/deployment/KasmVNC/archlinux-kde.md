@@ -120,7 +120,7 @@ kasmvncserver :0
 ## 使用 systemd 开机自启动服务
 1. 以免用户服务在 SSH 终止后退出
 ```sh
-loginctl enable-linger lovemilk
+loginctl enable-linger <username>
 ```
 
 2. 写入如下位置文件 (文件(夹)不存在就创建)
