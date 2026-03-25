@@ -413,7 +413,7 @@ exec ~/.xinitrc
 chmod +x ~/.vnc/xstartup
 ```
 
-### 1.8 配置 KasmVNC 为 Systemd Unit
+### 1.3 配置 KasmVNC 为 Systemd Unit
 
 ```path
 ~/.config/systemd/user/kasmvnc.service
