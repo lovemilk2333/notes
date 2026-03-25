@@ -5,7 +5,7 @@ import type { APIContext } from "astro";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
 import { siteConfig } from "@/config";
-import { getCopyright, getPermalink } from "@utils/date-utils";
+import { getCopyright, getPermalink, removeSlash } from "@utils/date-utils";
 
 const parser = new MarkdownIt();
 
@@ -27,7 +27,7 @@ export async function GET(context: APIContext) {
 		site,
 		items: blog.map((post) => {
 			const link = url(`/posts/${post.slug}/`)
-			const fullURL = new URL(site + link)
+			const fullURL = new URL(removeSlash(site instanceof URL ? site.href : site, -1) + '/' + removeSlash(link, 0))
 			const copyright = getCopyright(post.data.copyright)
 
 			const content =

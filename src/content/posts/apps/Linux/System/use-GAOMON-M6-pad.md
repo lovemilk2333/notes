@@ -38,6 +38,19 @@ category: app::linux::system
 
 4. 重启系统
 
+> [!NOTE]
+> 在 Linux 6.13 左右, `del_timer_sync` 内核函数改为了 `timer_shutdown_sync`, 导致需要对如下文件进行如下修改
+> 
+> 打开如下文件
+> ```path
+> hid-uclogic-core.c
+> ```
+>
+> 在第 494 行左右 (或者搜索 `del_timer_sync`), 将 `del_timer_sync` 修改为 `timer_shutdown_sync`, 类似:
+> ```c
+> timer_shutdown_sync(&drvdata->inrange_timer);
+> ```
+
 
 ## 扩展
 一些推荐的软件

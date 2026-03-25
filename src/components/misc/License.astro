@@ -15,13 +15,30 @@ interface Props {
     permalink?: SiteConfig["permalink"];
 }
 
+const RE_SYMBOL_OR_PUNCT = /[\p{P}\p{S}]/u;
+const RE_EMOJI_PRESENTATION = /\p{Emoji_Presentation}/u;
+const RE_EXTENDED_PICTOGRAPHIC = /\p{Extended_Pictographic}/u;
+
+const isPureSymbol = (char: string) => {
+  const isSymbolOrPunct = RE_SYMBOL_OR_PUNCT.test(char);
+
+  // emoji
+  const isEmoji = RE_EMOJI_PRESENTATION.test(char);
+  
+  // special emoji
+  const isExtendedEmoji = RE_EXTENDED_PICTOGRAPHIC.test(char);
+
+  return isSymbolOrPunct && !isEmoji && !isExtendedEmoji;
+};
+
 const { title, published, copyright, permalink } = Astro.props;
 const className = Astro.props.class;
 const profileConf = profileConfig;
 
 const licenseConf = getCopyright(copyright)
 const licenseHasURL = !!licenseConf.url;
-const licenseMaybeCC = licenseConf.name.toLocaleLowerCase().includes("cc-");
+const licenseNameNormalized = licenseConf.name.toLocaleLowerCase().trim()
+const licenseMaybeCC = licenseNameNormalized.startsWith('cc') && isPureSymbol(licenseNameNormalized[2]);
 // const postUrl = decodeURIComponent(Astro.url.toString());
 // LOVEMILK: change link to permalink
 const url = Astro.url;

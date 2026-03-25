@@ -81,13 +81,19 @@ checksum verify failed on xxx wanted 0xxxx found 0xxxx
 ## 结果
 最终, 似乎还是未能恢复数据, 好在我的项目基本上是由备份的, 可惜我的 Minecraft 存档和 JetBrains 全家桶 的配置就永不得见日了
 
-目前来说, 我还未擦除硬盘该分区的数据, 如果有能力者可以尝试在 [Github Discussions](https://aka.lovemilk.top/github/notes/discussions) 发出你的解决方法, 至少可以给我一线生机吧...
+~~目前来说, 我还未擦除硬盘该分区的数据, 如果有能力者可以尝试在 [Github Discussions](https://aka.lovemilk.top/github/notes/discussions) 发出你的解决方法, 至少可以给我一线生机吧...~~
 
 ## 最终结果 / After Story
 **2026 年 02 月 07 日上午 8 时 30 分许**, 本人决定擦除硬盘数据并售后, 更换新的硬盘
 
 为我的没有备份的数据默哀 3 秒钟...
 > ~~话说应该是默哀 3 ns 才对, at least for the CPU~~
+
+**2026 年 02 月 26 日**, 经致态售后检验, 达到售后标准, 进行换盘
+
+![reply](./btrfs-uncorrectable-error/reply.jpg)
+
+**同年 03 月 03 日**, 本人拿到了硬盘并准备进行安装系统操作 (实际上早就送到了只是没有时间处理)
 
 本人已经在学习如何使用 Kopia[^kopia] 对文件进行快照记录以免被意外覆盖, 并加大 Syncthing[^syncthing] 备份范围与力度, 减少不必要的数据损失
 

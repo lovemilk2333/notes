@@ -3,9 +3,10 @@ title: 修复 Linux 下默认字体出现异常
 published: 2025-09-10
 tags: [Linux, font]
 category: app::linux::system
+copyright: {name: CC BY 4.0, url: https://creativecommons.org/licenses/by/4.0/}
 ---
 
-> 转载自 [Linux 下配置默认 emoji 字体 | SourLemonJuice-blog](https://sourlemonjuice.github.io/SourLemonJuice-blog/posts/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/2024/02/03/linux%E4%B8%8B%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4emoji%E5%AD%97%E4%BD%93%E7%9A%84%E6%96%B9%E5%BC%8F) / [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+> 转载自 [Linux 下配置默认 emoji 字体 | SourLemonJuice-blog](https://sourlemonjuice.github.io/posts/简体中文/2024/02/03/linux下配置默认emoji字体的方式) / [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## 描述
 使用 KDE 桌面环境系统设置工具, 修改系统默认字体后, 部分软件无法生效

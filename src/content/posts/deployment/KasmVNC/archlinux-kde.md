@@ -5,6 +5,10 @@ tags: [Linux, UI, GUI, DE, KDE, KasmVNC, VNC, ReversedProxy]
 category: deployment::KasmVNC
 ---
 
+> [!IMPORTANT]
+> **本文内容可能已过时**  
+> 如果您正在寻找部署更为便捷与 **可传递声音** 的 WebUI 操控 KDE 桌面环境的方案, 或是不知选择何种解决方案, 我们推荐您参阅 [Selkies WebUI 操控方案 | 部署适用于 ArchLinux KDE 桌面环境的 Selkies 与 KasmVNC](/posts/deployment/selkies/archlinux-kde/)
+
 ## 安装基于 X11 的 KDE 桌面环境
 > <https://wiki.archlinux.org/title/KDE>  
 > <https://archlinux.org/news/plasma-640-will-need-manual-intervention-if-you-are-on-x11/>
@@ -58,7 +62,7 @@ network:
 sudo openssl req -x509 -nodes -days 90 -newkey rsa:4096 \
   -keyout /etc/ssl/private/ssl-cert-snakeoil.key \
   -out /etc/ssl/certs/ssl-cert-snakeoil.pem \
-  -subj "/C=CN/ST=Default/L=Default/O=KasmVNC/CN=${HOST:default-host}"
+  -subj "/C=CN/ST=Default/L=Default/O=KasmVNC/CN=${HOST:-default-host}"
 
 sudo chmod 644 /etc/ssl/certs/ssl-cert-snakeoil.pem
 sudo chmod 600 /etc/ssl/private/ssl-cert-snakeoil.key
@@ -115,7 +119,7 @@ kasmvncserver :0
 
 如果该命令较长时间未能成功, 或显示 `Failed to get public IP, please specify it with -publicIP` 字样, 请修改配置文件的 `network.udp.public_ip` 字段, 或在启动 `kasmvncserver` 时使用 `-publicIP <public-ipaddr>` 指定 公网 IP 地址 (没有者尝试填写内网地址)
 
-经测试: 位于反向代理后的 KasmVNC 将 `network.udp.public_ip` 字段配置为内网地址是通过反向代理访问的
+经测试: 位于反向代理后的 KasmVNC 将 `network.udp.public_ip` 字段配置为内网地址是可以通过反向代理正常访问的
 
 ## 使用 systemd 开机自启动服务
 1. 以免用户服务在 SSH 终止后退出

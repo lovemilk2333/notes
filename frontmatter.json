@@ -3,6 +3,7 @@
   "frontMatter.framework.id": "astro",
   "frontMatter.preview.host": "http://localhost:4321",
   "frontMatter.content.publicFolder": "public",
+  "frontMatter.content.autoUpdateDate": false,
   "frontMatter.content.pageFolders": [
     {
       "title": "posts",
@@ -60,6 +61,38 @@
           "title": "language",
           "name": "language",
           "type": "string"
+        },
+        {
+          "title": "permalink",
+          "name": "permalink",
+          "type": "customField",
+          "fields": [
+            {
+              "name": "base",
+              "type": "string"
+            },
+            {
+              "name": "placeholder",
+              "type": "string",
+              "optional": true
+            }
+          ]
+        },
+        {
+          "title": "copyright",
+          "name": "copyright",
+          "type": "customField",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "url",
+              "type": "string",
+              "optional": true
+            }
+          ]
         }
       ]
     }

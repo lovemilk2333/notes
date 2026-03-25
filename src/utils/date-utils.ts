@@ -16,6 +16,14 @@ export function getCopyright(copyrightMetadata?: string | { name: string; url: s
 	return licenseConf
 }
 
+export function removeSlash(str: string, targetIndex: number=0): string {
+	if (targetIndex < -str.length || targetIndex >= str.length) return str
+	if (targetIndex < 0) targetIndex = str.length + targetIndex
+
+	return str[targetIndex] === '/' ? str.slice(0, targetIndex) + str.slice(targetIndex + 1) : str
+}
+
+// LOVEMILK: Add get permalink
 export function getPermalink(url: URL, permalinkMetadata?: SiteConfig['permalink']) {
 	const permalinkConfig = permalinkMetadata || siteConfig.permalink;
 

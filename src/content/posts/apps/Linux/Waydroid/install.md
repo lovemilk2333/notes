@@ -20,7 +20,7 @@ sudo sed -i~ -E 's/=.\$\(command -v (nft|ip6?tables-legacy).*/=/g' \
 手动编辑 `/var/lib/waydroid/waydroid_base.prop`
 
 ## 使用 NVIDIA 显卡
-:::warning 警告
+:::warning
 修改后如果出现:
 ```log
 ❯ waydroid show-full-ui
