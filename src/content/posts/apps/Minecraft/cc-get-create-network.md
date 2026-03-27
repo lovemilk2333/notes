@@ -8,7 +8,8 @@ category: app::minecraft
 ## 前置模组
 1. [Create](https://modrinth.com/mod/create)
 2. [CC: Tweaked](https://modrinth.com/mod/cc-tweaked)
-3. [NBT Peripheral (CC Addition)](https://www.curseforge.com/minecraft/mc-mods/nbt-peripheral)
+3. (MC 1.16) [NBT Peripheral (CC Addition)](https://www.curseforge.com/minecraft/mc-mods/nbt-peripheral)
+4. (MC 1.20 or other version which have no the no.3 mod) [Advanced Peripherals](https://modrinth.com/mod/advancedperipherals)
 
 ## 步骤
 1. 将 MC 原版侦测器的侦测面紧贴连接到机械动力应力网路的任意方块
@@ -22,6 +23,9 @@ local nbt = observer.read_nbt()
 local createNetwork = nbt['Network']
 ```
 `createNetwork` 即为 机械动力应力网路的信息 (Table 类型)
+
+> [!WARNING]
+> Advanced Peripherals 用户请不要使用上述代码, 并参阅 [NBT Storage - Advanced Peripherals](https://docs.advanced-peripherals.de/latest/peripherals/nbt_storage/)
 
 4. 通过 `createNetwork` 变量获取具体信息即可, 如下为各 key 的意义:
 ```lua
