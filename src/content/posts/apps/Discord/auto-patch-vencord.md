@@ -52,6 +52,7 @@ set -e
 
 # 定义传递给 Vencord 安装器的参数, 以静默自动安装
 installer_args="-install -branch=auto"
+download_url="https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-Linux"
 
 if grep -q "CHROMEOS_RELEASE_NAME" /etc/lsb-release 2>/dev/null; then
 	echo "ChromeOS is not supported! Use the chrome extension. https://chromewebstore.google.com/detail/vencord-web/cbghhgpcnddeihccjmnadmkaejncjndb"
@@ -67,10 +68,23 @@ echo "Downloading Installer..."
 set -- "XDG_CONFIG_HOME=$XDG_CONFIG_HOME"
 
 # 下载安装器至临时路径
-curl -sS https://github.com/Vendicated/VencordInstaller/releases/latest/download/VencordInstallerCli-Linux \
-  --output "$outfile" \
-  --location \
-  --fail
+if command -v aria2c >/dev/null 2>&1; then
+  threads=${VENCORD_PATCH_DLTHREAD:-16}
+  echo "Using aria2 to download. You can set VENCORD_PATCH_DLTHREAD=<num> to change download threads."
+  aria2c -x "$threads" -s "$threads" --min-split-size=1M --allow-overwrite=true -o "$(basename "$outfile")" -d "$(dirname "$outfile")" "$download_url"
+  
+elif command -v wget >/dev/null 2>&1; then
+  echo "Using wget to download. Installing aria2 can speed up downloading."
+  wget -O "$outfile" "$download_url"
+  
+elif command -v curl >/dev/null 2>&1; then
+  echo "Using curl to download. wget supports auto-retry, and installing aria2 is recommended for faster speeds."
+  curl -sS "$download_url" --output "$outfile" --location --fail
+
+else
+  echo "Neither aria2, wget nor curl were found. Please install one of them to proceed."
+  exit 1
+fi
 
 chmod +x "$outfile"
 
