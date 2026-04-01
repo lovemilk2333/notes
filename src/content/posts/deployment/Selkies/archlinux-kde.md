@@ -498,9 +498,80 @@ WantedBy=default.target
 > 如果需要自动修改远程显示器大小, 请携带 `-r` 参数  
 > 参数配置请参阅 <https://kasmweb.com/kasmvnc/docs/1.3.4/man/kasmxproxy.html#options>
 
+### 2.3 配置剪切板同步
+由于我们使用 `kasmxproxy` 转发了 Display 的内容, 使得 KasmVNC 读取屏幕以及写入剪切板的目标并不是实际上 X11 Session 所在屏幕, 我们需要使用 `xclip` 工具并编写脚本轮询同步剪切板
+
+安装
+```sh
+yay -S xclip
+```
+
+```path
+~/.config/systemd/user/kasmvnc-clipboard.sh
+```
+写入
+```sh
+#!/bin/bash
+export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
+
+LAST_0=""
+LAST_99=""
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Clipboard Sync Service Started..."
+echo "Monitoring :0 (KDE) <-> :99 (KasmVNC)"
+
+while true; do
+    CUR_0=$(/usr/bin/xclip -display :0 -o -selection clipboard 2>/dev/null)
+    CUR_99=$(/usr/bin/xclip -display :99 -o -selection clipboard 2>/dev/null)
+
+    if [[ "$CUR_0" != "$LAST_0" && -n "$CUR_0" ]]; then
+        echo -n "$CUR_0" | /usr/bin/xclip -display :99 -i -selection clipboard
+        LAST_0="$CUR_0"
+        LAST_99="$CUR_0"
+        echo "[$(date '+%H:%M:%S')] Sync: :0 -> :99"
+
+    elif [[ "$CUR_99" != "$LAST_99" && -n "$CUR_99" ]]; then
+        echo -n "$CUR_99" | /usr/bin/xclip -display :0 -i -selection clipboard
+        LAST_99="$CUR_99"
+        LAST_0="$CUR_99"
+        echo "[$(date '+%H:%M:%S')] Sync: :99 -> :0"
+    fi
+
+    sleep 0.25
+done
+```
+
+配置为 Systemd Unit
+```path
+~/.config/systemd/user/kasmvnc-clipboard.service
+```
+写入
+```ini
+[Unit]
+Description=KasmVNC Clipboard Sync
+After=headless-x11-kde.service kasmvnc.service
+Requires=headless-x11-kde.service kasmvnc.service
+
+[Service]
+ExecStart=/usr/bin/bash "%h/.config/systemd/user/kasmvnc-clipboard.sh"
+
+StandardOutput=journal
+StandardError=journal
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+```
 
 重载并启用服务
+```sh
+systemctl --user daemon-reload
+systemctl --user enable --now kasmvnc-clipboard.service
+```
 
+### 重载并启用服务
 ```sh
 systemctl --user daemon-reload
 systemctl --user enable --now kasmvnc.service
@@ -519,6 +590,10 @@ host:port {
   }
 }
 ```
+
+> [!NOTE]
+> 在实际访问页面时, 可能会在弹出 HTTP Basic Auth 时显示 "不安全" (没有 TLS 证书或 TLS 握手失败) 的提示, 这其实是因为浏览器弹窗阻塞了主窗口, 导致握手成功后一瞬间的小🔒图标 (代表 HTTPS 握手成功) 没有被正确显示  
+> 本人使用 Wireshark 抓包, 发现 Basic Auth 的讯息是使用 QUIC 发送的, 故不必担心隐私泄露问题
 
 [^what-is-Selkies]: https://selkies-project.github.io/selkies/design/#what-is-selkies-gstreamer
 
