@@ -12,6 +12,8 @@ const postsCollection = defineCollection({
 		tags: z.array(z.string()).optional().default([]),
 		category: z.string().optional().nullable().default(""),
 		lang: z.string().optional().default(""),
+		
+		// LOVEMILK: added
 		copyright: z.union([
 			z.string(),
 			// Exclude<LicenseConfig, 'enable'>
@@ -27,6 +29,7 @@ const postsCollection = defineCollection({
 				z.literal(false)
 			]).nullable().optional()
 		}).optional(),
+		// LOVEMILK: added end
 
 		/* For internal use */
 		prevTitle: z.string().default(""),

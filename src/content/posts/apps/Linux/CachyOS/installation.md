@@ -544,3 +544,33 @@ EOF
 
 sudo pacman -Syy
 ```
+
+### 鼠标 UDev DPI
+如果在 `~/.config/niri/config.kdl` 的 `mouse` 配置中将 `accel-speed` 改为 1.0 (Niri 允许的最大值) 仍然过慢, 可以尝试使用 UDev 规则修改光标 DPI 倍率
+
+1. 查找鼠标设备
+```sh
+lsusb
+```
+找到如下字样
+```log
+Bus xx Device xxx: ID aaaa:bbbb xxx Mouse
+```
+
+2. 配置 UDev 规则
+新建如下文件
+```path
+/etc/udev/rules.d/71-mouse-speed.rules
+```
+并配置 UDev 规则
+> `ID_VENDOR_ID` 为 `:` 前的 生产商 ID (全小写 16 进制), `ID_MODEL_ID` 为 `:` 后的 型号 ID (全小写 16 进制)  
+> `LIBINPUT_ATTR_RESOLUTION_HINT` 为加(减)速倍率, `100` 为 1.0 倍
+```udev
+ENV{ID_VENDOR_ID}=="aaaa", ENV{ID_MODEL_ID}=="bbbb", ENV{LIBINPUT_ATTR_RESOLUTION_HINT}="2000"
+```
+
+3. 重载并应用 UDev 规则
+```sh
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
