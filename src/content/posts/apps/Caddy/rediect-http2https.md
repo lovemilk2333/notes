@@ -15,12 +15,12 @@ category: app::caddy
 
 ```Caddyfile
 {
-    // 全局配置
+    # 全局配置
     servers {
 		listener_wrappers {
-			// 自动重定向的 wrapper
+			# 自动重定向的 wrapper
 			http_redirect
-			// 保留 TLS 层
+			# 保留 TLS 层
 			tls
 		}
 	}
