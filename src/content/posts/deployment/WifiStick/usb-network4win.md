@@ -7,11 +7,12 @@ category: deployment::WifiStick
 
 本文主要介绍如何在随身 WIFI 棒子上配置 USB 网络共享 (RNDIS), 以便 Windows 可以自动识别
 
-由于我所使用的 [OpenStick](https://www.kancloud.cn/handsomehacker/openstick) 项目默认已经配置了适用于 *nix 的 USB 网络共享脚本, 需要直接修改该脚本, 否则 USB 接口会被占用导致无法修改
+由于我所使用的 [OpenStick](https://www.kancloud.cn/handsomehacker/openstick) 项目默认已经配置了适用于 *nux 的 USB 网络共享脚本, 需要直接修改该脚本, 否则 USB 接口会被占用导致无法修改
 
 ## 配置 RNDIS
 
 1. 修改如下脚本
+
 > 该脚本由 Systemd Unit `mobian-usb-gadget.service` 自动调起
 ```path
 /usr/sbin/mobian-usb-gadget
@@ -27,6 +28,7 @@ echo 0x0104 > $CONFIGFS/idProduct
 ```
 
 2. 编辑如下 NetworkManager 配置脚本
+
 > 该脚本由 Systemd Unit `mobian-setup-usb-network.service` 自动调起
 ```sh
 /usr/sbin/mobian-setup-usb-network
@@ -62,7 +64,8 @@ sudo mv /etc/NetworkManager/system-connections/USB.nmconnection /etc/NetworkMana
 > unmanaged-devices=interface-name:usb0
 > ```
 
-4. 链接 Windows 设备
+4. a 连接 Windows 设备
+
 此时将 Wifi Stick 插入 Windows 设备的 USB 接口, 应该可以在 Windows 侧看到一个驱动未安装 (代码: 28) 的 RNDIS 设备 (位于 *其他设备* 类别)
 
 双击该设备, 单击 "更新驱动程序" > "浏览我的电脑以查找驱动程序" > "让我从计算机的可用驱动程序列表中选取" > 在 "常见硬件类型" 内选择 "网络适配器" > 厂商选择 "Microsoft", 型号选择最下面的 "远程 NDIS 兼容设备" > "下一页" > "是" (强制安装驱动程序)
@@ -75,9 +78,46 @@ sudo mv /etc/NetworkManager/system-connections/USB.nmconnection /etc/NetworkMana
 
 如此, 便配置成功了. 您可以使用 `10.22.33.1:<port>` 访问任意部署于 Wifi Stick 的服务了
 
-> [!TIP]
-> 如果要连接 *nix 设备, 可能需要手动建立连接并设置 IP 地址
+4. b 连接 *nux 设备
 
+对于 Linux 和 macOS 等 *nux 操作系统, 请将 Wifi Stick 插入 USB 接口, 后列出网卡及其 IP 地址
+> 如下命令可能仅适用于现代 Linux 操作系统, macOS 请自行查找解决方法 ~~其实是我没钱买 mac~~
+
+```sh
+ip a
+```
+
+应该可以看到类似如下的设备
+```log
+6: enp0s20f0u8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 22:39:e2:ef:40:d0 brd ff:ff:ff:ff:ff:ff
+    altname enx2239e2ef40d0
+```
+
+> 下文的 `enp0s20f0u8` 均指代网卡名称
+
+接着, 启用该接口
+```sh
+sudo ip link set enp0s20f0u8 up
+```
+
+然后, 激活连接: 对于 NetworkManger 用户, 可以运行类似
+```sh
+nmcli device connect enp0s20f0u8
+```
+
+最后, 再次使用列出网卡及其 IP 地址的命令, 应该已经可以获取到 IP (你设置的 `10.22.33.0/24`) 地址了
+```sh
+> ip a
+
+6: enp0s20f0u8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1400 qdisc fq_codel state UNKNOWN group default qlen 1000
+    link/ether 22:39:e2:ef:40:d0 brd ff:ff:ff:ff:ff:ff
+    altname enx2239e2ef40d0
+    inet 10.22.33.91/24 brd 10.22.33.255 scope global dynamic noprefixroute enp0s20f0u8
+       valid_lft 3538sec preferred_lft 3538sec
+    inet6 fe80::c29d:e98d:c3cc:6067/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+```
 
 ## [可选] 配置 Dnsmasq
 为了避免需要记忆 Wifi Stick IP, 可以修改 Dnsmasq 的配置进行 Hosts, 从而使用例如 `stick.local` 访问 Wifi Stick 的服务
