@@ -1,6 +1,6 @@
 ---
 title: 管好你的数据捏~ | ArchLinux 文件备份全套配置
-published: 2025-04-13
+published: 2026-04-13
 tags: [Linux, filesystem, fs:cryptfs]
 category: app::linux::system
 ---
