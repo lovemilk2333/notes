@@ -25,6 +25,8 @@ sudo useradd -u 9999 -g 9999 -m -s /bin/bash backup
 ```
 
 ### 配置 `backup` 用户的 Syncthing
+> 本方法不适用 Syncthing 同步数据用途, 因为新的文件会被创建为 `backup:backup`, 导致权限配置失败
+
 1. 如果已经在当前用户配置过 Syncthing, 可以进行如下迁移
 
 ```sh
@@ -237,4 +239,19 @@ git commit -m "Auto-sync: $(date '+%Y-%m-%d %H:%M:%S %z')"
 git push origin $(git rev-parse --abbrev-ref HEAD)
 
 echo "[$(date)] Sync completed for $PROJECT_DIR"
+```
+
+## See Also
+
+### 删除 Syncthing 历史记录文件
+
+1. 列出要删除的文件(夹), 确保没有重要数据被删除
+> `.stversions` 是 Syncthing "文件版本控制" 所指定的 "历史版本路径", 请与 Syncthing 配置相匹配
+```sh
+find /path/to/backup \( -name ".stversions" -type d \) -o \( -name ".sync-conflict-*" -type f \)
+```
+
+2. 删除文件
+```sh
+find /path/to/backup \( -name ".stversions" -type d -o -name ".sync-conflict-*" -type f \) -exec rm -rf {} +
 ```
