@@ -96,15 +96,15 @@ ip a
 
 > 下文的 `enp0s20f0u8` 均指代网卡名称
 
-接着, 启用该接口
-```sh
-sudo ip link set enp0s20f0u8 up
-```
-
-然后, 激活连接: 对于 NetworkManger 用户, 可以运行类似
+激活连接: 对于 NetworkManger 用户, 可以运行类似
 ```sh
 nmcli device connect enp0s20f0u8
 ```
+> 上述命令会将当前的激活网卡切换为该网卡, 导致当前以太网连接中断  
+> 要同时连接两(多)个以太网卡, 请使用
+> ```sh
+> nmcli connection add type ethernet con-name wifi-stick ifname enp0s20f0u8 ipv4.route-metric 200 && nmcli connection up wifi-stick
+> ```
 
 最后, 再次使用列出网卡及其 IP 地址的命令, 应该已经可以获取到 IP (你设置的 `10.22.33.0/24`) 地址了
 ```sh
@@ -172,6 +172,41 @@ no-resolv
 **上述命令须在重启 NetworkManager 后生效**
 ```sh
 sudo systemctl restart NetworkManager
+```
+
+## 故障排除
+### Wifi Stick 连接 WIFI 后速率过慢
+由于 Wifi Stick 仅支持 2.4 Ghz 的 WIFI, 且功率不大, 请尝试关闭周围的蓝牙设备
+
+### Emmc 写入过慢
+尝试查看当前闪存调度器
+```sh
+cat /sys/block/mmcblk0/queue/scheduler
+```
+```log
+[mq-deadline] kyber none
+```
+
+可以尝试切换到 `kyber`, 这或许可以小幅提升性能
+```sh
+echo none > /sys/block/mmcblk0/queue/scheduler
+```
+
+使用 dd 测试
+```sh
+dd if=/dev/zero of=./testfile bs=1M count=100 conv=fdatasync
+```
+
+在使用 `mq-deadline` 时, 写入速度为 `7.9 MB/s`, `none` 为 `8.5 MB/s`, `kyber` 为 `8.2 MB/s`
+
+如果要永久应用一个调度器, 请写入 UDev 规则
+```path
+/etc/udev/rules.d/60-mmc-scheduler.rules
+```
+写入
+```ini
+# ACTION=="add|change", KERNEL=="mmcblk0", ATTR{queue/scheduler}="<调度器>"
+ACTION=="add|change", KERNEL=="mmcblk0", ATTR{queue/scheduler}="kyber"
 ```
 
 ## 网速测试

@@ -58,10 +58,10 @@ sudo chmod 0700 -R /path/to/backuponly
 sudo chmod g+s /path/to/backuponly
 ```
 
-> 如果你要备份的文件在你的 HOME 目录, 请注意给 HOME 文件夹 backup 组的权限
+> 如果你要备份的文件在你的 HOME 目录, 请注意使用 ACL 控制权限, 否则可能导致权限与 SSH 等安全性要求高的程序无法使用
 > ```sh
-> sudo chown :backup ~
-> sudo chmod 0770 ~
+> sudo setfacl -m u:backup:x ~
+> sudo setfacl -R -m u:backup:rX ~/path/to/backuponly
 > ```
 
 ### 配置 lsyncd
@@ -122,6 +122,8 @@ sync {
 -- ...
 ```
 
+> 要在 Rsync 中不区分大小写地匹配路径, 请手动使用诸如 `*.[Mm][Pp]4` 规则
+
 要在前台测试配置文件, 请使用
 ```sh
 sudo lsyncd -nodaemon /home/backup/.config/lsyncd/lsyncd.conf.lua
@@ -165,22 +167,26 @@ alias enter-backup-user="sudo -E machinectl shell backup@.host"
 
 要打开 `backup` 仅用户可访问的路径, 请添加如下函数
 ```sh
+local BACKUP_DEST_DIR="/tmp/.backup-export"
+
 getbackup() {
     local SRC_FILE="$1"
-    local DEST_DIR="/tmp/.backup-export"
 
     local TARGET_PATH=$(sudo -u backup zsh -c '
-        DEST="'"$DEST_DIR"'"
+        DEST="'"$BACKUP_DEST_DIR"'"
         SRC="'"$SRC_FILE"'"
         
         if [[ ! -f "$SRC" ]]; then exit 1; fi
-        
-        mkdir -p "$DEST" && chmod 777 "$DEST"
+
+        mkdir -p "$DEST" 1>&2
+        chmod 777 "$DEST" 1>&2
+
         FILENAME=$(basename "$SRC")
         TARGET="$DEST/$FILENAME"
         
-        cp -a "$SRC" "$TARGET" >/dev/null 2>&1
-        chmod 644 "$TARGET" >/dev/null 2>&1
+        cp -a "$SRC" "$TARGET" 1>&2
+        chmod 644 "$TARGET" 1>&2
+
         echo "$TARGET"
     ')
 
@@ -188,10 +194,18 @@ getbackup() {
         return 1
     fi
 
-    sudo chown $USER:$USER "$TARGET_PATH"
-    chmod 700 "$TARGET_PATH"
+    sudo chown $USER:$USER "$TARGET_PATH" 1>&2
+    chmod 700 "$TARGET_PATH" 1>&2
 
     echo "$TARGET_PATH"
+}
+
+clearbackup() {
+    if [[ -z "$BACKUP_DEST_DIR" || ! -d "$BACKUP_DEST_DIR" ]]; then
+        return 1
+    fi
+
+    rm -f -- "$BACKUP_DEST_DIR"/*
 }
 ```
 
@@ -255,3 +269,46 @@ find /path/to/backup \( -name ".stversions" -type d \) -o \( -name ".sync-confli
 ```sh
 find /path/to/backup \( -name ".stversions" -type d -o -name ".sync-conflict-*" -type f \) -exec rm -rf {} +
 ```
+
+### 使用 Rmlint 移除或链接相同文件
+1. 安装
+```sh
+yay -S rmlint
+```
+
+2. 在目标目录下运行 `rmlint`  
+
+其会在当前工作文件夹生成 `rmlint.json` 与 `rmlint.sh`
+
+3. 运行 `rmlint.sh`
+```sh
+./rmlint.sh
+```
+> 默认情况下是删除相同的文件副本, 可以使用:
+> - `-rl` 使用相对路径软链接
+> - `-H` 使用硬链接
+> - `-p` 在删除文件前再次校验 Hash, 
+> - `-c` 在支持 CoW 的文件系统上使用 CoW (reflink)
+> - `-d` (默认) 删除相同的文件副本
+
+4. 清理 Rmlint 缓存文件
+```sh
+rm rmlint.json
+```
+
+<!-- TODO -->
+<!-- ### 清理或合并 **相似** 的媒体文件 —— Czkawka
+1. 安装
+```sh
+# 或者使用 czkawka-gui
+sudo pacman -S czkawka-cli
+```
+
+2. 查找相似媒体文件  
+对于图片, 可以使用
+```sh
+czkawka_cli image --max-difference 10 -d /path/to/images
+```
+其中, `10` 为 *不相似度* 等级, 可选 `[0, 100]`, 推荐 `<=15` 以免误判
+`-f` 设置扫描结果保存的文件路径
+ -->
