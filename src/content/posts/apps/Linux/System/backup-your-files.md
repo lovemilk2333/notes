@@ -24,6 +24,41 @@ sudo groupadd -g 9999 backup
 sudo useradd -u 9999 -g 9999 -m -s /bin/bash backup
 ```
 
+### 禁用 `backup` 用户 SSH
+在 SSHD 配置文件
+```path
+/etc/ssh/sshd_config
+```
+写入
+```conf
+# disabled users for SSH login
+DenyUsers backup
+```
+
+并重启 SSHD 服务
+```sh
+sudo systemctl restart sshd.service
+```
+> 若要尝试配置是否生效, 可以实时查看 SSHD 日志
+> ```sh
+> journalctl -u sshd -f 
+> ```
+> 并在另一个终端运行
+> ```sh
+> # 如果不是默认的 22 端口, 请使用参数 `-p <port>`
+> ssh backup@127.0.0.1
+> ```
+> 
+> 然后可以在日志中看到类似如下内容代表配置已经生效了
+> ```log
+> sshd-session[xxxxxx]: User backup from 127.0.0.1 not allowed because listed in DenyUsers
+> ```
+
+### 启用自动运行 `backup` 用户的 Systemd Units
+```sh
+sudo loginctl enable-linger backup
+```
+
 ### 配置 `backup` 用户的 Syncthing
 > 本方法不适用 Syncthing 同步数据用途, 因为新的文件会被创建为 `backup:backup`, 导致权限配置失败
 
@@ -312,3 +347,41 @@ czkawka_cli image --max-difference 10 -d /path/to/images
 其中, `10` 为 *不相似度* 等级, 可选 `[0, 100]`, 推荐 `<=15` 以免误判
 `-f` 设置扫描结果保存的文件路径
  -->
+
+### 在当前 GUI 环境下以用户 *backup* 运行应用程式
+
+1. 授权当前的 X11 渲染环境访问权限 (Wayland 将回退到 XWayland)
+```sh
+xhost +SI:localuser:backup
+```
+
+2. 以 `backup` 运行应用程式 (以 `dolphin` 为例)
+> `kdesu` 需要安装 `kde-cli-tools` 包
+> 
+> ```sh
+> sudo pacman -S kde-cli-tools
+> ```
+```sh
+sudo -E /usr/lib/kf6/kdesu -u backup dolphin
+```
+
+> BTW, 要同步 Dolphin 配置~~以及默认应用打开方式~~ (打开方式可能无效) 到 `backup`, 请使用
+> ```sh
+> sudo cp ~/.config/dolphinrc ~/.config/mimeapps.list /home/backup/.config/
+> sudo chown backup:backup /home/backup/.config/dolphinrc /home/backup/.config/mimeapps.list
+> sudo chmod 770 /home/backup/.config/dolphinrc /home/backup/.config/mimeapps.list
+> ```
+> 并重启 Dolphin
+
+> 要设置 Dolphin 为深色主题并且不会在重启 Dolphin 后字体变为黑色, 可以使用
+> ```sh
+> # 设置颜色方案为 Breeze Dark
+> sudo -u backup kwriteconfig6 --file kdeglobals --group General --key ColorScheme BreezeDark
+> 
+> # 设置全局主题为 Breeze Dark
+> sudo -u backup kwriteconfig6 --file klaunchrc --group General --key GlobalTheme BreezeDark
+> 
+> # 刷新图标主题
+> sudo -u backup kwriteconfig6 --file kdeglobals --group Icons --key Theme breeze-dark
+> ```
+> 然后在 Dolphin 右上角菜单 "配置" > "窗口配色方案" 为 "Breeze Dark" ("Breeze 微风深色")

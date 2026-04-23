@@ -574,3 +574,24 @@ ENV{ID_VENDOR_ID}=="aaaa", ENV{ID_MODEL_ID}=="bbbb", ENV{LIBINPUT_ATTR_RESOLUTIO
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
+
+### 解决 Niri (Wayland) 复制某进程内容后关闭该进程, 复制的内容无法粘贴
+在 Niri 或其他基于 Wayland 的合成器中, 剪切板内容通常由 source 进程实时持有, 当该进程关闭时, 它所持有的内容也会从剪切板中消失, 导致无法粘贴
+
+要解决该问题, 可以使用 wl-clip-persist 轻量化工具, 自动接管任意 source 进程复制的内容
+
+安装
+```
+sudo pacman -S wl-clip-persist
+```
+
+配置自启动: 在如下文件
+```path
+~/.config/niri/config.kdl
+```
+的 `spawn-at-startup` 附近写入
+```conf
+spawn-at-startup "wl-clip-persist" "--clipboard" "both"
+```
+
+然后登出登入重新打开 Niri
