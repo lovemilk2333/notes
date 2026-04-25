@@ -8,12 +8,10 @@ category: app::linux::system
 为了保证文件不丢失不泄露, 提升文件可用性, 本文将介绍我的整套备份解决方案, 你与以便未来的我参考.
 
 ## 软件
-备份主要采用 Syncthing 跨设备实时同步文件作为备份, lsyncd 在同设备不同磁盘备份
+备份主要 Syncthing 跨设备(或跨磁盘)实时同步文件作为备份
 
-要安装 Syncthing 和 lsyncd, 请运行
-> lsyncd 默认使用 rsync 复制文件, `rsync` 包是必要的
 ```sh
-yay -S syncthing lsyncd rsync
+yay -S syncthing
 ```
 
 ## 配置
@@ -99,97 +97,53 @@ sudo chmod g+s /path/to/backuponly
 > sudo setfacl -R -m u:backup:rX ~/path/to/backuponly
 > ```
 
-### 配置 lsyncd
-创建如下配置文件
+### 跨磁盘备份
+跨磁盘备份可以使用 当前用户 与 `backup` 用户分别运行一个 Syncthing, 然后在两个 Syncthing 间同步
 
+如果需要在 `backup` 用户同用户下备份, 可以使用 `mutagen` 文件监听与同步工具:
 ```sh
-sudo chown :$USER /home/backup
-sudo chmod 0770 /home/backup
-sudo mkdir -p /home/backup/.config/lsyncd
-sudo chown $USER:backup -R /home/backup/.config/lsyncd
-sudo chmod 0770 -R /home/backup/.config/lsyncd
+yay -S mutagen.io-bin
 ```
 
-```path
-/home/backup/.config/lsyncd/lsyncd.conf.lua
-```
-
-```lua
-settings {
-    logfile    = "/home/backup/.config/lsyncd/lsyncd.log",
-    statusFile = "/home/backup/.config/lsyncd/lsyncd.status",
-    nodaemon   = false,  -- 后台运行
-    insist     = true,   -- 即使启动时失败也继续重试
-}
-
-sync {
-    default.rsync,
-    source = "/path/to/source",
-    target = "/path/to/backup",
-    
-    -- delay = second,  -- 同步延迟, 避免重复写入
-    rsync = {
-        archive = true,
-        -- compress = true,  -- 如果是网络同步, 推荐开启压缩
-        _extra = {  -- 声明忽略文件
-            "--filter=:- .gitignore",
-			"--filter=:- .stignore",
-			"--filter=:- .kopiaignore"
-        }
-    }
-}
-
-sync {
-    default.rsync,
-    source = "/path/to/source1",
-    target = "/path/to/backup1",
-    
-    rsync = {
-        archive = true,
-        _extra = {
-            "--filter=:- .gitignore",
-			"--filter=:- .stignore",
-			"--filter=:- .kopiaignore"
-        }
-    }
-}
-
--- ...
-```
-
-> 要在 Rsync 中不区分大小写地匹配路径, 请手动使用诸如 `*.[Mm][Pp]4` 规则
-
-要在前台测试配置文件, 请使用
+安装完成后, 可以在 `backup` 用户运行如下命令以创建同步
 ```sh
-sudo lsyncd -nodaemon /home/backup/.config/lsyncd/lsyncd.conf.lua
+mutagen sync create --name=<name> -m=<sync-mode> <alpha> <beta> [--ignore=...]
+```
+> `alpha` 与 `beta` 是两个 endpoint, *The reason that these endpoints aren’t termed “source” and “destination” is that Mutagen has multiple synchronization modes*
+
+要保证单项同步或其他同步方式, 请参阅 <https://mutagen.io/documentation/synchronization/#modes>
+
+一个典型同步创建命令如下
+```sh
+mutagen sync create --name=cloudbackup-enc --mode=one-way-safe --ignore-vcs --ignore=".stfolder/" --ignore=".cache/" <source> <target>
 ```
 
-配置 Systemd Unit
+配置 Mutagen Systemd Unit
 
-可以在如下路径写入
+在如下位置
 ```path
-/home/backup/.config/systemd/user/lsyncd.service
+/home/backup/.config/systemd/user/mutagen.service
 ```
-
+写入
 ```ini
 [Unit]
-Description=Lsyncd for backup user
+Description=Mutagen Sync Daemon
 After=network.target
 
 [Service]
-Type=simple
-# 显式指定配置文件路径
-ExecStart=/usr/bin/lsyncd -nodaemon %h/.config/lsyncd/lsyncd.conf.lua
-Restart=on-failure
+Type=forking
+ExecStart=/usr/bin/mutagen daemon start
+ExecStop=/usr/bin/mutagen daemon stop
+Restart=always
 
 [Install]
 WantedBy=default.target
 ```
 
-重载并启用服务 (需要在 [`backup` 用户 Shell 环境](#进入-backup-用户-shell-环境) 中运行)
+重载并启用该服务
 ```sh
-systemctl --user daemon-reload
-systemctl --user enable --now lsyncd.service
+systemctl daemon-reload --user
+systemctl enable --user --now mutagen.service
 ```
 
 ### 进入 `backup` 用户 Shell 环境

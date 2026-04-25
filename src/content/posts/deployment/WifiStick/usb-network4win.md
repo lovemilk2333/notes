@@ -68,7 +68,7 @@ sudo mv /etc/NetworkManager/system-connections/USB.nmconnection /etc/NetworkMana
 
 此时将 Wifi Stick 插入 Windows 设备的 USB 接口, 应该可以在 Windows 侧看到一个驱动未安装 (代码: 28) 的 RNDIS 设备 (位于 *其他设备* 类别)
 
-双击该设备, 单击 "更新驱动程序" > "浏览我的电脑以查找驱动程序" > "让我从计算机的可用驱动程序列表中选取" > 在 "常见硬件类型" 内选择 "网络适配器" > 厂商选择 "Microsoft", 型号选择最下面的 "远程 NDIS 兼容设备" > "下一页" > "是" (强制安装驱动程序)
+双击该设备, 单击 "更新驱动程序" > "浏览我的电脑以查找驱动程序" > "让我从计算机的可用驱动程序列表中选取" > 在 "常见硬件类型" 内选择 "网络适配器" > 厂商选择 "Microsoft", 型号选择最下面的 "远程 NDIS 兼容设备" (Windows 7 操作系统厂商选择 "Microsoft Corporation", 型号选择 "Remote NDIS Compatible Device") > "下一页" > "是" (强制安装驱动程序)
 
 此时, 可以看到 Windows 弹出一个新的网络连接, 也新增了一个网络适配器, 并获取到了 IP 地址
 > 如果无法获取 IP 地址, 请尝试在 Wifi Stick 安装 Dnsmasq (不需要手动启用服务, 会由 NetworkManager 调起), 使用
