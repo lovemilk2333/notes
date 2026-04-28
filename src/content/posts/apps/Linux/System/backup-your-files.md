@@ -139,6 +139,11 @@ Restart=always
 [Install]
 WantedBy=default.target
 ```
+> 如果备份 (的 Alpha 或 Beta) 需要挂载, 请等待挂载服务避免 Mutagen 认为文件夹为空从而暂停同步, 例如: 
+> ```ini
+> After=network.target mount-backups.service mount-backups1.service
+> Requires=network.target mount-backups.service mount-backups1.service
+> ```
 
 重载并启用该服务
 ```sh

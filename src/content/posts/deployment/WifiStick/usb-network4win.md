@@ -20,12 +20,31 @@ category: deployment::WifiStick
 
 在 `setup()` 函数中, 在 `# Setting Up Adbd` 前添加如下命令, 便于 Windows 识别为 RNDIS 设备
 ```sh
+# 复合设备是为了 ADB 也可以连接
 echo 0xEF > $CONFIGFS/bDeviceClass
 echo 0x02 > $CONFIGFS/bDeviceSubClass
 echo 0x01 > $CONFIGFS/bDeviceProtocol
-echo 0x1d6b > $CONFIGFS/idVendor
-echo 0x0104 > $CONFIGFS/idProduct
 ```
+
+并在上方命令后方添加如下代码块中任意其一
+- 1. 如下为 Google 的 RNDIS 设备生产商和产品 ID, 兼容性最好
+    ```sh
+    echo 0x18d1 > $CONFIGFS/idVendor
+    echo 0x4ee4 > $CONFIGFS/idProduct
+    ```
+
+    2. 如下为 Microsoft 的 RNDIS 设备生产商和产品 ID, 兼容性其次
+    ```sh
+    echo 0x045E > $CONFIGFS/idVendor
+    echo 0x0301 > $CONFIGFS/idProduct
+    ```
+
+    3. 如下为 Linux 的 RNDIS 设备生产商和产品 ID, 可能存在兼容性问题
+    ```sh
+    echo 0x1d6b > $CONFIGFS/idVendor
+    echo 0x0104 > $CONFIGFS/idProduct
+    ```
+
 
 2. 编辑如下 NetworkManager 配置脚本
 
@@ -77,6 +96,8 @@ sudo mv /etc/NetworkManager/system-connections/USB.nmconnection /etc/NetworkMana
 > ```
 
 如此, 便配置成功了. 您可以使用 `10.22.33.1:<port>` 访问任意部署于 Wifi Stick 的服务了
+
+如果在 Windows 设备上无法安装驱动程序, 或在安装驱动程序后显示该设备需要进一步安装驱动程序, 请参阅 [故障排除 - 部分高版本-windows-10-操作系统无法安装-rndis-驱动并连接](#部分高版本-windows-10-操作系统无法安装-rndis-驱动并连接)
 
 4. b 连接 *nux 设备
 
@@ -273,4 +294,145 @@ sudo rm -rf /usr/share/ri
 ```sh
 sudo apt install localepurge
 sudo localepurge
+```
+
+## 故障排除
+### 部分高版本 Windows 10 操作系统无法安装 RNDIS 驱动并连接
+在部分高版本 Windows 10 操作系统中, 即使手动选择了 RNDIS 设备也仍可能显示未安装驱动 (代码 28, 事件文件可下载 [rndis-dirver-error.evtx](/static/rndis-dirver-error.evtx) 并在 Windows 事件查看器中查看)
+
+一个可能的解决方法是禁用复合设备, 修改为仅 RNDIS 网络传输设备
+
+修改如下脚本
+```path
+/usr/sbin/mobian-usb-gadget
+```
+
+在 `setup()` 函数中, 在 `# Setting Up Adbd` 修改之前使用设备类型 ID
+```sh
+# 将其改为单功能网络设备类
+echo 0x02 > $CONFIGFS/bDeviceClass
+echo 0x00 > $CONFIGFS/bDeviceSubClass
+echo 0x00 > $CONFIGFS/bDeviceProtocol
+```
+
+(必要时也将 RNDIS 设备生产商和产品 ID 修改为 Microsoft 的)
+```sh
+echo 0x045E > $CONFIGFS/idVendor
+echo 0x0301 > $CONFIGFS/idProduct
+```
+
+然后注释或删除下方启动 `adbd` 的脚本部分, 将下面几行注释
+```sh
+# Setting Up Adbd
+gc -a ffs
+mkdir -p /dev/usb-ffs/adb
+
+# in offical version of gc name will be ffs.x
+mount -t functionfs adb /dev/usb-ffs/adb
+
+# Fire Up Adbd
+adbd -D &
+# (hack) wait adbd setup
+sleep 1
+```
+
+然后尝试重启服务 `mobian-usb-gadget.service` 或重启设备
+
+```sh
+sudo systemctl restart mobian-usb-gadget.service
+# or
+# sudo reboot
+```
+
+**如果仍旧不可以, 请尝试将如下脚本替换原有脚本**
+> Thanks for ChatGPT 5.3
+
+```sh
+sudo mv /usr/sbin/mobian-usb-gadget /usr/sbin/mobian-usb-gadget.bak
+sudo vim /usr/sbin/mobian-usb-gadget
+sudo chmod +x /usr/sbin/mobian-usb-gadget
+```
+
+```sh
+#!/bin/sh
+
+CONFIGFS=/sys/kernel/config/usb_gadget/g1
+
+setup() {
+    echo "[+] Setting up RNDIS gadget..."
+
+    modprobe libcomposite
+
+    # 清理旧配置
+    if [ -d $CONFIGFS ]; then
+        echo "" > $CONFIGFS/UDC 2>/dev/null
+        rm -rf $CONFIGFS
+    fi
+
+    mkdir -p $CONFIGFS
+    cd $CONFIGFS || exit 1
+
+    # ===== 基本设备信息 =====
+    echo 0x1d6b > idVendor        # Linux Foundation
+    echo 0x0104 > idProduct       # Multifunction Gadget
+
+    echo 0xEF > bDeviceClass
+    echo 0x02 > bDeviceSubClass
+    echo 0x01 > bDeviceProtocol
+
+    mkdir -p strings/0x409
+    echo "1234567890" > strings/0x409/serialnumber
+    echo "Armbian" > strings/0x409/manufacturer
+    echo "RNDIS Ethernet" > strings/0x409/product
+
+    # ===== 配置 =====
+    mkdir -p configs/c.1
+    mkdir -p configs/c.1/strings/0x409
+    echo "RNDIS" > configs/c.1/strings/0x409/configuration
+    echo 120 > configs/c.1/MaxPower
+
+    # ===== RNDIS =====
+    mkdir -p functions/rndis.usb0
+
+    # MAC 地址 (请修改)
+    echo "02:XX:XX:XX:XX:XX" > functions/rndis.usb0/dev_addr
+    echo "02:XX:XX:XX:XX:XX" > functions/rndis.usb0/host_addr
+    # echo "02:AA:BB:CC:DD:01" > functions/rndis.usb0/dev_addr
+    # echo "02:AA:BB:CC:DD:02" > functions/rndis.usb0/host_addr
+
+    # ===== Windows 关键：OS Descriptor =====
+    mkdir -p os_desc
+    echo 1 > os_desc/use
+    echo 0xcd > os_desc/b_vendor_code
+    echo MSFT100 > os_desc/qw_sign
+
+    mkdir -p functions/rndis.usb0/os_desc/interface.rndis
+    echo RNDIS > functions/rndis.usb0/os_desc/interface.rndis/compatible_id
+    echo 5162001 > functions/rndis.usb0/os_desc/interface.rndis/sub_compatible_id
+
+    # ===== 绑定 =====
+    ln -s functions/rndis.usb0 configs/c.1/
+    ln -s configs/c.1 os_desc
+
+    # ===== 启动 =====
+    UDC=$(ls /sys/class/udc | head -n 1)
+    echo $UDC > UDC
+
+    echo "[+] RNDIS gadget started"
+}
+
+reset() {
+    echo "[+] Removing USB gadget..."
+
+    if [ -d $CONFIGFS ]; then
+        echo "" > $CONFIGFS/UDC 2>/dev/null
+        rm -rf $CONFIGFS
+    fi
+}
+
+case "$1" in
+    setup) setup ;;
+    reset) reset ;;
+    *) echo "Usage: $0 {setup|reset}" ;;
+esac
 ```
