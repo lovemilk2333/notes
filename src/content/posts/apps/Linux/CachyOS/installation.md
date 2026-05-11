@@ -595,3 +595,50 @@ spawn-at-startup "wl-clip-persist" "--clipboard" "both"
 ```
 
 然后登出登入重新打开 Niri
+
+### 自动启动 `~/.config/autostart/*.desktop`
+Dex 可以自动解析并启动 `.destkop` 文件
+
+```sh
+sudo pacman -S dex
+```
+
+然后在
+```path
+~/.config/niri/config.kdl
+```
+的 `spawn-at-startup` 附近写入
+```conf
+spawn-at-startup "dex" "~/.config/autostart/*.desktop"
+```
+
+### 解决非 UTC 时区用户 Linux 与 Windows 时间相差 UTC $\pm n$ 小时的问题
+在默认情况下, Linux 使用 UTC 硬件时钟, 而 Windows 使用本地时间硬件时钟. 当 Linux 同步网络时间并将当前 UTC 时间写入硬件时钟后, Windows 误认为当前的 UTC 时间为本地时间, 造成与实际时间存在不一致的情况
+
+一般来说, 可以将 Windows 存储的硬件时间设置为 UTC 以解决问题. 在 **Windows** 上 (以管理员身份) 运行如下 CMD 命令, 即可添加注册表项以告知 Windows 使用 UTC 硬件时钟
+
+```bat
+reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation" /v RealTimeIsUniversal /d 1 /t REG_QWORD /f
+```
+
+后重启计算机即可
+
+### 在 Niri (DMS) 的最近窗口 (Alt+Tab) 中默认显示全部工作区的窗口
+在
+```path
+~/.config/niri/config.kdl
+```
+的 `recent-windows` > `binds` 中找到对应的操作, 例如
+```conf
+// Override to disable super+tab
+recent-windows {
+    binds {
+        Alt+Tab         { next-window scope="output"; }
+        Alt+Shift+Tab   { previous-window scope="ouput"; }
+        Alt+grave       { next-window filter="app-id"; }
+        Alt+Shift+grave { previous-window filter="app-id"; }
+    }
+}
+```
+
+并将 `scope=` 改为目标值, 例如 `all`, `workspace` 或 `output`

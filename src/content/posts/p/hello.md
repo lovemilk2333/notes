@@ -12,4 +12,3 @@ category: internal
 可能这些内容我会时不时更新, 所以无聊可以常来康康捏.
 
 [网站主页在这里哦](/), 随便逛逛吧. 其实主要记录的还是编程的[笔记之类](/posts/blogs/remake-notice/#迁移制约)的, 还有我写的[作文](/archive/?tag=passage).
-N
