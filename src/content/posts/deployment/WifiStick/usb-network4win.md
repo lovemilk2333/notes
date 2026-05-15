@@ -436,3 +436,6 @@ case "$1" in
     *) echo "Usage: $0 {setup|reset}" ;;
 esac
 ```
+
+## See Also
+[配置 USB 接口 ADB 救急模式, 以免 SSH 无法连接](/posts/deployment/wifistick/usb-adb/)
