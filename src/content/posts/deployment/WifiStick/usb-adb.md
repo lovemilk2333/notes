@@ -157,6 +157,8 @@ chmod +x /usr/sbin/gadget-mode-selector
 改为
 ```sh
 #!/bin/sh
+# /usr/sbin/mobian-usb-gadget
+
 CONFIGFS="/sys/kernel/config/usb_gadget/g1"
 MODE_SELECTOR="/usr/sbin/gadget-mode-selector"
 FFS_MOUNT_POINT="/dev/usb-ffs/adb"
