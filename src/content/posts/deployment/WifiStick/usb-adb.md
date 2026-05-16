@@ -295,6 +295,9 @@ setup_adb() {
     # 关键等待：adbd 必须写入 ep0 后，UDC 才能 bind 成功
     sleep 1
 
+    # 切回 $CONFIGFS
+    cd -
+
     # 6. 绑定控制器
     UDC_NAME=$(ls /sys/class/udc | head -n 1)
     if [ -n "$UDC_NAME" ]; then
