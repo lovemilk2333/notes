@@ -648,3 +648,13 @@ recent-windows {
 ```
 
 并将 `scope=` 改为目标值, 例如 `all`, `workspace` 或 `output`
+
+### 关闭 pipewire-pulse 会自动修改麦克风增益
+修改
+```path
+/etc/pulse/daemon.conf
+```
+写入
+```ini
+flat-volumes = no
+```
