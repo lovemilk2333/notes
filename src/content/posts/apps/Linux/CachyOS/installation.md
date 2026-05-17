@@ -297,7 +297,8 @@ xdg-mime default org.kde.ark.desktop application/zip application/x-tar applicati
 ```ini
 [preferred]
 org.freedesktop.impl.portal.ScreenCast=gnome;wlr;
-org.freedesktop.impl.portal.Screenshot=gnome;wlr;
+# 部分版本的 Gnome XDG Portal 未实现 `Screenshot`, 启用可能导致 Chromium 启动为等待其无反应几秒
+# org.freedesktop.impl.portal.Screenshot=gnome;wlr;
 ```
 并重启服务
 > 该配置在部分情况下可能导致: Gnome PipeWire 选择界面可以弹出, 并成功选择; 但当 Chromium 尝试请求并弹出选择窗口后, 不进行任何窗口操作直接单击 "取消", 再次尝试打开选择窗口无窗口弹出 (OBS 等非 Chromium 仍可在此状况下弹出选择窗口)  
