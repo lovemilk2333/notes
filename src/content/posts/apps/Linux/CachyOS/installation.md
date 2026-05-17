@@ -517,6 +517,11 @@ __NV_PRIME_RENDER_OFFLOAD=1
 ### 修改 CachyOS 镜像源
 > <https://discuss.cachyos.org/t/help-how-to-skip-mirror-update-during-installation-network-issues-in-china/20455>
 
+禁用 CachyOS 自动测速软件源
+```sh
+sudo systemctl disable --now cachyos-rate-mirrors.timer
+```
+
 依次修改如下文件
 ```path
 /etc/pacman.d/mirrorlist
