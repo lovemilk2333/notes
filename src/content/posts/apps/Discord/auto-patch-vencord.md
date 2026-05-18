@@ -110,3 +110,9 @@ fi
 
 ## 完成
 此后, 在您每次安装/更新 Discord 时, 会自动运行上述脚本, 以自动使用 Vencord 修补
+
+> [!IMPORTANT]
+> 新版本的 Discord 安装路径从 `/opt/discord` 移至 `$HOME/.config/discord` 了, 如果您的 `/opt/discord` 下只有一个 `resources` 文件夹, 那么请删除 `/opt/discord` 以免 Vencord 误认安装路径导致自动修补失败
+> ```sh
+> sudo rm -r /opt/discord
+> ```
