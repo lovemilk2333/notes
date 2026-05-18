@@ -104,6 +104,33 @@ input {
 }
 ```
 
+### Niri 禁用在使用 *Meta+鼠标左键* 拖动窗口时修改非固定大小的窗口大小
+要使得 Niri 不在拖拽窗口时改版窗口大小, 可以使用如下配置
+
+在 Niri 配置文件 (系列) 中找到 `default-column-width`
+```path
+~/.config/niri/config.kdl
+```
+并将
+```conf
+default-column-width { proportion 0.5; }
+```
+修改为
+```conf
+default-column-width {  }
+```
+
+> [!NOTE]
+> 这会丢失使用 `maximize-window-to-edges` 的最大化窗口状态
+
+### Niri 在 Overview (类似于 Meta+Tab) 显示 DMS 顶栏
+```sh
+[ ! -f ~/.config/DankMaterialShell/settings.json.bak ] && cp ~/.config/DankMaterialShell/settings.json ~/.config/DankMaterialShell/settings.json.bak
+jq '.barConfigs[].openOnOverview = true' ~/.config/DankMaterialShell/settings.json > ~/.config/DankMaterialShell/settings.edited.json && \
+mv ~/.config/DankMaterialShell/settings.edited.json ~/.config/DankMaterialShell/settings.json
+dms ipc call reload
+```
+
 ### Rime [雾凇拼音](https://github.com/iDvel/rime-ice) 设置默认为半角符号
 ::github{repo="iDvel/rime-ice"}
 
@@ -471,13 +498,20 @@ $ yay -S xxx --editmenu
 ### Microsoft Edge 在 Linux 上自动重置为亮色模式
 由于未知原因, Microsoft Edge 的 Linux 版本会在浏览器进程完全退出后将外观设置的 "颜色主题" 为深色模式时配置为亮色模式, 而设置为 GTK 则不会.
 
-> <https://www.reddit.com/r/MicrosoftEdge/comments/1rdlgpc/why_tf_does_edge_has_a_default_light_mode_even_i>
+<del>
+> <https://www.reddit.com/r/MicrosoftEdge/comments/1rdlgpc/why_tf_does_edge_has_a_default_light_mode_even_i>  
 一个可能的临时解决方法, 将 Edge 降级为 Major 143 (`143.x.x.x`) 版本
 > ~~F**K U Microsoft~~
+</del>
 
 可以使用 `downgrade` 命令
 ```sh
 sudo downgrade microsoft-edge-stable-bin
+```
+
+实测, 148.0.3967.54 (正式版本) (64 位) 已经修复, 请大家尽快升级 `microsoft-edge-stable-bin`
+```sh
+sudo yay -Sy microsoft-edge-stable-bin
 ```
 
 ### 使用 Prismlauncher 安装 Minecraft 整合包时出现文件损坏
