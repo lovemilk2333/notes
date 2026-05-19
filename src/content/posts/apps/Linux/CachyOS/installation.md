@@ -615,6 +615,24 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
+### 修复浏览器/应用程序无法检测到游戏手柄
+```path
+/etc/udev/rules.d/99-gamepad.rules
+```
+写入
+```js
+KERNEL=="js*", MODE="0666"
+KERNEL=="event*", ENV{ID_INPUT_JOYSTICK}=="1", MODE="0666"
+```
+
+重载并应用 UDev 规则
+```sh
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
+重启浏览器/无法检测到的应用程序
+
 ### 解决 Niri (Wayland) 复制某进程内容后关闭该进程, 复制的内容无法粘贴
 在 Niri 或其他基于 Wayland 的合成器中, 剪切板内容通常由 source 进程实时持有, 当该进程关闭时, 它所持有的内容也会从剪切板中消失, 导致无法粘贴
 
