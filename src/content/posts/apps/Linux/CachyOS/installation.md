@@ -582,6 +582,41 @@ sudo tee /etc/pacman.d/cachyos-v4-mirrorlist << EOF
 Server = https://mirrors.ustc.edu.cn/cachyos/repo/\$arch_v4/\$repo
 EOF
 
+sudo sed -i '/^\[archlinuxcn\]/{N;N;c\[archlinuxcn\]\nInclude = /etc/pacman.d/archlinuxcn
+}' /etc/pacman.conf
+
+sudo tee /etc/pacman.d/archlinuxcn << EOF
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/\$arch
+EOF
+
+sudo pacman -Syy
+```
+
+由于近期 UTSC Mirror 不太稳定, 推荐使用 NJU Mirror
+```sh
+sudo tee /etc/pacman.d/mirrorlist << EOF
+Server = https://mirror.nju.edu.cn/archlinux/\$repo/os/\$arch
+EOF
+
+sudo tee /etc/pacman.d/cachyos-mirrorlist << EOF
+Server = https://mirrors.nju.edu.cn/cachyos/repo/\$arch/\$repo
+EOF
+
+sudo tee /etc/pacman.d/cachyos-v3-mirrorlist << EOF
+Server = https://mirrors.nju.edu.cn/cachyos/repo/\$arch_v3/\$repo
+EOF
+
+sudo tee /etc/pacman.d/cachyos-v4-mirrorlist << EOF
+Server = https://mirrors.nju.edu.cn/cachyos/repo/\$arch_v4/\$repo
+EOF
+
+sudo sed -i '/^\[archlinuxcn\]/{N;N;c\[archlinuxcn\]\nInclude = /etc/pacman.d/archlinuxcn
+}' /etc/pacman.conf
+
+sudo tee /etc/pacman.d/archlinuxcn << EOF
+Server = https://mirrors.nju.edu.cn/archlinuxcn/\$arch
+EOF
+
 sudo pacman -Syy
 ```
 
