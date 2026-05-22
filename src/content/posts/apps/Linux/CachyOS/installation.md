@@ -674,7 +674,7 @@ sudo udevadm trigger
 要解决该问题, 可以使用 wl-clip-persist 轻量化工具, 自动接管任意 source 进程复制的内容
 
 安装
-```
+```sh
 sudo pacman -S wl-clip-persist
 ```
 
@@ -688,6 +688,19 @@ spawn-at-startup "wl-clip-persist" "--clipboard" "both"
 ```
 
 然后登出登入重新打开 Niri
+
+### 解决 Wayland/XWayland 剪切板同步问题
+使用 clipboard-sync 工具可以让剪切板在 X11 与 Wayland 双向同步
+
+安装
+```sh
+sudo pacman -S clipboard-sync
+```
+
+启动服务
+```sh
+systemctl --user enable --now clipboard-sync
+```
 
 ### 自动启动 `~/.config/autostart/*.desktop`
 Dex 可以自动解析并启动 `.destkop` 文件
