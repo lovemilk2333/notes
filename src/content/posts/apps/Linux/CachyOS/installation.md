@@ -336,14 +336,25 @@ org.freedesktop.impl.portal.Screenshot=gnome;wlr;
 > ```
 
 > [!NOTE]
-> 如果开机时 Systemd Unit `xdg-desktop-portal-gnome` 启动失败, 请配置自动重启:
+> 如果开机时 Systemd Unit `xdg-desktop-portal-gnome` 启动失败
 > ```sh
+> # 阻止 XDG Portal 服务在桌面没加载时掉起 Gnome 的 XDG Portal
+> sudo mv /usr/share/xdg-desktop-portal/portals/gnome.portal /usr/share/xdg-desktop-portal/portals/gnome.portal.bak
 > systemctl --user edit --full xdg-desktop-portal-gnome
 > ```
-> 并在 `[Service]` 添加
+> 在 `[Service]` 添加
 > ```ini
 > Restart=on-failure
 > RestartSec=3s
+> ```
+> 
+> 然后在
+> ```path
+> ~/.config/niri/config.kdl
+> ```
+> 的 `spawn-at-startup` 附近写入
+> ```ini
+> spawn-at-startup "systemctl" "--user" "start" "xdg-desktop-portal-gnome.service"
 > ```
 
 我们推荐更换为 KDE 的 XDG Portal `xdg-desktop-portal-kde`
@@ -557,6 +568,14 @@ __NV_PRIME_RENDER_OFFLOAD=1
 
 > [!TIP]
 > CachyOS 使用 `chwd` 工具管理 GPU 驱动, 在更新或更换驱动时注意避免与该工具行为产生冲突
+
+如下配置不得加入全局环境变量, 否则会导致 DMS 启动失败
+```ini
+# 减轻爆显存时应用画面卡死情况 (允许必要时将显存分配请求推送到内存)
+__GL_ALLOW_UNRESTRICTED_ACCESS=1
+# 部分情况下解决 GPU 占用率过低导致 FPS 过低
+__GL_THREADED_OPTIMIZATIONS=1
+```
 
 ### 修改 CachyOS 镜像源
 > <https://discuss.cachyos.org/t/help-how-to-skip-mirror-update-during-installation-network-issues-in-china/20455>
