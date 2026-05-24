@@ -697,38 +697,40 @@ sudo udevadm trigger
 
 重启浏览器/无法检测到的应用程序
 
-### 解决 Niri (Wayland) 复制某进程内容后关闭该进程, 复制的内容无法粘贴
+### 解决 Niri (Wayland) 复制某进程内容后关闭该进程, 复制的内容无法粘贴 / 解决 Wayland/XWayland 剪切板同步问题
 在 Niri 或其他基于 Wayland 的合成器中, 剪切板内容通常由 source 进程实时持有, 当该进程关闭时, 它所持有的内容也会从剪切板中消失, 导致无法粘贴
 
-要解决该问题, 可以使用 wl-clip-persist 轻量化工具, 自动接管任意 source 进程复制的内容
+要解决该问题, 可以使用 clipman 轻量化工具, 自动接管任意 source 进程复制的内容, 并自动同步至 X11
 
 安装
 ```sh
-sudo pacman -S wl-clip-persist
+sudo pacman -S clipman
 ```
 
 配置自启动: 在如下文件
 ```path
-~/.config/niri/config.kdl
+~/.config/systemd/user/clipman.service
 ```
-的 `spawn-at-startup` 附近写入
-```conf
-spawn-at-startup "wl-clip-persist" "--clipboard" "both"
+写入
+```ini
+[Unit]
+Description=Clipman: Clipboard manager for Wayland
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/sh -c 'wl-paste --watch clipman store'
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=graphical-session.target
 ```
 
-然后登出登入重新打开 Niri
-
-### 解决 Wayland/XWayland 剪切板同步问题
-使用 clipboard-sync 工具可以让剪切板在 X11 与 Wayland 双向同步
-
-安装
+然后重载并启用 Systemd Unit
 ```sh
-sudo pacman -S clipboard-sync
-```
-
-启动服务
-```sh
-systemctl --user enable --now clipboard-sync
+systemctl --user daemon-reload
+systemctl --user enable --now clipman.service
 ```
 
 ### 自动启动 `~/.config/autostart/*.desktop`
