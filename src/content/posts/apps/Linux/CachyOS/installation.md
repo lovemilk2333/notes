@@ -700,37 +700,73 @@ sudo udevadm trigger
 ### 解决 Niri (Wayland) 复制某进程内容后关闭该进程, 复制的内容无法粘贴 / 解决 Wayland/XWayland 剪切板同步问题
 在 Niri 或其他基于 Wayland 的合成器中, 剪切板内容通常由 source 进程实时持有, 当该进程关闭时, 它所持有的内容也会从剪切板中消失, 导致无法粘贴
 
-要解决该问题, 可以使用 clipman 轻量化工具, 自动接管任意 source 进程复制的内容, 并自动同步至 X11
+要解决该问题, 可以使用 DMS Clipboard Manager 监听剪切板变动, 并对纯文本自动接管任意 source 进程复制的内容, 以免复制文件时类型被修改导致只会存储 `file://<path>` 无法被文件管理器识别
 
-安装
+在
+```path
+~/.config/systemd/user/dms-clipboard.sh
+```
+写入
 ```sh
-sudo pacman -S clipman
+#!/usr/bin/env bash
+
+last_hash=""
+
+dms cl watch --json | while IFS= read -r line; do
+    mime=$(printf '%s\n' "$line" | jq -r '.mimeType')
+    data=$(printf '%s\n' "$line" | jq -r '.data')
+
+    case "$mime" in
+        text/*)
+            ;;
+        *)
+            continue
+            ;;
+    esac
+
+    hash=$(printf '%s' "$mime"$'\0'"$data" | sha256sum | cut -d' ' -f1)
+
+    [ "$hash" = "$last_hash" ] && continue
+
+    last_hash="$hash"
+
+    printf '%s' "$data" | dms cl copy -t "$mime" >/dev/null 2>&1
+done
 ```
 
-配置自启动: 在如下文件
+授予可执行权限
+```sh
+chmod +x ~/.config/systemd/user/dms-clipboard.sh
+```
+
+新建 Systemd Unit  
+在
 ```path
-~/.config/systemd/user/clipman.service
+~/.config/systemd/user/dms-clipboard.service
 ```
 写入
 ```ini
 [Unit]
-Description=Clipman: Clipboard manager for Wayland
+Description=DMS Clipboard Persistence Daemon
 After=graphical-session.target
-PartOf=graphical-session.target
 
 [Service]
-ExecStart=/usr/bin/sh -c 'wl-paste --watch clipman store'
+Type=simple
+ExecStart=%h/.config/systemd/user/dms-clipboard.sh
 Restart=always
-RestartSec=3
+RestartSec=1
+
+StandardOutput=journal
+StandardError=journal
 
 [Install]
-WantedBy=graphical-session.target
+WantedBy=default.target
 ```
 
-然后重载并启用 Systemd Unit
+重载并启动服务
 ```sh
 systemctl --user daemon-reload
-systemctl --user enable --now clipman.service
+systemctl --user enable --now dms-clipboard.service
 ```
 
 ### 自动启动 `~/.config/autostart/*.desktop`
