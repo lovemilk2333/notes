@@ -717,6 +717,10 @@ dms cl watch --json | while IFS= read -r line; do
     data=$(printf '%s\n' "$line" | jq -r '.data')
 
     case "$mime" in
+        text/uri-list
+            # ignore files to keep copy/cut state
+            continue
+            ;;
         text/*)
             ;;
         *)
