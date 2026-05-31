@@ -32,6 +32,14 @@ description: 本文主要介绍 CachyOS 的安装方法, 配置 Niri 桌面环�
 ```sh
 sudo touch /etc/vconsole.conf
 ```
+然后在
+```path
+/etc/vconsole.conf
+```
+写入/修改
+```ini
+KEYMAP=us
+```
 
 ### 安装 Niri
 使用 [【Arch零门槛】绝美Linux桌面，一键安装Niri+DMS - BIliBili](https://www.bilibili.com/video/BV1CHZaBrEF6) 提供的安装脚本安装 Niri
@@ -323,8 +331,8 @@ xdg-mime default org.kde.ark.desktop application/zip application/x-tar applicati
 写入
 ```ini
 [preferred]
-org.freedesktop.impl.portal.ScreenCast=gnome;wlr;
-org.freedesktop.impl.portal.Screenshot=gnome;wlr;
+org.freedesktop.impl.portal.ScreenCast=gnome;
+org.freedesktop.impl.portal.Screenshot=gnome;
 ```
 并重启服务
 > 该配置在部分情况下可能导致: Gnome PipeWire 选择界面可以弹出, 并成功选择; 但当 Chromium 尝试请求并弹出选择窗口后, 不进行任何窗口操作直接单击 "取消", 再次尝试打开选择窗口无窗口弹出 (OBS 等非 Chromium 仍可在此状况下弹出选择窗口)  
@@ -335,40 +343,52 @@ org.freedesktop.impl.portal.Screenshot=gnome;wlr;
 > busctl --user tree org.freedesktop.portal.Desktop
 > ```
 
-> [!NOTE]
-> 如果开机时 Systemd Unit `xdg-desktop-portal-gnome` 启动失败
-> ```sh
-> # 阻止 XDG Portal 服务在桌面没加载时掉起 Gnome 的 XDG Portal
-> sudo mv /usr/share/xdg-desktop-portal/portals/gnome.portal /usr/share/xdg-desktop-portal/portals/gnome.portal.bak
-> systemctl --user edit --full xdg-desktop-portal-gnome
-> ```
-> 在 `[Service]` 添加
-> ```ini
-> Restart=on-failure
-> RestartSec=3s
-> ```
-> 
-> 然后在
-> ```path
-> ~/.config/niri/config.kdl
-> ```
-> 的 `spawn-at-startup` 附近写入
-> ```ini
-> spawn-at-startup "systemctl" "--user" "start" "xdg-desktop-portal-gnome.service"
-> ```
-
 我们推荐更换为 KDE 的 XDG Portal `xdg-desktop-portal-kde`
-> 由于部分场景下 (包括但不限于 PipeWire 屏幕/窗口选择界面) 仍需要 Gnome 的 XDG Portal, 切勿卸载
 ```sh
 sudo pacman -S xdg-desktop-portal-kde
 ```
 
-并在上述的配置文件内设置默认的 XDG Portal 实现为 `kde` 
+并在上述的配置文件内设置文件选择器等的 XDG Portal 实现为 `kde` 
 > [!WARNING]
+> 切勿同时使用 KDE 与 Gnome 的 XDG Portal 实现, 这样会导致 Gnome 与 KDE 的实现互相争夺, 造成 Gnome 实现难以启动  
 > KDE 窗口选择器无法正常工作, 切勿删除上述两行用于设置使用 Gnome 选择器的配置
 
 ```ini
-default=kde
+[preferred]
+default=kde;
+
+org.freedesktop.impl.portal.ScreenCast=milk-kde;
+org.freedesktop.impl.portal.Screenshot=milk-kde;
+```
+
+**替换 XDG Portal 后端会导致一些配置需要更改, 请遵循如下步骤**
+
+1. 配置 Niri Dbus 后端
+在
+```path
+~/.config/niri/config.kdl
+```
+找到如下条目
+```
+spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
+```
+将 `/usr/lib/xdg-desktop-portal-gnome` 改为
+```sh
+/usr/lib/xdg-desktop-portal-kde
+```
+
+2. 配置带窗口选择功能的 KDE XDG Portal 实现  
+由于 Niri 使用了 Mutter Window API (Gnome 格式), 所以官方的 KDE 并不支持选择窗口分享, 我利用 AI fork 了一份目前可以用的 KDE XDG Portal, 让我们来安装它
+```sh
+git clone https://github.com/lovemilk2333/xdg-desktop-portal-kde --depth 1
+cd ./xdg-desktop-portal-kde
+./build-milk-kde.sh install
+```
+
+3. 配置 Dolphin 守护进程
+在上述配置文件内新增如下内容, 为避免 Nautilus 被 DBus 自动调起
+```conf
+spawn-at-startup "dolphin" "--daemon"
 ```
 
 重启服务以应用配置
@@ -377,34 +397,8 @@ default=kde
 systemctl --user restart xdg-desktop-portal
 ```
 
-若仍然无法打开选择界面, 尝试结束 Gnome 的 XDG Portal 进程
-```sh
-killall -9 xdg-desktop-portal-gnome
-```
-
 > [!NOTE]
 > 若出现文件选择器等颜色主题与配置的主题不符, 请参考 [修改 KDE 系软件主题](#修改-kde-系软件主题)
-
-**替换 XDG Portal 后端会导致一些配置需要更改, 请遵循如下步骤**
-1. 配置 Niri Dbus 后端
-在
-```path
-~/.config/niri/config.kdl
-```
-找到 `spawn-at-starup` 字样的配置项, 并将启动 DBus 的条目的
-```
-/usr/lib/xdg-desktop-portal-gnome
-```
-改为
-```
-/usr/lib/xdg-desktop-portal-kde
-```
-
-1. 配置 Dolphin 守护进程
-在上述配置文件内新增如下内容, 为避免 Nautilus 被 DBus 自动调起
-```conf
-spawn-at-startup "dolphin" "--daemon"
-```
 
 ### Niri 禁用截屏声音
 在 Niri 配置文件中注释如下内容
