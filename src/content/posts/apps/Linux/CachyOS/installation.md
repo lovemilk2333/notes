@@ -385,7 +385,15 @@ cd ./xdg-desktop-portal-kde
 ./build-milk-kde.sh install
 ```
 
-3. 配置 Dolphin 守护进程
+3. 停用/卸载 Mako 服务  
+在不使用 Gnome XDG Portal 实现后, 为了避免 Mako 抢占 DMS 的 `org.freedesktop.Notifications` 注册, 我们需要将其禁用或卸载
+```sh
+systemctl --user disable --now mako
+# 或者
+sudo pacman -R mako
+```
+
+4. 配置 Dolphin 守护进程
 在上述配置文件内新增如下内容, 为避免 Nautilus 被 DBus 自动调起
 ```conf
 spawn-at-startup "dolphin" "--daemon"
