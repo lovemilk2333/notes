@@ -558,7 +558,7 @@ $ yay -S xxx --editmenu
 ### GTK 配置样式
 打开 GTK Settings 应用程序
 
-### Microsoft Edge 在 Linux 上自动重置为亮色模式
+### 修复 Microsoft Edge 在 Linux 上自动重置为亮色模式
 由于未知原因, Microsoft Edge 的 Linux 版本会在浏览器进程完全退出后将外观设置的 "颜色主题" 为深色模式时配置为亮色模式, 而设置为 GTK 则不会.
 
 <del>
@@ -576,6 +576,13 @@ sudo downgrade microsoft-edge-stable-bin
 ```sh
 sudo yay -Sy microsoft-edge-stable-bin
 ```
+
+### 修复 Microsoft Edge 会不断激活存在/播放媒体 (特别是视频) 的页面
+当 Microsoft Edge 浏览器的当前标签页为存在媒体的标签页 (例如 `https://www.bilibili.com/video/BV*`) 时, 将浏览器取消激活窗口后, 仍会在后台时激活导致窗口切换到浏览器, 打断工作
+
+一个可能的解决方法是, 禁用浏览器内的 *Use Updated UI for Global Media Controls* Flag
+
+可以导航至 <edge://flags/#edge-global-media-controls-updated-ui>, 然后选择 `Disabled` 并重启浏览器
 
 ### 使用 Prismlauncher 安装 Minecraft 整合包时出现文件损坏
 > https://www.reddit.com/r/PrismLauncher/comments/1ifpbgp/issue_with_modpacks/
