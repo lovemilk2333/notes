@@ -147,7 +147,7 @@ dms ipc call reload
 ~/.local/share/fcitx5/rime
 ```
 
-创建如下文件
+创建/编辑如下文件
 ```path
 rime_ice.custom.yaml
 ```
@@ -181,6 +181,46 @@ patch:
   "switches/@1/reset": 1  # 半角符号
   "switches/@4/reset": 0  # 半角 CJK
 ```
+
+后重新部署输入法即可
+
+### Rime [雾凇拼音](https://github.com/iDvel/rime-ice) 设置自定义词库
+
+对于 fcitx5 用户, 在如下目录
+```path
+~/.local/share/fcitx5/rime
+```
+
+创建/编辑如下文件
+```path
+default.custom.yaml
+```
+
+并写入
+```yml
+translator/dictionary:
+  - <name>
+```
+其中, `<name>` 是下方要创建的 dict (词库) 文件名称, 确保同目录下有 `<name>.dict.yaml`, 且 `<name>.dict.yaml` 内的 `name` 字段为 `<name>`
+
+创建并写入任意的 `<name>.dict.yaml` (以 `custom_phrase.dict.yaml` 为例)
+
+```path
+custom_phrase.dict.yaml
+```
+写入
+```yaml
+---
+name: custom_phrase
+version: "1.0"
+sort: by_weight
+...
+自定词组	拼音代码	权重
+# 此处按照 `词组\t拼音\t权重(不知道可以填写 1)` 格式写自定义词组, 一行一个. 例如:
+词组	cizu	1
+```
+
+后重新部署输入法即可
 
 ### Dolphin 文件管理器无法识别打开方式 / 默认打开方式重置
 1. 安装依赖包
