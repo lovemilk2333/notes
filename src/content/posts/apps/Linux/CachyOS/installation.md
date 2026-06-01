@@ -397,8 +397,8 @@ sudo pacman -S xdg-desktop-portal-kde
 [preferred]
 default=kde;
 
-org.freedesktop.impl.portal.ScreenCast=milk-kde;
-org.freedesktop.impl.portal.Screenshot=milk-kde;
+org.freedesktop.impl.portal.ScreenCast=kde-screenshot-for-niri;
+org.freedesktop.impl.portal.Screenshot=kde-screenshot-for-niri;
 ```
 
 **替换 XDG Portal 后端会导致一些配置需要更改, 请遵循如下步骤**
@@ -422,10 +422,10 @@ spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLA
 ```sh
 git clone https://github.com/lovemilk2333/xdg-desktop-portal-kde --depth 1
 cd ./xdg-desktop-portal-kde
-./build-milk-kde.sh install
+./build.sh install
 ```
 
-3. 停用/卸载 Mako 服务  
+3. 停用/卸载 Mako 服务 *(未安装者请跳过)*  
 在不使用 Gnome XDG Portal 实现后, 为了避免 Mako 抢占 DMS 的 `org.freedesktop.Notifications` 注册, 我们需要将其禁用或卸载
 ```sh
 systemctl --user disable --now mako
