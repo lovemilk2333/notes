@@ -418,7 +418,7 @@ spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLA
 ```
 
 2. 配置带窗口选择功能的 KDE XDG Portal 实现  
-由于 Niri 使用了 Mutter Window API (Gnome 格式), 所以官方的 KDE 并不支持选择窗口分享, 我利用 AI fork 了一份目前可以用的 KDE XDG Portal, 让我们来安装它
+由于 Niri 使用了 Mutter Window API (Gnome 格式), 所以官方的 KDE 并不支持选择窗口分享, 我利用 AI fork 了[一份目前可以用的 KDE XDG Portal](https://aka.lovemilk.top/github/xdg-desktop-portal-kde), 让我们来安装它
 ```sh
 git clone https://github.com/lovemilk2333/xdg-desktop-portal-kde --depth 1
 cd ./xdg-desktop-portal-kde
