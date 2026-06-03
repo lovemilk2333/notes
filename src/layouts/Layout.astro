@@ -19,7 +19,7 @@ import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
 import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
-import { getPermalink } from "@utils/date-utils";
+// import { getPermalink } from "@utils/date-utils";
 
 interface Props {
     title?: string;
@@ -69,7 +69,7 @@ const bannerOffsetByPosition = {
     bottom: "0"
 };
 const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "center"];
-const postUrl = decodeURIComponent(getPermalink(Astro.url).href);
+// const postUrl = decodeURIComponent(getPermalink(Astro.url).href);
 ---
 
 <!doctype html>
@@ -115,11 +115,11 @@ const postUrl = decodeURIComponent(getPermalink(Astro.url).href);
             ))
         }
 
-        <script define:vars={{ postUrl }}>
+        <!-- <script define:vars={{ postUrl }}>
             window.addEventListener('load', () => {
                 window.history.replaceState(undefined, "", postUrl);
             }, { once: true })
-        </script>
+        </script> -->
 
         <!-- Set the theme before the page is rendered to avoid a flash -->
         <script
