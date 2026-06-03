@@ -128,6 +128,8 @@ adb shell
 未经特殊说明, 如下命令均在 ADB Shell 中执行
 
 1. 解密 data (OrangeFox 同样可以运行)
+> [!NOTE]
+> 需要等待 Recovery 加载完成
 ```sh
 twrp decrypt <pin/password>
 ```
@@ -144,12 +146,20 @@ adb push ~/.android/adbkey.pub /tmp/
 (以下内容需要在 ADB Shell 中执行)
 ```sh
 cat /tmp/adbkey.pub >> /data/misc/adb/adb_keys
+``` 
+
+### 3. 解决 ADB 授权会在一端时间后失效
+要避免 ADB 在一段时间后授权失效, 可以将授权公钥改为只读
+```sh
+chattr +i /data/misc/adb/adb_keys
 ```
 
-3. 重启
-```sh
-reboot
-```
+这样, 新的使用 UI 上的 ADB 授权会写入 `/data/misc/adb/adb_keys.new`, 同时原本的授权公钥仍可用
+
+> 要再修改时, 请使用如下命令解除只读
+> ```sh
+> chattr -i /data/misc/adb/adb_keys
+> ```
 
 [^adb-keys-stored]: <https://android.stackexchange.com/questions/171934/storage-location-of-adb-keys>
 [^ro.adb.secure]: <https://android.stackexchange.com/questions/55674/how-can-i-enable-adbd-during-boot-on-cyanogenmod>

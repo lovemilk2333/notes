@@ -13,12 +13,13 @@ import {
     DARK_MODE,
     DEFAULT_THEME,
     LIGHT_MODE,
-    PAGE_WIDTH,
+    PAGE_WIDTH
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
 import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
+import { getPermalink } from "@utils/date-utils";
 
 interface Props {
     title?: string;
@@ -65,9 +66,10 @@ const siteLang = lang.replace("_", "-");
 const bannerOffsetByPosition = {
     top: `${BANNER_HEIGHT_EXTEND}vh`,
     center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
-    bottom: "0",
+    bottom: "0"
 };
 const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "center"];
+const postUrl = decodeURIComponent(getPermalink(Astro.url).href);
 ---
 
 <!doctype html>
@@ -113,6 +115,10 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "cente
             ))
         }
 
+        <script define:vars={{ postUrl }}>
+            window.history.replaceState(undefined, "", postUrl);
+        </script>
+
         <!-- Set the theme before the page is rendered to avoid a flash -->
         <script
             is:inline
@@ -123,7 +129,7 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "cente
                 AUTO_MODE,
                 BANNER_HEIGHT_EXTEND,
                 PAGE_WIDTH,
-                configHue,
+                configHue
             }}
         >
             // Load the theme from local storage
@@ -155,7 +161,7 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "cente
         <style
             define:vars={{
                 configHue,
-                "page-width": `${PAGE_WIDTH}rem`,
+                "page-width": `${PAGE_WIDTH}rem`
             }}
         ></style>
         <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
@@ -207,7 +213,7 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "cente
     define:vars={{
         bannerOffset,
         "banner-height-home": `${BANNER_HEIGHT_HOME}vh`,
-        "banner-height": `${BANNER_HEIGHT}vh`,
+        "banner-height": `${BANNER_HEIGHT}vh`
     }}
 >
     @tailwind components;
@@ -243,7 +249,7 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "cente
 <script>
     import "overlayscrollbars/overlayscrollbars.css";
     import {
-        OverlayScrollbars,
+        OverlayScrollbars
         // ScrollbarsHidingPlugin,
         // SizeObserverPlugin,
         // ClickScrollPlugin
@@ -254,7 +260,7 @@ const bannerOffset = bannerOffsetByPosition[siteConfig.banner.position || "cente
         BANNER_HEIGHT,
         BANNER_HEIGHT_HOME,
         BANNER_HEIGHT_EXTEND,
-        MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+        MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
     } from "../constants/constants";
     import { siteConfig } from "../config";
 
@@ -340,16 +346,16 @@ function disableAnimation() {
             {
                 target: bodyElement,
                 cancel: {
-                    nativeScrollbarsOverlaid: true, // don't initialize the overlay scrollbar if there is a native one
-                },
+                    nativeScrollbarsOverlaid: true // don't initialize the overlay scrollbar if there is a native one
+                }
             },
             {
                 scrollbars: {
                     theme: "scrollbar-base scrollbar-auto py-1",
                     autoHide: "move",
                     autoHideDelay: 500,
-                    autoHideSuspend: false,
-                },
+                    autoHideSuspend: false
+                }
             }
         );
 
@@ -358,7 +364,7 @@ function disableAnimation() {
         const katexObserverOptions = {
             root: null,
             rootMargin: "100px",
-            threshold: 0.1,
+            threshold: 0.1
         };
 
         const processKatexElement = (element: HTMLElement) => {
@@ -377,8 +383,8 @@ function disableAnimation() {
                     theme: "scrollbar-base scrollbar-auto",
                     autoHide: "leave",
                     autoHideDelay: 500,
-                    autoHideSuspend: false,
-                },
+                    autoHideSuspend: false
+                }
             });
 
             element.setAttribute("data-scrollbar-initialized", "true");
@@ -571,7 +577,7 @@ function disableAnimation() {
             arrowNext: false,
             imageClickAction: "close",
             tapAction: "close",
-            doubleTapAction: "zoom",
+            doubleTapAction: "zoom"
         });
 
         lightbox.addFilter("domItemData", (itemData, element) => {
