@@ -116,7 +116,9 @@ const postUrl = decodeURIComponent(getPermalink(Astro.url).href);
         }
 
         <script define:vars={{ postUrl }}>
-            window.history.replaceState(undefined, "", postUrl);
+            window.addEventListener('load', () => {
+                window.history.replaceState(undefined, "", postUrl);
+            }, { once: true })
         </script>
 
         <!-- Set the theme before the page is rendered to avoid a flash -->
