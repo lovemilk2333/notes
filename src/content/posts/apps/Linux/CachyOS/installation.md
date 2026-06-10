@@ -632,6 +632,7 @@ __GL_THREADED_OPTIMIZATIONS=1
 禁用 CachyOS 自动测速软件源
 ```sh
 sudo systemctl disable --now cachyos-rate-mirrors.timer
+sudo systemctl mask cachyos-rate-mirrors.service
 ```
 
 依次修改如下文件

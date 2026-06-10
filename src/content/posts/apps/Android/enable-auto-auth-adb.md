@@ -12,11 +12,11 @@ category: app::android
 
 ## 先决条件
 1. 设备已解锁 Bootloader
-2. 系统为 `userdebug` 或 `eng` 构建
+2. **(仅方法 1)** 系统为 `userdebug` 或 `eng` 构建
 3. 手机使用有线连接至电脑
 4. 电脑中已安装并添加环境变量 Google 的 [Platform Tools](https://developer.android.com/tools/releases/platform-tools) (亦称 ADB)
 
-## 操作
+## 方法 1
 ### 1. 刷入第三方 Recovery
 为配置 ADB 自动授权, 需要使用 ADB Shell 覆写 `build.prop`  
 BTW, 非 Android 的本机的 ADB 密钥对位于 `~/.android/` 下的 `adbkey` 与 `adbkey.pub` 文件  
@@ -114,7 +114,7 @@ adb devices
 
 恭喜🎉! 现在您可以使用 ADB 连接了!
 
-## 修改 Data 分区的 ADB 已授权的公钥
+## 方法 2: 修改 Data 分区的 ADB 已授权的公钥
 ### 1. 按照 [刷入第三方 Recovery](#1-刷入第三方-recovery) 方法进入 ADB Shell
 但请注意: 该操作需要已经刷入的 Recovery, 而不能使用 `fastboot boot`
 
@@ -133,6 +133,10 @@ adb shell
 ```sh
 twrp decrypt <pin/password>
 ```
+<!-- 或使用 OrangeFox 的工具
+```sh
+fox decrypt
+``` -->
 
 2. 写入 `/data/misc/adb/adb_keys`  
 与 SSH 类似, 该文件是按行分割的公钥列表  
@@ -154,7 +158,7 @@ cat /tmp/adbkey.pub >> /data/misc/adb/adb_keys
 chattr +i /data/misc/adb/adb_keys
 ```
 
-这样, 新的使用 UI 上的 ADB 授权会写入 `/data/misc/adb/adb_keys.new`, 同时原本的授权公钥仍可用
+这样, UI 上的新的的 ADB 授权会写入 `/data/misc/adb/adb_keys.new`, 同时原本的授权公钥仍可用
 
 > 要再修改时, 请使用如下命令解除只读
 > ```sh
