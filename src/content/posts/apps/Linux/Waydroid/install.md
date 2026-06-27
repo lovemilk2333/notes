@@ -8,7 +8,7 @@ category: app::linux::waydroid
 ## 步骤参见:
 <https://github.com/casualsnek/waydroid_script>
 
-## 修复网络
+## 修复网路
 <https://github.com/waydroid/waydroid/issues/143#issuecomment-1520857943>
 
 (解释) 运行如下脚本

@@ -5,7 +5,7 @@ tags: [Linux, Debian, USB, ADB]
 category: deployment::WifiStick
 ---
 
-为了避免 Wifi Stick 的 USB 接口在仅 RNDIS (网络共享) 时 SSH 连接无效, 造成丢失对设备的访问性和可控性, 我们可以配置接口的救急模式, 自动在该模式下配置 ADB 设备连接
+为了避免 Wifi Stick 的 USB 接口在仅 RNDIS (网路共享) 时 SSH 连接无效, 造成丢失对设备的访问性和可控性, 我们可以配置接口的救急模式, 自动在该模式下配置 ADB 设备连接
 
 <!-- ## 配置主板按钮作为触发器
 目前, 我的方案是在配置 USB 接口时操控 LED 灯 (中的某个) 常亮, 在常亮期间按下 Wifi Stick 上按钮 >= 1s 代表进入 ADB 模式, 否则为默认的 RNDIS 模式

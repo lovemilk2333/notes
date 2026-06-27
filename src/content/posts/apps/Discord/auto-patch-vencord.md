@@ -5,6 +5,14 @@ tags: [Discord, VoiceChat, Vencord, Linux]
 category: app::discord
 ---
 
+
+> [!WARNING]
+> 本文章内容已无效
+> 
+> 由于 Pacman Hook 目前使用不同的 Namespace, 导致在 Hook 内无法访问非 `lo` 网卡以连接网路, 且无法获取到运行 `pacman` 的用户 (始终为 `root`), 导致不满足 VencordInstaller 对 user env 运行的需求, 从而无法安装
+> 
+> 如有需要, 可以将 `/path/to/your/script.sh` 加入 alias 例如 `alias install-vencord='sh /usr/local/bin/vencord.sh'` 以简化手动安装流程
+
 在 Archlinux 上使用包管理器 (Pacman) 安装/更新 Discord 时, 会导致 Vencord 的修补失效, 需要每次更新后手动修补, ~~这是十分不健康的行为~~
 
 为自动化上述行为, 我们需要用到 Pacman 的 hook
@@ -47,7 +55,7 @@ Exec = /usr/bin/env sh -c 'sh -c "/path/to/your/script.sh"'
 :::
 
 ```sh
-#!/bin/sh
+#!/usr/bin/env sh
 set -e
 
 # 定义传递给 Vencord 安装器的参数, 以静默自动安装

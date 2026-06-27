@@ -247,7 +247,7 @@ fi
 pactl set-default-sink "$VIRTUAL_SINK_NAME" >/dev/null 2>&1
 ```
 
-### Selkies 客户端网络环境无法访问 TURN/STUN Server 或者 443 端口, 导致无法建立连接
+### Selkies 客户端网路环境无法访问 TURN/STUN Server 或者 443 端口, 导致无法建立连接
 
 由于 Selkies 默认开启了 TURN/STUN Server, 无法访问的客户端会尝试连接并失败造成无法成功传输画面. 出现类似于如下日志
 
@@ -280,13 +280,13 @@ SELKIES_TURN_HOST=
 ```
 
 > [!NOTE]
-> 若仍然无法加载, 请检查网络环境 UDP 连通性
+> 若仍然无法加载, 请检查网路环境 UDP 连通性
 
-## 针对 UDP 不佳网络环境的共存部署 KasmVNC
+## 针对 UDP 不佳网路环境的共存部署 KasmVNC
 
 > <https://kasmweb.com/kasmvnc/docs/1.3.4/index.html>
 
-由于 WebRTC 很大程度上依赖 UDP, 并且在受限网络工况中表现不佳, 我们可以使用 KasmVNC 与 Selkies 同时部署的方式, 使得客户端可以选择一个合适的 WebUI 操控方案
+由于 WebRTC 很大程度上依赖 UDP, 并且在受限网路工况中表现不佳, 我们可以使用 KasmVNC 与 Selkies 同时部署的方式, 使得客户端可以选择一个合适的 WebUI 操控方案
 
 ### 安装 KasmVNC
 

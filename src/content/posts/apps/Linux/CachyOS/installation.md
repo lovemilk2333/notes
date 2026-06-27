@@ -15,7 +15,7 @@ description: 本文主要介绍 CachyOS 的安装方法, 配置 Niri 桌面环�
 下载 CachyOS [官方 ISO](https://cachyos.org/download), 使用交互式安装器安装
 
 > [!NOTE]
-> 由于在 CachyOS Live CD 环境内, 其安装器是从云端 (GitHub) 拉取的, 请确保网络可访问性与连接通畅
+> 由于在 CachyOS Live CD 环境内, 其安装器是从云端 (GitHub) 拉取的, 请确保网路可访问性与连接通畅
 >
 > 对于拥有多个显示器的与用户, 请注意安装器是否从 **非主要** *(或者你没有注意到的)* **显示器** 弹出, 从而无辜等待安装器下载, ~~浪费人生~~
 
@@ -582,7 +582,7 @@ sudo yay -Sy microsoft-edge-stable-bin
 
 一个可能的解决方法是, 禁用浏览器内的 *Use Updated UI for Global Media Controls* Flag
 
-可以导航至 <edge://flags/#edge-global-media-controls-updated-ui>, 然后选择 `Disabled` 并重启浏览器
+可以导航至 <edge://flags/#edge-global-media-controls-updated-ui> 选择 `Disabled`, 并重启浏览器
 
 ### 使用 Prismlauncher 安装 Minecraft 整合包时出现文件损坏
 > https://www.reddit.com/r/PrismLauncher/comments/1ifpbgp/issue_with_modpacks/
@@ -840,7 +840,7 @@ spawn-at-startup "dex" "~/.config/autostart/*.desktop"
 ```
 
 ### 解决非 UTC 时区用户 Linux 与 Windows 时间相差 UTC $\pm n$ 小时的问题
-在默认情况下, Linux 使用 UTC 硬件时钟, 而 Windows 使用本地时间硬件时钟. 当 Linux 同步网络时间并将当前 UTC 时间写入硬件时钟后, Windows 误认为当前的 UTC 时间为本地时间, 造成与实际时间存在不一致的情况
+在默认情况下, Linux 使用 UTC 硬件时钟, 而 Windows 使用本地时间硬件时钟. 当 Linux 同步网路时间并将当前 UTC 时间写入硬件时钟后, Windows 误认为当前的 UTC 时间为本地时间, 造成与实际时间存在不一致的情况
 
 一般来说, 可以将 Windows 存储的硬件时间设置为 UTC 以解决问题. 在 **Windows** 上 (以管理员身份) 运行如下 CMD 命令, 即可添加注册表项以告知 Windows 使用 UTC 硬件时钟
 
@@ -879,3 +879,5 @@ recent-windows {
 ```ini
 flat-volumes = no
 ```
+
+对于 Chromium, 为了避免在通话 (WebRTC) 时自动调节麦克风增益大小, 请转到 <chrome://flags/#enable-webrtc-allow-input-volume-adjustment> 选择 `Disabed`, 并重启浏览器

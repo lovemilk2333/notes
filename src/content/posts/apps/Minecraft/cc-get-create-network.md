@@ -32,8 +32,8 @@ local createNetwork = nbt['Network']
 {
     Capacity: float,  -- 总应力
     Stress: float, -- 已用应力
-    Id: number,  -- 网络 ID (定义未知)
-    Size: int, -- 网络大小 (定义未知)
+    Id: number,  -- 网路 ID (定义未知)
+    Size: int, -- 网路大小 (定义未知)
 }
 ```
 

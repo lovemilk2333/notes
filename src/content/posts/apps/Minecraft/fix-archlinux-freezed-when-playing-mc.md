@@ -5,7 +5,7 @@ tags: [Minecraft, Linux]
 category: app::minecraft
 ---
 
-在 ArchLinux 内核版本 > (不含) `6.16.7`[^why-6-16-7] 时, 使用模组 *spark* 会导致系统, SSH 连接, 网络连接卡死, ICMP 正常回复.
+在 ArchLinux 内核版本 > (不含) `6.16.7`[^why-6-16-7] 时, 使用模组 *spark* 会导致系统, SSH 连接, 网路连接卡死, ICMP 正常回复.
 
 ## 解决方法
 卸载该模组, 若确有需要的, 请留意 [ISSUE 与 修复进展](https://github.com/lucko/spark/issues/530)
