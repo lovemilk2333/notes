@@ -70,7 +70,8 @@ sudo teleport configure -o file \
 > 
 > 
 > ```sh
-> sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+> sudo openssl req -x509 -nodes -days 3650 \
+> -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 \
 > -keyout /var/lib/teleport/privkey.pem \
 > -out /var/lib/teleport/fullchain.pem \
 > -config teleport-ext.cnf
