@@ -108,6 +108,14 @@ https://<domain>:<port>/web/invite/<id>
 
 在 WebUI 中选择 *Add New > Resource*, 按照流程添加即可
 
+对于任意基于 Glibc 的 Linux 发行版进行安装, 选择 `Debian 11+ SSH` 即可  
+若显示 `VERSION_ID` 不存在, 可以将安装脚本修改为类似
+```sh
+sudo VERSION_ID='rolling' bash -c "$(curl -fsSL https://<url>/install-node.sh)"
+```
+
+使用 musl 的系统原生无法安装 Teleport
+
 > [!NOTE]
 > 为了避免 Node 添加状态出现问题, 在进入添加流程至至成功前, 请不要刷新页面, 也不要在同一服务器重复运行 Agent 安装程序
 
@@ -152,6 +160,12 @@ tsh ls
 ```sh
 tsh ssh [<user>@]<node>
 ```
+
+> [!NOTE]
+> 如果在使用 `systemctl --user` 命令时显示 `Failed to connect to bus: No medium found`, 请在每个用户登录后运行如下命令
+> ```sh
+> export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+> ```
 
 ## 备份 Teleport
 为了避免单点故障造成数据丢失, 我们需要对 Teleport 数据进行备份
