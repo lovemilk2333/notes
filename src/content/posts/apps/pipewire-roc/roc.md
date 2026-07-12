@@ -106,3 +106,6 @@ Receiver: 播放音频侧, 将被推送的音频播放
 2. 打开应用并在必要时将 "耗电行为控制" 改为 "无限制"
 
 3. 选择 "Sender" 面板, 修改 IP 地址为 PC IP 地址, 并选择 "Currently playing apps" 或 "Microphone" 作为输入源, 并单击 "START SENDER" 即可
+
+## 延迟表现
+个人体感上来说, ROC 的延迟略大于 Sunshine + Moonlight, 但是整体在可接受范围内, 并且是纯音频传输 (Moonlight 在不使用第三方修改版情况下只能同时传输音频和视频)
