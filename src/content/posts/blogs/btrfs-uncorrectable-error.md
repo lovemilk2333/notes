@@ -79,7 +79,7 @@ checksum verify failed on xxx wanted 0xxxx found 0xxxx
 > 扫描到的魔法头地址, 但是没一个可以用的
 
 ## 结果
-最终, 似乎还是未能恢复数据, 好在我的项目基本上是由备份的, 可惜我的 Minecraft 存档和 JetBrains 全家桶 的配置就永不得见日了
+最终, 似乎还是未能恢复数据, 好在我的项目基本上是有备份的, 可惜我的 Minecraft 存档和 JetBrains 全家桶 的配置就永不得见日了
 
 ~~目前来说, 我还未擦除硬盘该分区的数据, 如果有能力者可以尝试在 [Github Discussions](https://aka.lovemilk.top/github/notes/discussions) 发出你的解决方法, 至少可以给我一线生机吧...~~
 

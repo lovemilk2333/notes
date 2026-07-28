@@ -20,7 +20,12 @@ sudo sed -i~ -E 's/=.\$\(command -v (nft|ip6?tables-legacy).*/=/g' \
 手动编辑 `/var/lib/waydroid/waydroid_base.prop`
 
 ## 使用 NVIDIA 显卡
-:::warning
+参考 <https://github.com/Shiro836/waydroid-nvidia> README 安装
+
+> [!NOTE]
+> 对于带有核显的笔记本请开启独显直连, 台式机请将显示器插在独显上
+
+<!-- :::warning
 修改后如果出现:
 ```log
 ❯ waydroid show-full-ui
@@ -35,7 +40,7 @@ sudo sed -i~ -E 's/=.\$\(command -v (nft|ip6?tables-legacy).*/=/g' \
 
 <https://github.com/waydroid/waydroid/issues/278#issuecomment-1015633023>
 
-> 注意: 不要直接修改, 请先将默认值备份
+> 注意: 不要直接修改, 请先将默认值备份 -->
 
 ## 无法登陆 Google 账户
 前往如下网站填入 `Google服务框架 Android ID` (使用 `waydroid_script` 可以获取)
