@@ -880,4 +880,30 @@ recent-windows {
 flat-volumes = no
 ```
 
+同时修改
+```path
+/etc/pipewire/pipewire-pulse.conf.d/block-agc.conf
+```
+写入
+```ini
+pulse.rules = [
+    {
+        matches = [
+            {
+            stream.is-capture = true
+            }
+        ]
+        actions = {
+            quirks = [ block-source-volume ]
+        }
+    }
+]
+```
+
+后重启 Pipewire 服务
+
+```sh
+systemctl --user restart pipewire pipewire-pulse wireplumber
+```
+
 对于 Chromium, 为了避免在通话 (WebRTC) 时自动调节麦克风增益大小, 请转到 <chrome://flags/#enable-webrtc-allow-input-volume-adjustment> 选择 `Disabed`, 并重启浏览器

@@ -49,3 +49,12 @@ sudo sed -i~ -E 's/=.\$\(command -v (nft|ip6?tables-legacy).*/=/g' \
 ## 共享剪切板
 <https://github.com/waydroid/waydroid/issues/1113#issuecomment-2468967358>  
 <https://github.com/waydroid/waydroid/issues/1113#issuecomment-2513210548>
+
+## 部分应用不支持鼠标事件
+> <https://docs.bazzite.gg/Installing_and_Managing_Software/Waydroid_Setup_Guide/#mouse-clicks-to-touch-input>
+```sh
+waydroid prop set persist.waydroid.fake_touch "<app-id>"
+```
+其中, `app-id` 为软件包名或包名通配符 (例如 `"com.example.app.*"`), 使用该命令启用 Waydroid Mouse-Touch 转换
+
+如果仍未成功, 可以尝试在宿主机系统内 (Linux 内) 就产生触控事件, 例如使用数位板点击
