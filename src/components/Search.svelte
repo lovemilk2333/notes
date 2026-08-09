@@ -13,6 +13,8 @@
     let pagefindLoaded = false;
     let initialized = false;
 
+    let searchInput: HTMLInputElement;
+
     const fakeResult: SearchResult[] = [
         {
             url: url("/"),
@@ -83,6 +85,33 @@
         }
     };
 
+    const onSlashKeydown = (e: KeyboardEvent) => {
+        if (e.key !== "/") return;
+
+        const target = e.target as HTMLElement | null;
+        const tag = target?.tagName;
+        if (
+            tag === "INPUT" ||
+            tag === "TEXTAREA" ||
+            tag === "SELECT" ||
+            target?.isContentEditable
+        ) {
+            return;
+        }
+
+        e.preventDefault();
+
+        const desktopBar = document.getElementById("search-bar");
+        const isDesktop = !!desktopBar && getComputedStyle(desktopBar).display !== "none";
+
+        if (isDesktop) {
+            desktopBar.querySelector<HTMLInputElement>("input")?.focus();
+        } else {
+            document.getElementById("search-panel")?.classList.remove("float-panel-closed");
+            document.querySelector<HTMLInputElement>("#search-bar-inside input")?.focus();
+        }
+    };
+
     onMount(() => {
         const initializeSearch = () => {
             initialized = true;
@@ -129,6 +158,8 @@
     }
 </script>
 
+<svelte:window on:keypress="{onSlashKeydown}" />
+
 <!-- search bar for desktop view -->
 <div
     id="search-bar"
@@ -143,6 +174,7 @@
     ></Icon>
     <input
         placeholder={i18n(I18nKey.search)}
+        id="search-input"
         bind:value={keywordDesktop}
         on:focus={() => search(keywordDesktop, true)}
         class="transition-all pl-10 text-sm bg-transparent outline-0
