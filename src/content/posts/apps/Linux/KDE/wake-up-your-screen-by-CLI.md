@@ -6,15 +6,21 @@ category: app::linux::KDE
 ---
 
 ## 描述
+
 sunshine 串流软件在显示器关闭情况下无法连接, 会发生 `503` 错误
 
 ## 解决
+
 如下指令可以使显示器在熄屏(睡眠和休眠未经测试)状态下亮屏
+
 ```sh
 kscreen-doctor --dpms on
 ```
-> 该操作需要在桌面环境的会话运行, SSH 无法使用  
-> 我目前使用一个仅监听 `127.0.0.1` 的服务, 该服务由 KDE 自启动, 然后在 SSH `curl` 指定的 endpoint, 在服务内部运行上述指令
+
+对于使用 [SDDM](https://github.com/sddm/sddm) 的用户, 可能需要手动将 `$WAYLAND_DISPLAY` 设为 `wayland-1`, 因为 SDDM 与 KDE Plasma 不在同一个 *WAYLAND_DISPLAY* 中
+
+对于使用 [Plasma Login Manager](https://invent.kde.org/plasma/plasma-login-manager/) 的用户则无须配置, 因为两者运行于同一 *WAYLAND_DISPLAY*
 
 ## See Also
+
 [自定义显示器分辨率和/或刷新率](../../Display/custom-edid)
