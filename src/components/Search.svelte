@@ -114,6 +114,38 @@
                 }
             }, 2000); // Adjust timeout as needed
         }
+
+        const onSlashKeydown = (e: KeyboardEvent) => {
+            if (e.key !== "/") return;
+
+            const target = e.target as HTMLElement | null;
+            const tag = target?.tagName;
+            if (
+                tag === "INPUT" ||
+                tag === "TEXTAREA" ||
+                tag === "SELECT" ||
+                target?.isContentEditable
+            ) {
+                return;
+            }
+
+            e.preventDefault();
+
+            const desktopBar = document.getElementById("search-bar");
+            const isDesktop = !!desktopBar && getComputedStyle(desktopBar).display !== "none";
+
+            if (isDesktop) {
+                desktopBar.querySelector<HTMLInputElement>("input")?.focus();
+            } else {
+                document.getElementById("search-panel")?.classList.remove("float-panel-closed");
+                document
+                    .querySelector<HTMLInputElement>("#search-bar-inside input")
+                    ?.focus();
+            }
+        };
+
+        window.addEventListener("keydown", onSlashKeydown);
+        return () => window.removeEventListener("keydown", onSlashKeydown);
     });
 
     $: if (initialized && keywordDesktop) {
