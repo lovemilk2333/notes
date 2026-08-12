@@ -1,6 +1,6 @@
 ---
 title: Wifi Stick (随身 WIFI 棒子) 基础安装配置
-published: 2026-06-19
+published: 2026-08-13
 tags: [Linux, Debian, RNDIS, USB]
 category: deployment::WifiStick
 ---
