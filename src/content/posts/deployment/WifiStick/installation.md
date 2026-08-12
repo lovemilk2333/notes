@@ -151,7 +151,6 @@ nmcli connection show
 ### 软件包换源
 
 为了加速在中国大陆境内的软件下载速度, 推荐更换 APT 软件源
-ye
 
 > [!NOTE]
 > 下载速度过慢可以查看 [Wifi Stick 连接 WIFI 后速率过慢](#wifi-stick-连接-wifi-后速率过慢)
@@ -211,6 +210,7 @@ sudo systemctl disable --now mobian-setup-usb-network.service
 #### 安装接口模式切换工具
 
 1. 下载可执行文件
+
 前往 [lovemilk2333/wifi-stick-usb-switcher | GitHub Releases](https://github.com/lovemilk2333/wifi-stick-usb-switcher/releases/latest) 下载对应 CPU 架构的可执行文件压缩包, 一般为 `cli-linux-arm64` (注意不要下成 `cli-linux-amd64`)
 
 解压并将 `cli` 保存为 `/usr/local/bin/usb-switcher`
@@ -222,6 +222,7 @@ sudo chmod +x /usr/local/bin/usb-switcher
 
 
 2. 配置启动脚本
+
 > 来自 <https://github.com/lovemilk2333/wifi-stick-usb-switcher/raw/main/scripts/test.sh.example>
 
 在
@@ -301,11 +302,13 @@ sudo systemctl enable --now wifi-stick-usb-switcher.service
 #### 创建文件分享与上传专用用户及其文件夹
 
 1. 以特定 UID 创建用户
+
 ```sh
 sudo useradd -u 3443 -m file
 ```
 
 2. 创建文件夹并保留写入的 Group
+
 ```sh
 sudo mkdir -p /www/files
 sudo chown file:file -R /www/files
@@ -368,7 +371,9 @@ sudo systemctl enable --now dufs.service
 ```
 
 #### 配置 Caddy
+
 1. 安装 Caddy
+
 > <https://caddyserver.com/docs/install>
 
 ```sh
