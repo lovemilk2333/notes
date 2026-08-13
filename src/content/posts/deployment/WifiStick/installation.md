@@ -1,7 +1,7 @@
 ---
 title: Wifi Stick (随身 WIFI 棒子) 基础安装配置
 published: 2026-08-13
-tags: [Linux, Debian, RNDIS, USB]
+tags: [Linux, Debian, RNDIS, USB, Caddy, ReversedProxy]
 category: deployment::WifiStick
 ---
 
@@ -416,6 +416,10 @@ sudo systemctl enable --now caddy.service
 ```
 
 ```Caddyfile
+{
+    auto_https disable_redirects
+}
+
 # 80 与 3000 端口 HTTP
 :80, :3000 {
     reverse_proxy 127.0.0.1:5000
@@ -423,9 +427,8 @@ sudo systemctl enable --now caddy.service
 
 
 # 443 与 3001 端口 HTTPS, 修改 `10.22.33.1` 为你的 IP
-10.22.33.1:443, 10.22.33.1:3001 {
+https://10.22.33.1:443, https://10.22.33.1:3001 {
     tls internal
-
     reverse_proxy 127.0.0.1:5000
 }
 ```
