@@ -469,6 +469,89 @@ sudo systemctl reload caddy.service
 
 至此, 你的 Wifi Stick 就可以作为一个随身 U 盘使用了 :\)
 
+
+### [可选] 配置 Webshell
+
+在一些情况下, 连接 Wifi Stick 的宿主机可能没有 SSH 套件, 或不能打开终端, 这会使得我们在一些时候难以连接至 Wifi Stick 修改配置或运行脚本
+
+但在大部分情况下, 宿主机会有浏览器, 尤其是基于 Chromium 的浏览器, 所以我们可以配置 Webshell, 以便随时随地通过浏览器访问 Wifi Stick 命令行
+
+#### 安装 ttyd
+
+> ttyd is a simple command-line tool for sharing terminal over the web
+
+```sh
+sudo apt install ttyd
+```
+
+<!-- https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.aarch64 -->
+
+若 apt 无法安装 ttdy, 可以从 [tsl0922/ttyd | GitHub Releases](https://github.com/tsl0922/ttyd/releases/latest) 下载对应 CPU 架构的 ELF并保存至
+
+```path
+/usr/local/bin/ttyd
+```
+
+#### 配置 ttyd Systemd Unit
+
+创建服务
+
+```path
+/etc/systemd/system/ttyd.service
+```
+
+```ini
+[Unit]
+Description=ttyd
+
+[Service]
+User=<user>  # edit this
+Group=<group>  # edit this
+Type=fork
+# 若老旧设备无法渲染终端, 可添加 `-t rendererType=dom` 禁用 WebGL
+ExecStart=/usr/bin/env ttyd -i 127.0.0.1 -p 7681 -w "$HOME" -W bash  # or any shell you want
+
+[Install]
+WantedBy=multi-user.target
+```
+
+重载并启用服务
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now ttyd.service
+```
+
+#### 配置 Caddy
+
+```path
+/etc/caddy/Caddyfile
+```
+
+按需求配置端口
+
+```Caddyfile
+# 修改 `10.22.33.1` 为你的 IP, 端口号自行修改
+https://10.22.33.1:2222 {
+    tls internal
+
+    # HTTP Basic Auth 鉴权, 修改用户密码
+    # 密码使用 `caddy hash-password` 生成
+    basic_auth {
+        # user:password
+        user $2a$14$hCju96r6iSA552fkUUfWrO0tjC1w0otjkfHazbQLIHpXjoRB9vcoO
+    }
+
+    reverse_proxy 127.0.0.1:7681
+}
+```
+
+重载 Caddy 配置
+
+```sh
+sudo systemctl reload caddy.service
+```
+
+
 ## 其他配置 / See Also
 
 ### 连接 RNDIS 设备
@@ -640,4 +723,40 @@ sudo rm -rf /usr/share/ri
 ```sh
 sudo apt install localepurge
 sudo localepurge
+```
+
+### Systemd 与 screen 配合运作
+一些游戏服务端需要接收 stdin 输入服务端命令, 但使用 Systemd 运行的 Service 不能交互式传入 stdin
+
+为解决该问题, 我们可以使用 Systemd 运行 Screen
+
+```sh
+# start.sh
+#!/bin/bash
+
+set -e
+
+SCREEN_NAME='name'
+COMMAND='example-command-like java -jar server.jar'
+
+# if [ -n "$INVOCATION_ID" ]; then
+#     COMMAND="$COMMAND 2>&1 | tee >(systemd-cat -t '$SCREEN_NAME')"
+# fi
+
+screen -dmS "$SCREEN_NAME" /bin/bash -c "$COMMAND 2>&1"
+```
+
+```ini
+# example.service
+[Unit]
+Description=Example
+After=network.target
+
+[Service]
+Type=forking
+WorkingDirectory=/path/to/workdir
+ExecStart=/bin/bash start.sh
+
+[Install]
+WantedBy=multi-user.target
 ```
