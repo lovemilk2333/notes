@@ -256,6 +256,7 @@ sudo chmod +x /usr/local/lib/usb-switcher/start.sh
 ```ini
 [Unit]
 Description=wifi-stick-usb-switcher
+After=network.target
 
 [Service]
 Type=fork
@@ -405,7 +406,32 @@ sudo apt install caddy
 
 2. 启用 Caddy 服务
 
+为了避免没有网络连接导致 Caddy 不启动, 我们需要编辑 Caddy Service
+
 ```sh
+sudo systemctl edit caddy.service
+```
+
+在上方注释下
+```ini
+### Editing /etc/systemd/system/caddy.service.d/override.conf
+### Anything between here and the comment below will become the new contents of the file
+```
+
+写入
+
+```ini
+[Unit]
+Requires=
+After=
+After=network.wants
+```
+
+以清空 `Requires` 并将 `After` 替换为 `network.wants`
+
+重载并启动
+```sh
+sudo systemctl daemon-reload
 sudo systemctl enable --now caddy.service
 ```
 
