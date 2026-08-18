@@ -256,7 +256,6 @@ sudo chmod +x /usr/local/lib/usb-switcher/start.sh
 ```ini
 [Unit]
 Description=wifi-stick-usb-switcher
-After=network.target
 
 [Service]
 Type=fork
