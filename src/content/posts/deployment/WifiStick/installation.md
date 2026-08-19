@@ -489,7 +489,7 @@ sudo apt install ttyd
 /usr/local/bin/ttyd
 ```
 
-#### 配置 ttyd Systemd Unit
+#### 配置 ttyd 服务
 
 创建服务
 
@@ -557,11 +557,13 @@ sudo systemctl reload caddy.service
 
 将 Wifi Stick 插入 Windows 设备的 USB 接口
 
-部分固件可以直接被识别为 RNDIS 设备. 在未配置 USB 模式切换情况下, 若固件使用了融合接口, 使 Wifi Stick 同时提供了 RNDIS 设备和 ADB 设备,  应该可以在 Windows 侧看到一个驱动未安装 (代码: 28) 的 RNDIS 设备 (位于 *其他设备* 类别), 要解决该问题, 请参阅 [部分情况下在 Windows 上显示 RNDIS 设备但是代码 28](#部分情况下在-windows-上显示-rndis-设备但是代码-28)
+部分固件可以直接被识别为 RNDIS 设备. 在未配置 USB 模式切换情况下, 若固件使用了融合接口, 使 Wifi Stick 同时提供了 RNDIS 设备和 ADB 设备,  应该可以在 Windows 侧看到一个驱动未安装 (代码: 28) 的 RNDIS 设备 (位于 *其他设备* 类别)
 
 双击该设备, 单击 "更新驱动程序" > "浏览我的电脑以查找驱动程序" > "让我从计算机的可用驱动程序列表中选取" > 在 "常见硬件类型" 内选择 "网路适配器" > 厂商选择 "Microsoft", 型号选择最下面的 "远程 NDIS 兼容设备" (Windows 7 操作系统厂商选择 "Microsoft Corporation", 型号选择 "Remote NDIS Compatible Device") > "下一页" > "是" (强制安装驱动程序)
 
 此时, 可以看到 Windows 弹出一个新的网路连接, 也新增了一个网路适配器, 并获取到了 IP 地址
+
+若在强制指定驱动程序后电脑自动重启, 请参阅 [部分情况下在 Windows 上显示 RNDIS 设备但是代码 28](#部分情况下在-windows-上显示-rndis-设备但是代码-28) 解决问题
 
 > 如果无法获取 IP 地址, 请尝试在 Wifi Stick 安装 Dnsmasq (不需要手动启用服务, 会由 NetworkManager 调起), 使用
 >
@@ -761,7 +763,9 @@ WantedBy=multi-user.target
 
 为解决此问题, 我们可以在指定驱动后不关闭 RNDIS 配置窗口, 知道需要关机或重启时直接进行电源操作
 
-或是 **将 [接口模式切换工具](#配置-usb-接口模式) 更新至 `Commit: bee5ce4cfc6db21a42bb11dc6e1a8d0cb2a68b8c` ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/bee5ce4cfc6db21a42bb11dc6e1a8d0cb2a68b8c) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-055c96e)) 或更新版本**, 在这些版本中, 我们修改了 RNDIS USB Gadget 的供应商 ID 和产品 ID, 以便使 Windows 可以 ~~非常高兴~~ 地认可我们的 RNDIS 设备
+或是 **将 [接口模式切换工具](#配置-usb-接口模式) 更新至 `Commit: bee5ce4cfc6db21a42bb11dc6e1a8d0cb2a68b8c` ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/bee5ce4cfc6db21a42bb11dc6e1a8d0cb2a68b8c) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-055c96e)) 或更新版本**
+
+在这些版本中, 我们修改了 RNDIS USB Gadget 的供应商 ID 和产品 ID, 以便使 Windows 可以绕过 MS OS descriptors 检查直接 ~~非常高兴~~ 地认可我们的 RNDIS 设备
 
 > [!TIP]
 > 如果你想查看 USB 接口信息以便调试, 可以下载 [USB Viewer](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/usbview)
