@@ -5,6 +5,10 @@ tags: [Linux, Debian, USB, ADB]
 category: deployment::WifiStick
 ---
 
+> [!NOTE]
+> 本文内容可能已过时  
+> 本文更新版的内容已被整合至 [Wifi Stick (随身 WIFI 棒子) 基础安装配置](/posts/deployment/WifiStick/installation)
+
 为了避免 Wifi Stick 的 USB 接口在仅 RNDIS (网路共享) 时 SSH 连接无效, 造成丢失对设备的访问性和可控性, 我们可以配置接口的救急模式, 自动在该模式下配置 ADB 设备连接
 
 <!-- ## 配置主板按钮作为触发器

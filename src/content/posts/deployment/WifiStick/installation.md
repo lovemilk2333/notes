@@ -211,7 +211,7 @@ sudo systemctl disable --now mobian-setup-usb-network.service
 
 1. 下载可执行文件
 
-前往 [lovemilk2333/wifi-stick-usb-switcher | GitHub Releases](https://github.com/lovemilk2333/wifi-stick-usb-switcher/releases/latest) 下载对应 CPU 架构的可执行文件压缩包, 一般为 `cli-linux-arm64` (注意不要下成 `cli-linux-amd64`)
+前往 [wifi-stick-usb-switcher | GitHub Releases](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/latest) 下载对应 CPU 架构的可执行文件压缩包, 一般为 `cli-linux-arm64` (注意不要下成 `cli-linux-amd64`)
 
 解压并将 `cli` 保存为 `/usr/local/bin/usb-switcher`
 
@@ -223,7 +223,7 @@ sudo chmod +x /usr/local/bin/usb-switcher
 
 2. 配置启动脚本
 
-> 来自 <https://github.com/lovemilk2333/wifi-stick-usb-switcher/raw/main/scripts/test.sh.example>
+> 来自 <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/raw/main/scripts/test.sh.example>
 
 在
 ```path
@@ -483,8 +483,6 @@ sudo systemctl reload caddy.service
 sudo apt install ttyd
 ```
 
-<!-- https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.aarch64 -->
-
 若 apt 无法安装 ttdy, 可以从 [tsl0922/ttyd | GitHub Releases](https://github.com/tsl0922/ttyd/releases/latest) 下载对应 CPU 架构的 ELF并保存至
 
 ```path
@@ -559,9 +557,7 @@ sudo systemctl reload caddy.service
 
 将 Wifi Stick 插入 Windows 设备的 USB 接口
 
-此时, 部分固件可以直接被识别为 RNDIS 设备, 但若固件使用了融合接口, 使 Wifi Stick 同时提供了 RNDIS 设备和 ADB 设备, 需要手动配置设备类型
-
-需要手动配置设备类型时, 应该可以在 Windows 侧看到一个驱动未安装 (代码: 28) 的 RNDIS 设备 (位于 _其他设备_ 类别)
+部分固件可以直接被识别为 RNDIS 设备. 在未配置 USB 模式切换情况下, 若固件使用了融合接口, 使 Wifi Stick 同时提供了 RNDIS 设备和 ADB 设备,  应该可以在 Windows 侧看到一个驱动未安装 (代码: 28) 的 RNDIS 设备 (位于 *其他设备* 类别), 要解决该问题, 请参阅 [部分情况下在 Windows 上显示 RNDIS 设备但是代码 28](#部分情况下在-windows-上显示-rndis-设备但是代码-28)
 
 双击该设备, 单击 "更新驱动程序" > "浏览我的电脑以查找驱动程序" > "让我从计算机的可用驱动程序列表中选取" > 在 "常见硬件类型" 内选择 "网路适配器" > 厂商选择 "Microsoft", 型号选择最下面的 "远程 NDIS 兼容设备" (Windows 7 操作系统厂商选择 "Microsoft Corporation", 型号选择 "Remote NDIS Compatible Device") > "下一页" > "是" (强制安装驱动程序)
 
@@ -759,3 +755,18 @@ ExecStart=/bin/bash start.sh
 [Install]
 WantedBy=multi-user.target
 ```
+
+### 部分情况下在 Windows 上显示 RNDIS 设备但是代码 28
+一些情况下, USB 可能因为缺少或存在无法识别/类型错误的 [Microsoft OS descriptors for USB devices](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/microsoft-defined-usb-descriptors) 导致显示设备异常 (如代码 28), 部分老旧的 Windows 甚至会在 [手动指定设备驱动](#连接-windows-设备) 后关闭对话框时重启 Windows, 导致在部分被设置有开机还原系统 (如冰点还原) 上使用不便
+
+为解决此问题, 我们可以在指定驱动后不关闭 RNDIS 配置窗口, 知道需要关机或重启时直接进行电源操作
+
+或是 **将 [接口模式切换工具](#配置-usb-接口模式) 更新至 `Commit: bee5ce4cfc6db21a42bb11dc6e1a8d0cb2a68b8c` ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/bee5ce4cfc6db21a42bb11dc6e1a8d0cb2a68b8c) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-055c96e)) 或更新版本**, 在这些版本中, 我们修改了 RNDIS USB Gadget 的供应商 ID 和产品 ID, 以便使 Windows 可以 ~~非常高兴~~ 地认可我们的 RNDIS 设备
+
+> [!TIP]
+> 如果你想查看 USB 接口信息以便调试, 可以下载 [USB Viewer](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/usbview)
+
+<!-- ### 将 Wifi 设置为 Host 模式
+部分情况下, 一些设备可能无法使用 USB 接口传输数据, 为了应对各种工况, 我们可以配置 Wifi Host 模式 (类似于 Wifi 热点) 并与 RNDIS 使用同一个 Host IP, 以便实现用户操作透明转换 (不需要手动修改 URL/IP 地址)
+
+TODO -->
