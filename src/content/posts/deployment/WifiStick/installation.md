@@ -441,8 +441,15 @@ sudo systemctl enable --now caddy.service
 ```
 
 ```Caddyfile
-{
-    auto_https disable_redirects
+{  # 全局配置
+}
+
+
+(internal_tls) {
+    tls {
+        issuer internal
+        on_demand  # 按照 domain/IP 动态生成 TLS 证书
+    }
 }
 
 # 80 与 3000 端口 HTTP
@@ -452,11 +459,28 @@ sudo systemctl enable --now caddy.service
 
 
 # 443 与 3001 端口 HTTPS, 修改 `10.22.33.1` 为你的 IP
-https://10.22.33.1:443, https://10.22.33.1:3001 {
-    tls internal
+:443, :3001 {
+    import internal_tls
     reverse_proxy 127.0.0.1:5000
 }
 ```
+
+> [!WARNING]
+> 动态生成 TLS 证书仅限受信任环境, 无校验情况下任意域名均可作为合法的 TLS 目标 Host
+> 
+> 要在非可信环境下动态生成 TLS 证书, 请配置 **TLS 签发名称质询服务**
+> 
+> ```Caddyfile
+> {  # 全局配置
+>   on_demand_tls {
+>       ask <URL>
+>   }
+> }
+> ```
+> 
+> Caddy 会请求 `<URI>?domain=<domain>`, 并在 API 返回非 200 时拒绝生成 TLS 证书
+> 
+> 完整实现与配置请参阅 [Caddy 动态 TLS 签发名称质询服务](#caddy-动态-tls-签发名称质询服务)
 
 4. 重载 Caddy 配置
 
@@ -528,8 +552,8 @@ sudo systemctl enable --now ttyd.service
 
 ```Caddyfile
 # 修改 `10.22.33.1` 为你的 IP, 端口号自行修改
-https://10.22.33.1:2222 {
-    tls internal
+:2222 {
+    import internal_tls
 
     # HTTP Basic Auth 鉴权, 修改用户密码
     # 密码使用 `caddy hash-password` 生成
@@ -774,3 +798,52 @@ WantedBy=multi-user.target
 部分情况下, 一些设备可能无法使用 USB 接口传输数据, 为了应对各种工况, 我们可以配置 Wifi Host 模式 (类似于 Wifi 热点) 并与 RNDIS 使用同一个 Host IP, 以便实现用户操作透明转换 (不需要手动修改 URL/IP 地址)
 
 TODO -->
+
+### Caddy 无法在 Windows 7 运行
+> <https://github.com/caddyserver/caddy/issues/3076>
+
+安装旧版本 (不高于 Caddy v2.7.0) 的 Caddy 即可
+
+[v2.7.0 / caddyserver/caddy | GitHub Release](https://github.com/caddyserver/caddy/releases/tag/v2.7.0)
+
+### Caddy 动态 TLS 签发名称质询服务
+为了保证 Caddy 动态生成的 TLS 证书为合法的 Host, 我们需要配置 **TLS 签发名称质询服务**
+
+一个简单的 Go 实现 *仅限私有 IP* 参见 [tools/caddy-tls-ask/main.go | wifi-stick-usb-switcher.go](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/blob/main/tools/caddy-tls-ask/main.go)
+
+```Caddyfile
+{  # 全局配置
+    on_demand_tls {
+        ask http://127.0.0.1:50996/
+    }
+}
+```
+
+创建服务
+```path
+/etc/systemd/system/caddy-tls-ask.service
+```
+
+```ini
+[Unit]
+Description=caddy-tls-ask
+
+[Service]
+Type=fork
+ExecStart=/path/to/caddy-tls-ask
+
+[Install]
+WantedBy=multi-user.target
+```
+
+重载并启用服务
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now caddy-tls-ask.service
+```
+
+重载 Caddy 配置
+
+```sh
+sudo systemctl reload caddy.service
+```
