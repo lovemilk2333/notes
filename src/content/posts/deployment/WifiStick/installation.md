@@ -220,6 +220,10 @@ sudo systemctl disable --now mobian-setup-usb-network.service
 sudo chmod +x /usr/local/bin/usb-switcher
 ```
 
+安装依赖
+```sh
+sudo apt install dnsmasq udhcpc
+```
 
 2. 配置启动脚本
 
@@ -517,6 +521,8 @@ sudo apt install ttyd
 
 创建服务
 
+为了保证我们可以作为用户正常登录, 并带有用户环境变量 (以便运行 `systemctl --user`), 我们需要使用 `login` 作为 ttyd 的目标启动程序
+
 ```path
 /etc/systemd/system/ttyd.service
 ```
@@ -526,11 +532,11 @@ sudo apt install ttyd
 Description=ttyd
 
 [Service]
-User=<user>  # edit this
-Group=<group>  # edit this
-Type=fork
+Type=simple
+WorkingDirectory=%h
 # 若老旧设备无法渲染终端, 可添加 `-t rendererType=dom` 禁用 WebGL
-ExecStart=/usr/bin/env ttyd -i 127.0.0.1 -p 7681 -w "$HOME" -W bash  # or any shell you want
+ExecStart=/usr/bin/env ttyd -i 127.0.0.1 -p 7681 -w %h -W login
+
 
 [Install]
 WantedBy=multi-user.target
@@ -538,8 +544,8 @@ WantedBy=multi-user.target
 
 重载并启用服务
 ```sh
-sudo systemctl daemon-reload
-sudo systemctl enable --now ttyd.service
+systemctl daemon-reload
+systemctl enable --now ttyd.service
 ```
 
 #### 配置 Caddy
@@ -557,6 +563,7 @@ sudo systemctl enable --now ttyd.service
 
     # HTTP Basic Auth 鉴权, 修改用户密码
     # 密码使用 `caddy hash-password` 生成
+    # 如果想仅用户 Linux 鉴权可以不要
     basic_auth {
         # user:password
         user $2a$14$hCju96r6iSA552fkUUfWrO0tjC1w0otjkfHazbQLIHpXjoRB9vcoO
@@ -588,12 +595,6 @@ sudo systemctl reload caddy.service
 此时, 可以看到 Windows 弹出一个新的网路连接, 也新增了一个网路适配器, 并获取到了 IP 地址
 
 若在强制指定驱动程序后电脑自动重启, 请参阅 [部分情况下在 Windows 上显示 RNDIS 设备但是代码 28](#部分情况下在-windows-上显示-rndis-设备但是代码-28) 解决问题
-
-> 如果无法获取 IP 地址, 请尝试在 Wifi Stick 安装 Dnsmasq (不需要手动启用服务, 会由 NetworkManager 调起), 使用
->
-> ```sh
-> sudo apt install dnsmasq
-> ```
 
 如果在部分高版本 Windows 10 操作系统中, 即使手动选择了 RNDIS 设备也仍可能显示未安装驱动, 或在安装驱动程序后显示该设备需要进一步安装驱动程序, 请将融合设备修改为纯 RNDIS 设备, 参考 [配置 USB 接口模式](#配置-usb-接口模式)
 
@@ -661,6 +662,44 @@ nmcli connection up "$WIFISTICK_CONNECTION"
     inet6 fe80::c29d:e98d:c3cc:6067/64 scope link noprefixroute
        valid_lft forever preferred_lft forever
 ```
+
+---
+
+> [!NOTE]
+> 若要使 Wifi Stick 可以使用主机网路作为出口, 请参阅 [配置 RNDIS 模式下, Wifi Stick 使用主机网络出口](#配置-rndis-模式下-wifi-stick-使用主机网络出口)
+
+
+### 配置 RNDIS 模式下, Wifi Stick 使用主机网络出口
+
+将 Wifi Stick 插入 Windows 设备的 USB 接口
+
+#### Windows 配置
+1. 打开当前网路出口的网卡连接
+2. 右键网卡 > "属性"
+3. 转到属性面板的 "共享" 选项卡
+4. 勾选 "允许其他网络用户通过此计算机的 Internet 连接来连接"
+5. 在 "家庭网络连接" 下拉菜单中, 选择你的 RNDIS 虚拟网卡, 并单击确定
+
+此时 Windows 会将 RNDIS 虚拟网卡 IP 强制修改为 `192.168.137.1` 并将子网掩码修改为 `255.255.255.0`
+> 或是 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters` 指定的 `ScopeAddress` IP 与 `DhcpSubnetMask` 掩码 (`x.x.x.x` 格式的字符串 `REG_SZ`)
+
+<!-- ### Linux 设备
+TODO -->
+
+---
+
+由于 Wifi Stick 的 RNDIS 网卡 没有自动获取 IP, 且没有交由 NetworkManager 管理, Wifi Stick 无路由也无该网段的 IP 进行请求
+
+解决方法是将 USB 接口模式切换器 更新至 `Commit: b54ade0e85d6724de892c9cc5e761c82a24df59d` 或更新版本 ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/b54ade0e85d6724de892c9cc5e761c82a24df59d) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-b54ade0) ), 并在 RNDIS 模式下长按按钮进入子模式切换模式, 并短按按钮将 RNDIS 由 LED 常亮的 RNDIS 主模式切换为 LED 慢闪的 RNDIS 从模式
+
+RNDIS 从模式会自动从 RNDIS 虚拟网卡的 DHCP 包中获取上游分配的 IP 段, 并自动配置 RNDIS 虚拟网卡的 IP 与路由表. 默认 IP 地址为对应网段 IP 最后段修改为 `.33`, 或 `--rndis-client-ip` 传入的 `x.x.x.x` 的后缀
+
+例如传入的 `--rndis-client-ip` 为 `0.0.22.33`, 上游 IP 段为 `192.168.137.1/24`, 那么 RNDIS 的 IP 则为 `192.168.137.33`
+
+同理, 当传入的 `--rndis-client-ip` 为 `0.0.22.33` 但上游 IP 段为 `192.168.137.1/16` 时, RNDIS 的 IP 则为 `192.168.22.33`
+
+同时注意: 当上游 IP 段的子网掩码不是对齐 8 bit 时, 会将 RNDIS IP 设置为$\max{IP} - 2$, 例如上游 IP 段为 `192.168.137.1/29` 时, RNDIS IP 则为 `192.168.137.7` - 2 = `192.168.137.5`; **当子网掩码 >= `/30` 时, RNDIS 会强制回退到 RNDIS 主模式**以免 IP 无法分配导致无法访问到 Wifi Stick
+
 
 ### Wifi Stick 连接 WIFI 后速率过慢
 
@@ -829,6 +868,31 @@ TODO -->
 Description=caddy-tls-ask
 
 [Service]
+User=nobody
+Group=nogroup
+DynamicUser=yes
+
+# filesystem readonly
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+# no privileges
+CapabilityBoundingSet=
+NoNewPrivileges=yes
+RestrictSUIDSGID=yes
+
+# no namespace permission
+RestrictRealtime=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
 Type=fork
 ExecStart=/path/to/caddy-tls-ask
 
