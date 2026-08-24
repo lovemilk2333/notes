@@ -255,7 +255,7 @@ sudo pacman -S plasma-desktop
 ```
 
 或下载 ELF:
-[当前网站 (实验)](/static/plasma-apply-colorscheme) / [GitHub](https://aka.lovemilk.top/github/notes/releases/tag/plasma-apply-colorscheme)
+[当前网站](/static/plasma-apply-colorscheme) / [GitHub Release](https://aka.lovemilk.top/github/notes/releases/tag/plasma-apply-colorscheme)
 > [!WARNING]
 > 该 ELF 属于 Plasma 6.6.2, 如果出现 Breaking Change 造成该 ELF 无法使用, 请使用上述安装 Plasma 软件包的解决方法
 并将该 ELF 放入

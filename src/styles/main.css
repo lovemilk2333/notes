@@ -184,7 +184,7 @@
 
 /* Custom */
 /* 重要人物名称 */
-pe {
+pe, pe * {
     margin-left: .05rem !important;
     margin-right: .05rem !important;
     font-size: 1.35rem !important;

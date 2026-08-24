@@ -40,7 +40,7 @@ paru -S edl
 
 #### 2. 下载 骁龙 410 引导 ELF
 
-进入 9008 模式需要向 Wifi Stick 发送引导才能识别, 引导文件可以在 [此处](/static/MSM8916.elf) 下载, 或者搜索 `MSM8916 9008 ELF` (骁龙 410 的产品代码) 并查找可信来源下载
+进入 9008 模式需要向 Wifi Stick 发送引导才能识别, 引导文件可以在 [当前网站](/static/MSM8916.elf) / [GitHub Release](https://aka.lovemilk.top/github/notes/releases/tag/ufi001c-boot) 下载 **MSM8916.elf**, 或者搜索 `MSM8916 9008 ELF` (骁龙 410 的产品代码) 并查找可信来源下载
 
 #### 3. 进入 9008, 携带引导
 
@@ -188,9 +188,13 @@ sudo evtest --grab /dev/input/event0
 >
 > 在默认情况下, 按钮被映射到了 `KEY_RESTART`, 导致按下会重启. `--grab` 选项用于独占按钮而不再将按钮事件分发到 kernel, 从而避免重启
 
-若无输出变化, 那么可能是按钮的触发电平在设备树中存在配置问题, 对于 `ufi001c` 设备, 可以使用 [修复过的 boot.img](https://aka.lovemilk.top/github/notes/releases/tag/ufi001c-boot) 并直接刷入即可. 对于其他设备, 可以自行修改设备树并编译打包 (仅打包 boot.img 皆可). 要使用修复完成的 boot.img, 在固件正常刷入之后, **仅须覆盖刷写 boot 分区**, 不需要改变其他分区
+若无输出变化, 那么可能是按钮的触发电平在设备树中存在配置问题
 
-> 感谢 [dezige131](https://github.com/dezige131) 对设备树修改与 boot.img 打包支持
+对于 `ufi001c` 设备, 可以使用 *修复过的 boot.img*: **ufi001c-boot-devtree.img** ([当前网站](/static/ufi001c-boot-devtree.img) / [GitHub Release](https://aka.lovemilk.top/github/notes/releases/tag/ufi001c-boot) 并直接刷入即可
+
+对于其他设备, 可以自行修改设备树并编译打包 (仅打包 boot.img 皆可). 要使用修复完成的 boot.img, 在固件正常刷入之后, **仅须覆盖刷写 boot 分区**, 不需要改变其他分区
+
+> 感谢 敬爱的<pe>[dezige131](https://github.com/dezige131)</pe> 对设备树修改与 boot.img 打包支持
 
 接下来, 我们要配置 RNDIS 等不同 USB 接口用途, 为了方便调试, 我们可以安装 `iproute2` (也就是常见发行版内的 `ip` 命令)
 
