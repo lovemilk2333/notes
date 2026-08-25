@@ -26,6 +26,8 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import rehypeExternalLinks from 'rehype-external-links';
+import rehypeLinkProcessor from "rehype-link-processor";
+import { A } from "rehype-link-processor";
 
 // https://astro.build/config
 export default defineConfig({
@@ -114,6 +116,18 @@ export default defineConfig({
             parseDirectiveNode,
         ],
         rehypePlugins: [
+            rehypeLinkProcessor({
+                rules: [
+                    {
+                        match: link => link.href.trim().startsWith('/static'),
+                        action: [
+                            A.mergeClass('external'),
+                            A.merge('rel', 'noopener noreferrer'),
+                            A.set("target", "_blank"),
+                        ]
+                    }
+                ]
+            }),
             [
                 rehypeExternalLinks,
                 {
