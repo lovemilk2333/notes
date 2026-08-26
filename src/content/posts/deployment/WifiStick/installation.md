@@ -96,7 +96,9 @@ RNDIS 设备连接方式参见 [连接 RNDIS 设备](#连接-rndis-设备)
 
 为了安装软件包或进行其他操作, 我们须要使 Wifi Stick 接入互联网
 
-在大部分固件的系统内, 默认使用 NetworkManager 作为网络管理器, 我们可以使用 `nmcli` 命令行工具连接 WI-FI
+由于我们需要对网路进行操作, 请使用 `adb shell` 连接 Wifi Stick 以免调整网路时 SSH 连接断开
+
+在大部分固件的系统内, 默认使用 NetworkManager 作为网路管理器, 我们可以使用 `nmcli` 命令行工具连接 WI-FI
 
 > 某些固件默认开启了 WI-FI 热点, 这会导致 WI-FI 设备被占用, 无法扫描现有 WI-FI (直接连接会覆盖配置不受影响, 如果你知道你的 WI-FI 名称就不需要管了). 要删除该配置, 请使用
 >
@@ -215,7 +217,7 @@ sudo systemctl disable --now mobian-setup-usb-network.service
 
 1. 下载可执行文件
 
-前往 [wifi-stick-usb-switcher | GitHub Releases](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/latest) 下载对应 CPU 架构的可执行文件压缩包, 一般为 `cli-linux-arm64` (注意不要下成 `cli-linux-amd64`)
+前往 [wifi-stick-usb-switcher | GitHub Releases](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/latest) 下载对应 CPU 架构的可执行文件压缩包, 一般为 `cli-linux-arm64` (注意不要下载 `cli-linux-amd64`)
 
 解压并将 `cli` 保存为 `/usr/local/bin/usb-switcher`
 
@@ -246,7 +248,7 @@ sudo apt install dnsmasq udhcpc
 
 set -euo pipefail
 
-/usr/local/bin/usb-switcher daemon --devnode /dev/input/event0 --led /sys/class/leds/blue\:wifi --led /sys/class/leds/red\:os --led /sys/class/leds/green\:internet --config-fs /sys/kernel/config/usb_gadget/g1 "$@"
+exec /usr/local/bin/usb-switcher daemon --devnode /dev/input/event0 --led /sys/class/leds/blue\:wifi --led /sys/class/leds/red\:os --led /sys/class/leds/green\:internet --config-fs /sys/kernel/config/usb_gadget/g1 "$@"
 ```
 
 授予可执行权限
@@ -266,8 +268,10 @@ sudo chmod +x /usr/local/lib/usb-switcher/start.sh
 Description=wifi-stick-usb-switcher
 
 [Service]
-Type=fork
-ExecStart=/usr/bin/bash /usr/local/lib/usb-switcher/start.sh
+Type=simple
+ExecStart=/usr/local/lib/usb-switcher/start.sh
+Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
@@ -280,7 +284,7 @@ sudo systemctl enable --now wifi-stick-usb-switcher.service
 ```
 
 #### 使用方法
-在默认情况下 USB Gadget 为 RNDIS 模式, 按下按钮切换为 ADB 模式, 再次按钮轮回 RNDIS 模式 (目前只有 **2** 个模式)
+在默认情况下 USB Gadget 为 RNDIS 模式, 按下按钮切换为 ADB 模式, 再次按钮轮回 RNDIS 模式 (目前只有 **2** 个主要模式, 每个主要模式可能会有若干子模式)
 
 在初始化时会依次亮起每个 LED, 首个传入的 LED 亮起为 RNDIS 模式, 第二个传入的 LED 亮起为 ADB 模式
 
@@ -413,7 +417,7 @@ sudo apt install caddy
 
 2. 启用 Caddy 服务
 
-为了避免没有网络连接导致 Caddy 不启动, 我们需要编辑 Caddy Service
+为了避免没有网路连接导致 Caddy 不启动, 我们需要编辑 Caddy Service
 
 ```sh
 sudo systemctl edit caddy.service
@@ -466,7 +470,7 @@ sudo systemctl enable --now caddy.service
 }
 
 
-# 443 与 3001 端口 HTTPS, 修改 `10.22.33.1` 为你的 IP
+# 443 与 3001 端口 HTTPS
 :443, :3001 {
     import internal_tls
     reverse_proxy 127.0.0.1:5000
@@ -561,7 +565,7 @@ systemctl enable --now ttyd.service
 按需求配置端口
 
 ```Caddyfile
-# 修改 `10.22.33.1` 为你的 IP, 端口号自行修改
+# 端口号自行修改
 :2222 {
     import internal_tls
 
@@ -600,9 +604,9 @@ sudo systemctl reload caddy.service
 
 若在强制指定驱动程序后电脑自动重启, 请参阅 [部分情况下在 Windows 上显示 RNDIS 设备但是代码 28](#部分情况下在-windows-上显示-rndis-设备但是代码-28) 解决问题
 
-如果在部分高版本 Windows 10 操作系统中, 即使手动选择了 RNDIS 设备也仍可能显示未安装驱动, 或在安装驱动程序后显示该设备需要进一步安装驱动程序, 请将融合设备修改为纯 RNDIS 设备, 参考 [配置 USB 接口模式](#配置-usb-接口模式)
+如果在部分高版本 Windows 10 操作系统中, 即使手动选择了 RNDIS 设备也仍可能显示未安装驱动, 或在安装驱动程序后显示该设备需要进一步安装驱动程序
 
-一个可能的解决方法是禁用复合设备, 修改为仅 RNDIS 网路传输设备
+一个可能的解决方法是禁用复合设备, 将融合设备修改为纯 RNDIS 设备, 参考 [配置 USB 接口模式](#配置-usb-接口模式) 修改为仅 RNDIS 网路传输
 
 ### 连接 Linux/Unix 设备
 
@@ -670,10 +674,10 @@ nmcli connection up "$WIFISTICK_CONNECTION"
 ---
 
 > [!NOTE]
-> 若要使 Wifi Stick 可以使用主机网路作为出口, 请参阅 [配置 RNDIS 模式下, Wifi Stick 使用主机网络出口](#配置-rndis-模式下-wifi-stick-使用主机网络出口)
+> 若要使 Wifi Stick 可以使用主机网路作为出口, 请参阅 [配置 RNDIS 模式下, Wifi Stick 使用主机网路出口](#配置-rndis-模式下-wifi-stick-使用主机网路出口)
 
 
-### 配置 RNDIS 模式下, Wifi Stick 使用主机网络出口
+### 配置 RNDIS 模式下, Wifi Stick 使用主机网路出口
 
 将 Wifi Stick 插入 Windows 设备的 USB 接口
 
@@ -681,8 +685,8 @@ nmcli connection up "$WIFISTICK_CONNECTION"
 1. 打开当前网路出口的网卡连接
 2. 右键网卡 > "属性"
 3. 转到属性面板的 "共享" 选项卡
-4. 勾选 "允许其他网络用户通过此计算机的 Internet 连接来连接"
-5. 在 "家庭网络连接" 下拉菜单中, 选择你的 RNDIS 虚拟网卡, 并单击确定
+4. 勾选 "允许其他网路用户通过此计算机的 Internet 连接来连接"
+5. 在 "家庭网路连接" 下拉菜单中, 选择你的 RNDIS 虚拟网卡, 并单击确定
 
 此时 Windows 会将 RNDIS 虚拟网卡 IP 强制修改为 `192.168.137.1` 并将子网掩码修改为 `255.255.255.0`
 > 或是 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters` 指定的 `ScopeAddress` IP 与 `DhcpSubnetMask` 掩码 (`x.x.x.x` 格式的字符串 `REG_SZ`)
@@ -702,7 +706,9 @@ RNDIS 从模式会自动从 RNDIS 虚拟网卡的 DHCP 包中获取上游分配�
 
 同理, 当传入的 `--rndis-client-ip` 为 `0.0.22.33` 但上游 IP 段为 `192.168.137.1/16` 时, RNDIS 的 IP 则为 `192.168.22.33`
 
-同时注意: 当上游 IP 段的子网掩码不是对齐 8 bit 时, 会将 RNDIS IP 设置为$\max{IP} - 2$, 例如上游 IP 段为 `192.168.137.1/29` 时, RNDIS IP 则为 `192.168.137.7` - 2 = `192.168.137.5`; **当子网掩码 >= `/30` 时, RNDIS 会强制回退到 RNDIS 主模式**以免 IP 无法分配导致无法访问到 Wifi Stick
+同时注意: 当上游 IP 段的子网掩码不是对齐 8 bit 时, 会将 RNDIS IP 设置为$\max{IP} - 2$, 例如上游 IP 段为 `192.168.137.1/29` 时, RNDIS IP 则为 `192.168.137.7` - 2 = `192.168.137.5`
+
+当 **当子网掩码 >= `/30` 时, RNDIS 会强制回退到 RNDIS 主模式**以免 IP 无法分配导致无法访问 Wifi Stick
 
 
 ### Wifi Stick 连接 WIFI 后速率过慢
