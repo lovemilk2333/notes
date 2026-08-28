@@ -368,7 +368,7 @@ sudo evtest --grab /dev/input/event0
 
 若无输出变化, 那么可能是按钮的触发电平在设备树中存在配置问题
 
-对于 `ufi001c` 设备, 可以使用 *修复过的 boot.img*: **ufi001c-boot-devtree.img** ([当前网站](/static/ufi001c-boot-devtree.img) / [GitHub Release](https://aka.lovemilk.top/github/notes/releases/tag/ufi001c-boot) 并直接刷入即可
+对于 `ufi001c` 设备, 可以使用 *修复过的 boot.img*: **ufi001c-boot-devtree.img** ([当前网站](/static/ufi001c-boot-devtree.img) / [GitHub Release](https://aka.lovemilk.top/github/notes/releases/tag/ufi001c-boot)) 并直接刷入即可
 
 对于其他设备, 可以自行修改设备树并编译打包 (仅打包 boot.img 皆可). 要使用修复完成的 boot.img, 在固件正常刷入之后, **仅须覆盖刷写 boot 分区**, 不需要改变其他分区
 
