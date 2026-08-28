@@ -13,6 +13,8 @@ category: deployment::WifiStick
 
 由于 Wifi Stick 采用传统的 Android 引导方式, 我们可以直接使用 Fastboot 工具 ([下载 Platform-Tools](https://developer.android.google.cn/tools/releases/platform-tools)) 刷入系统镜像
 
+该操作可能需要安装 ADB / Fastboot 驱动
+
 ### 进入 Fastboot
 
 插入电脑 USB 接口 (若无法识别请使用主板 IO 侧接口, 而不是机箱前面板接口), 后立即长按 Wifi Stick 按钮不松
@@ -26,7 +28,9 @@ fastboot devices
 可以成功看到有 Fastboot 设备连接
 
 > 对于 Windows 操作系统, 需要手动安装 Fastboot 驱动. 也可以直接使用图形化刷机工具 [刷机匣](https://www.bilibili.com/video/BV1HMpgzMEpM/)  
-> 刷机匣需要使用 `-a` 版本, 该版本才有 _fastboot_ 选项卡
+> 刷机匣需要使用 `-a` 版本, 该版本才有 *fastboot* 选项卡
+
+若无法进入 Fastboot, 请参阅 [See Also, 可以进入管理后台但无法进入 Fastboot](#see-also-可以进入管理后台但无法进入-fastboot)
 
 ### See Also, 进入 9008
 
@@ -60,6 +64,173 @@ DeviceClass - [LIB]: Couldn't get device configuration.
 
 如果出现错误日志, 请将 Wifi Stick 拔除并重试本步骤
 
+### See Also, 可以进入管理后台但无法进入 Fastboot
+
+部分设备可能无法直接进入 Fastboot 模式, 我们可以通过 ADB 重启至 Fastboot 模式, 若已经在系统内开启了 ADB, 请跳转至 [3. 进入 Fastboot](#3-进入-fastboot)
+
+#### 1. 提取或挂载 system 分区
+对于已有全量备份的 `.bin` 文件的用户, 可以直接从备份中提取 `system.img`
+
+> [!WARNING]
+> 如下内容仅限 Linux 操作系统, 部分命令支持 Unix. 全部命令基本上不支持 Windows
+
+`.bin` 文件是一个没有末尾 GPT 分区表备份的 GPT 原始二进制, 我们可以使用 GNU parted 或者其他可以获取分区表信息的工具获取 system 分区的 offset
+
+例如, 我们可以使用如下命令获取 system 分区的起始位置
+
+```sh
+parted /path/to/example.bin unit s print
+```
+> 由于 `.bin` 文件没有末尾 GPT 分区表备份, parted 会在打开时显示 *出现文件结尾于读取* 或类似提示, 全部忽略即可
+> 
+> 显示类似 *错误: 备份 GPT 表损坏，但主表似乎是正确的，所以使用主表。* 选择确认
+
+输出类似
+
+```log
+型号： (file)
+磁盘 /path/to/example.bin：7471071s
+扇区大小 (逻辑/物理)：512B/512B
+分区表：gpt
+磁盘标志：
+
+编号  起始点    结束点    大小      文件系统  名称      标志
+ 1    131072s   262143s   131072s   fat16     modem     msftdata
+ 2    262144s   263167s   1024s               sbl1
+ 3    263168s   264191s   1024s               sbl1bak   msftdata
+ 4    264192s   266239s   2048s               aboot
+ 5    266240s   268287s   2048s               abootbak  msftdata
+ 6    268288s   269311s   1024s               rpm
+ 7    269312s   270335s   1024s               rpmbak    msftdata
+ 8    270336s   271359s   1024s               tz
+ 9    271360s   272383s   1024s               tzbak     msftdata
+10    272384s   273407s   1024s               hyp
+11    273408s   274431s   1024s               hypbak    msftdata
+12    274432s   276479s   2048s               pad       msftdata
+13    276480s   279551s   3072s               modemst1
+14    279552s   282623s   3072s               modemst2
+15    282624s   284671s   2048s               misc
+16    284672s   284673s   2s                  fsc
+17    284674s   284689s   16s                 ssd
+18    284690s   305169s   20480s              splash
+19    393216s   393279s   64s                 DDR
+20    393280s   396351s   3072s               fsg
+21    396352s   396383s   32s                 sec
+22    396384s   429151s   32768s              boot
+23    429152s   2067551s  1638400s  ext4      system    msftdata
+24    2067552s  2133087s  65536s    ext4      persist   msftdata
+25    2133088s  2395231s  262144s   ext4      cache     msftdata
+26    2395232s  2427999s  32768s              recovery
+27    2428000s  7471070s  5043071s  ext4      userdata  msftdata
+```
+
+找到名称为 `system` 的起始点 (例如 `429152s`) 和大小扇区个数 (例如 `1638400s`)
+
+---
+
+**若要挂载 system 分区, 可以使用如下命令**
+
+对数字部分乘以扇区大小 (字节) 我们可以算出 $offset = 429152 \times 512 = 219725824$ 便是 system 分区位于该文件的起始地址 (字节)
+
+```sh
+sudo mount -o loop,offset=<offset> /path/to/example.bin /path/to/mount
+```
+
+例如
+
+```sh
+sudo mount -o loop,offset=219725824 example.bin ./system
+```
+
+---
+
+**若要导出 system**
+
+我们可以使用 dd 命令导出 system 分区
+
+```sh
+dd if=/path/to/example.bin of=system.img bs=<扇区大小 (字节)> skip=<起始地址 (扇区)> count=<大小 (扇区)> status=progress
+```
+
+例如
+
+```sh
+dd if=/path/to/example.bin of=system.img bs=512 skip=429152 count=1638400 status=progress
+```
+
+我们使用 file 对 `system.img` 进行查看, 输出应当为 Ext4 类型的文件系统镜像, 类似于
+
+```log
+system.img: Linux rev 1.0 ext4 filesystem data, UUID=<uuid>, volume name "system" (extents) (large files)
+```
+
+要挂载 `system.img`, 请使用
+
+```sh
+sudo mount -o loop system.img /path/to/mount
+```
+
+#### 2. 修改 `build.prop` 以开启 ADB
+
+> 参考 <https://www.bilibili.com/video/BV1QV4y1y7yf/>
+
+进入 system 分区的根目录 (例如已经挂载后的 `./system` 文件夹), 发现存在 `build.prop` 与 `build.prop.bakforspec` 文件, 一般而言修改这俩个文件即可, 若无法生效请使用 [fd](https://github.com/sharkdp/fd) 工具搜寻全部的 `build.prop*` 文件, 并全部覆盖
+
+```sh
+# 使用 fd
+fd --glob "build.prop*" .
+```
+
+要启用 ADB, 请在需要修改的 `build.prop` 与 `build.prop.bakforspec` 中添加或修改如下行
+
+```ini
+# /build.prop
+
+# Enable ADB
+persist.service.adb.enable=1
+persist.service.debuggable=1
+persist.sys.usb.config=mtp,adb
+```
+
+> [!TIP]
+> 如果要启用带有 root 权限的 ADB, 请再添加如下行
+> ```ini
+> # /build.prop
+> 
+> # Enable root for ADB
+> ro.debuggable=1
+> ```
+
+其中, `persist.sys.usb.config` 行配置可在原内容最后添加 `,adb`
+
+这些操作需要 root 权限, 是因为 system 分区在 Wifi Stick 上作为系统分区, 文件所有者/组均为 uid/gid 0 (root 用户/组). 这些操作不会破坏您的操作系统, 也不会导致您的操作系统稳定性受到影响
+
+修改完成并确认保存后, 解除挂载分区. 解除挂载需要保证进程占用挂载点, 进程占用包括终端工作路径位于挂载点内
+
+```sh
+sudo umount ./system
+```
+
+#### 3. 刷入 system 分区镜像
+
+[进入 9008](#see-also-进入-9008), 后使用 edl 或者其他刷写工具刷入 `system.img` 至 system 分区
+
+edl 命令例如
+
+```sh
+sudo edl w system system.img --loader=MSM8916.elf
+```
+
+后直接插拔 Wifi Stick 将其重启至系统
+
+### 3. 进入 Fastboot
+
+将 Wifi Stick 连接并进入系统后, 使用 ADB 命令重启至 Fastboot
+
+```sh
+adb reboot bootloader
+```
+
 ### 刷机
 
 #### 下载刷机包
@@ -89,8 +260,13 @@ RNDIS 设备连接方式参见 [连接 RNDIS 设备](#连接-rndis-设备)
 > 部分二改的刷机包可能没有修改脚本内说明的 IP 地址, 可以通过查看自动获取到的 IP 地址, 然后尝试连接该 IP 的常见网关地址 (`.1` 或 `.254`)
 >
 > 大部分固件默认启用了 USB 融合模式, 会同时提供一个 RNDIS 设备和一个 ADB 设备, 一般情况下可以直接使用 `adb shell`连接终端
+> 
+> 若要使用 `adb shell` 连接终端, 强烈建议 `export TERM=xterm-256color` 以便运行 TUI 程序
 
 ## 初始配置
+
+### Wifi Stick 使用基带 (蜂窝网络/移动数据)
+参见 [Wifi Stick 修复基带驱动](#wifi-stick-修复基带驱动)
 
 ### 连接 WI-FI
 
@@ -710,6 +886,32 @@ RNDIS 从模式会自动从 RNDIS 虚拟网卡的 DHCP 包中获取上游分配�
 
 当 **当子网掩码 >= `/30` 时, RNDIS 会强制回退到 RNDIS 主模式**以免 IP 无法分配导致无法访问 Wifi Stick
 
+
+### Wifi Stick 修复基带驱动
+按照 [提取或挂载 system 分区](#1-提取或挂载-system-分区) 或其他方法提取出 modem 分区, 并将分区内的文件全部内容复制至 Wifi Stick 的 `/lib/firmware`
+
+
+例如 **在 Wifi Stick 上** 运行
+```sh
+sudo cp –v <mount>/image/modem* mba.* /lib/firmware
+```
+
+后重启 Wifi Stick
+
+> [!TIP]
+> 对于 9008 模式, 使用
+> ```sh
+> sudo edl r modem modem.img
+> ```
+> 即可提取 modem 分区
+
+---
+
+使用如下命令即可查看基带状态
+
+```sh
+sudo mmcli -m 0
+```
 
 ### Wifi Stick 连接 WIFI 后速率过慢
 
