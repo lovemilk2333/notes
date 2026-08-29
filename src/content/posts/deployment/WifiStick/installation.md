@@ -69,16 +69,17 @@ DeviceClass - [LIB]: Couldn't get device configuration.
 部分设备可能无法直接进入 Fastboot 模式, 我们可以通过 ADB 重启至 Fastboot 模式, 若已经在系统内开启了 ADB, 请跳转至 [3. 进入 Fastboot](#3-进入-fastboot)
 
 #### 1. 提取或挂载 system 分区
-对于已有全量备份的 `.bin` 文件的用户, 可以直接从备份中提取 `system.img`
+对于已有全量备份的 `.bin` 文件 (使用 eld 或 miko service tool 等工具导出的文件) 的用户, 可以直接从备份中提取 `system.img`
 
 > [!WARNING]
-> 如下内容仅限 Linux 操作系统, 部分命令支持 Unix. 全部命令基本上不支持 Windows
+> 请按照操作系统选择对应的命令执行. Unix 未经测试
 
 `.bin` 文件是一个没有末尾 GPT 分区表备份的 GPT 原始二进制, 我们可以使用 GNU parted 或者其他可以获取分区表信息的工具获取 system 分区的 offset
 
 例如, 我们可以使用如下命令获取 system 分区的起始位置
 
-```sh
+对于 Linux
+```sh title="Linux"
 parted /path/to/example.bin unit s print
 ```
 > 由于 `.bin` 文件没有末尾 GPT 分区表备份, parted 会在打开时显示 *出现文件结尾于读取* 或类似提示, 全部忽略即可
@@ -124,7 +125,56 @@ parted /path/to/example.bin unit s print
 27    2428000s  7471070s  5043071s  ext4      userdata  msftdata
 ```
 
-找到名称为 `system` 的起始点 (例如 `429152s`) 和大小扇区个数 (例如 `1638400s`)
+对于 Windows, 请 [下载并安装 GPT Disk](https://sourceforge.net/projects/gptfdisk/) 并保证 `gdisk32.exe` 或 `gdisk64.exe` 可被执行, 后运行如下命令
+```powershell title="Windows"
+gdisk64.exe -l /path/to/example.bin
+```
+
+输出类似
+
+```log
+Disk <path> 7471071 sectors, 3.6 GiB
+Sector size (logical): 512 bytes
+Disk identifier (GUID): 98101B32-BBE2-4BF2-A06E-2BB33D000C20
+Partition table holds up to 28 entries
+Main partition table begins at sector 2 and ends at sector 8
+First usable sector is 34, last usable sector is 7471070
+Partitions will be aligned on 2-sector boundaries
+Total free space is 219084 sectors (107.0 MiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+   1          131072          262143   64.0 MiB    0700  modem
+   2          262144          263167   512.0 KiB   A012  sbl1
+   3          263168          264191   512.0 KiB   0700  sbl1bak
+   4          264192          266239   1024.0 KiB  A015  aboot
+   5          266240          268287   1024.0 KiB  0700  abootbak
+   6          268288          269311   512.0 KiB   A018  rpm
+   7          269312          270335   512.0 KiB   0700  rpmbak
+   8          270336          271359   512.0 KiB   A016  tz
+   9          271360          272383   512.0 KiB   0700  tzbak
+  10          272384          273407   512.0 KiB   A017  hyp
+  11          273408          274431   512.0 KiB   0700  hypbak
+  12          274432          276479   1024.0 KiB  0700  pad
+  13          276480          279551   1.5 MiB     A027  modemst1
+  14          279552          282623   1.5 MiB     A028  modemst2
+  15          282624          284671   1024.0 KiB  A036  misc
+  16          284672          284673   1024 bytes  A029  fsc
+  17          284674          284689   8.0 KiB     A02C  ssd
+  18          284690          305169   10.0 MiB    A036  splash
+  19          393216          393279   32.0 KiB    A01A  DDR
+  20          393280          396351   1.5 MiB     A02A  fsg
+  21          396352          396383   16.0 KiB    A01D  sec
+  22          396384          429151   16.0 MiB    A036  boot
+  23          429152         2067551   800.0 MiB   0700  system
+  24         2067552         2133087   32.0 MiB    0700  persist
+  25         2133088         2395231   128.0 MiB   0700  cache
+  26         2395232         2427999   16.0 MiB    A036  recovery
+  27         2428000         7471070   2.4 GiB     0700  userdata
+```
+
+---
+
+找到名称为 `system` 的起始点 (例如 `429152`) 和大小扇区个数 (例如 `1638400s`) 或结束扇区 (例如 `2067551`)
 
 ---
 
@@ -132,13 +182,15 @@ parted /path/to/example.bin unit s print
 
 对数字部分乘以扇区大小 (字节) 我们可以算出 $offset = 429152 \times 512 = 219725824$ 便是 system 分区位于该文件的起始地址 (字节)
 
-```sh
+对于 Linux, 我们可以使用如下命令直接从 `.bin` 文件中挂载 system 分区
+
+```sh title="Linux"
 sudo mount -o loop,offset=<offset> /path/to/example.bin /path/to/mount
 ```
 
 例如
 
-```sh
+```sh title="Linux"
 sudo mount -o loop,offset=219725824 example.bin ./system
 ```
 
@@ -146,35 +198,94 @@ sudo mount -o loop,offset=219725824 example.bin ./system
 
 **若要导出 system**
 
-我们可以使用 dd 命令导出 system 分区
+对于 Linux, 我们可以使用 dd 命令导出 system 分区
 
-```sh
+```sh title="Linux"
 dd if=/path/to/example.bin of=system.img bs=<扇区大小 (字节)> skip=<起始地址 (扇区)> count=<大小 (扇区)> status=progress
 ```
 
 例如
 
-```sh
+```sh title="Linux"
 dd if=/path/to/example.bin of=system.img bs=512 skip=429152 count=1638400 status=progress
 ```
 
-我们使用 file 对 `system.img` 进行查看, 输出应当为 Ext4 类型的文件系统镜像, 类似于
+对于 Windows, 请自行想办法通过偏移量和大小获取镜像, 或者在有 Git Bash 内的 `dd` 命令运行 Linux 的导出命令
+
+或是在装有 Python 环境的 Windows 上配置并运行如下脚本
+
+```py title="Windows"
+# `.bin` file
+FILE = "/path/to/example.bin"
+# output file
+OUTPUT = "system.img"
+# sector size in bytes
+SECTOR_SIZE = 512
+
+# start sector
+START_SECTOR = -1
+# end sector
+END_SECTOR = -1
+
+# buffer size in bytes, 16 MiB by default
+BUFFER_SIZE = 16 * 1024 * 1024
+
+if START_SECTOR < 0 or END_SECTOR < 0 or START_SECTOR % 1 != 0 or END_SECTOR % 1 != 0:
+    print("please provide start sector and end sector")
+    exit(255)
+
+
+image_size = (END_SECTOR - START_SECTOR + 1) * SECTOR_SIZE  # in bytes
+if image_size <= 0:
+    print("invalid sector range: no data selected")
+    exit(255)
+
+loop_count = image_size // BUFFER_SIZE
+left_size = image_size % BUFFER_SIZE
+
+start = START_SECTOR * SECTOR_SIZE
+with open(FILE, mode="rb") as fp:
+    fp.seek(start)
+
+    with open(OUTPUT, mode="wb") as out:
+        for _ in range(loop_count):
+            data = fp.read(BUFFER_SIZE)
+            if len(data) < BUFFER_SIZE:
+                print("unexpected `EOF`")
+                exit(1)
+            out.write(data)
+
+        if left_size > 0:
+            data = fp.read(left_size)
+            if len(data) < left_size:
+                print("unexpected `EOF`")
+                exit(1)
+            out.write(data)
+
+print("OK:", OUTPUT)
+```
+
+我们使用 file (或 Git Bash 的 file) 对 `system.img` 进行查看, 输出应当为 Ext4 类型的文件系统镜像, 类似于
 
 ```log
 system.img: Linux rev 1.0 ext4 filesystem data, UUID=<uuid>, volume name "system" (extents) (large files)
 ```
 
-要挂载 `system.img`, 请使用
+对于 Linux, 要挂载 `system.img`, 请使用
 
 ```sh
 sudo mount -o loop system.img /path/to/mount
 ```
 
+对于 Windows, 请直接使用 7-Zip 打开并修改 system 镜像, 参考下方步骤
+
 #### 2. 修改 `build.prop` 以开启 ADB
 
 > 参考 <https://www.bilibili.com/video/BV1QV4y1y7yf/>
 
-进入 system 分区的根目录 (例如已经挂载后的 `./system` 文件夹), 发现存在 `build.prop` 与 `build.prop.bakforspec` 文件, 一般而言修改这俩个文件即可, 若无法生效请使用 [fd](https://github.com/sharkdp/fd) 工具搜寻全部的 `build.prop*` 文件, 并全部覆盖
+进入 system 分区的根目录 (例如已经挂载后的 `./system` 文件夹), 或在 7-Zip 打开 `system.img`, 发现存在 `build.prop` 与 `build.prop.bakforspec` 文件
+
+一般而言修改这俩个文件即可, 若无法生效, 对于 Linux, 请使用 [fd](https://github.com/sharkdp/fd) 工具搜寻全部的 `build.prop*` 文件, 并全部覆盖
 
 ```sh
 # 使用 fd
@@ -182,6 +293,8 @@ fd --glob "build.prop*" .
 ```
 
 要启用 ADB, 请在需要修改的 `build.prop` 与 `build.prop.bakforspec` 中添加或修改如下行
+
+Windows 用户请先从 7-Zip 导出文件后修改, 并在修改完成后使用 DiskGenius 挂载并写回覆盖
 
 ```ini
 # /build.prop
@@ -213,7 +326,7 @@ sudo umount ./system
 
 #### 3. 刷入 system 分区镜像
 
-[进入 9008](#see-also-进入-9008), 后使用 edl 或者其他刷写工具刷入 `system.img` 至 system 分区
+[进入 9008](#see-also-进入-9008), 后使用 edl 或者其他刷写工具 (如[刷机匣](https://www.bilibili.com/video/BV1HMpgzMEpM/)) 刷入 `system.img` 至 system 分区
 
 edl 命令例如
 
