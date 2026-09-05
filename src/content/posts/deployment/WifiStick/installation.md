@@ -7,7 +7,7 @@ category: deployment::WifiStick
 
 本文主要讲述如何安装 Wifi Stick, 并对 USB 网路共享 (RNDIS), 串口通讯, 本地文件服务器等进行配置
 
-我所购买的 Wifi Stick 采用 高通骁龙 410 Soc
+我所购买的 Wifi Stick 采用 903 主板方案, 大部分情况下兼容 ufi-001c 方案, SoC 为 高通骁龙 410
 
 ## 安装
 
@@ -53,7 +53,7 @@ paru -S edl
 要运行命令时, 请使用 `--loader` 参数提供引导文件的路径
 
 ```sh
-sudo edl <command> --loader=MSM8916.elf
+sudo edl <command> --loader MSM8916.elf
 ```
 
 若不提供引导, 则会报错
@@ -68,8 +68,10 @@ DeviceClass - [LIB]: Couldn't get device configuration.
 
 部分设备可能无法直接进入 Fastboot 模式, 我们可以通过 ADB 重启至 Fastboot 模式, 若已经在系统内开启了 ADB, 请跳转至 [3. 进入 Fastboot](#3-进入-fastboot)
 
+#### 也可使用更简便的方法: [使用特制的 boot 分区进入 Fastboot](#使用特制的-boot-分区进入-fastboot)
+
 #### 1. 提取或挂载 system 分区
-对于已有全量备份的 `.bin` 文件 (使用 eld 或 miko service tool 等工具导出的文件) 的用户, 可以直接从备份中提取 `system.img`
+对于已有全盘备份的 `.bin` 文件 (使用 eld 或 miko service tool 等工具导出的文件) 的用户, 可以直接从备份中提取 `system.img`
 
 > [!WARNING]
 > 请按照操作系统选择对应的命令执行. Unix 未经测试
@@ -374,9 +376,58 @@ RNDIS 设备连接方式参见 [连接 RNDIS 设备](#连接-rndis-设备)
 >
 > 大部分固件默认启用了 USB 融合模式, 会同时提供一个 RNDIS 设备和一个 ADB 设备, 一般情况下可以直接使用 `adb shell`连接终端
 > 
-> 若要使用 `adb shell` 连接终端, 强烈建议 `export TERM=xterm-256color` 以便运行 TUI 程序
+> 若要使用 `adb shell` 连接终端, 强烈建议在 Shell 内 `export TERM=xterm-256color` 以便运行 TUI 程序
+
+### 救砖
+
+#### 使用特制的 boot 分区进入 Fastboot
+一些刷机包内会存在 `aboot.bin` 类似文件, 这是特殊制作的 boot 分区镜像, 可以使设备重启直接进入 Fastboot
+
+在刷机脚本中一般可以从如下特征识别
+```bat
+fastboot erase boot
+@REM 刷写了 boot 直接重启
+fastboot flash aboot aboot.bin
+fastboot reboot
+
+@REM 便进入了带有 `oem dump` 的 Fastboot
+fastboot oem dump fsc && fastboot get_staged fsc.bin
+```
+
+我们直接使用 9008 将 `aboot.bin` 刷写入 boot 分区, 并重启设备即可进入 fastboot
+
+#### 恢复全盘镜像
+如果你的 Wifi Stick 已经无法进入 Fastboot, 可以找到 **完全相同的设备** 的全盘备份或部分分区备份, 按需输入对应分区
+
+若要刷写对应分区, 请使用
+```sh
+sudo edl w <partition> <image> --loader MSM8916.elf
+```
+
+若要使用 edl 刷写全盘备份的 `.bin` 文件, 请使用
+```sh
+sudo edl wf /path/to/example.bin --loader MSM8916.elf
+```
 
 ## 初始配置
+
+### *[重要]* (重新)生成 SSH Host Key
+由于一些配置和实现问题, 刷机包直接刷入的 Armbian11 系统内已经包含了系统的 SSH Host Key, 导致 (至少) 全部的同一刷机包设备均会使用相同的 SSH Host Key 造成私钥泄露, 存在 MITM (中间人攻击) 的可能性
+
+> 亦可能即使使用不同刷机包的设备使用相同的 SSH Host Key
+
+为了保证安全, 我们需要重新生成 SSH Host Key
+
+```sh
+sudo rm -v /etc/ssh/ssh_host_*
+sudo dpkg-reconfigure openssh-server
+sudo systemctl restart ssh
+```
+
+> 如果已有 SSH 客户端连接过该设备, 更换 SSH Host Key 会导致服务端 Key 变更导致客户端不再信任. 请使用
+> ```sh
+> ssh-keygen -R <IP/domain>
+> ```
 
 ### Wifi Stick 使用基带 (蜂窝网络/移动数据)
 参见 [Wifi Stick 修复基带驱动](#wifi-stick-修复基带驱动)
@@ -479,13 +530,7 @@ sudo evtest --grab /dev/input/event0
 >
 > 在默认情况下, 按钮被映射到了 `KEY_RESTART`, 导致按下会重启. `--grab` 选项用于独占按钮而不再将按钮事件分发到 kernel, 从而避免重启
 
-若无输出变化, 那么可能是按钮的触发电平在设备树中存在配置问题
-
-对于 `ufi001c` 设备, 可以使用 *修复过的 boot.img*: **ufi001c-boot-devtree.img** ([当前网站](/static/ufi001c-boot-devtree.img) / [GitHub Release](https://aka.lovemilk.top/github/notes/releases/tag/ufi001c-boot)) 并直接刷入即可
-
-对于其他设备, 可以自行修改设备树并编译打包 (仅打包 boot.img 皆可). 要使用修复完成的 boot.img, 在固件正常刷入之后, **仅须覆盖刷写 boot 分区**, 不需要改变其他分区
-
-> 感谢 敬爱的<pe>[dezige131](https://github.com/dezige131)</pe> 对设备树修改与 boot.img 打包支持
+若无输出变化, 那么可能是按钮的触发电平在设备树中存在配置问题. 要修复该问题, 请参阅 [更新或替换 Linux 内核](#更新或替换-linux-内核)
 
 接下来, 我们要配置 RNDIS 等不同 USB 接口用途, 为了方便调试, 我们可以安装 `iproute2` (也就是常见发行版内的 `ip` 命令)
 
@@ -977,6 +1022,8 @@ nmcli connection up "$WIFISTICK_CONNECTION"
 4. 勾选 "允许其他网路用户通过此计算机的 Internet 连接来连接"
 5. 在 "家庭网路连接" 下拉菜单中, 选择你的 RNDIS 虚拟网卡, 并单击确定
 
+操作会开启 Windows ICS (Internet Connection Sharing), 从而使 Wifi Stick 可以访问宿主机网络出口
+
 此时 Windows 会将 RNDIS 虚拟网卡 IP 强制修改为 `192.168.137.1` 并将子网掩码修改为 `255.255.255.0`
 > 或是 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters` 指定的 `ScopeAddress` IP 与 `DhcpSubnetMask` 掩码 (`x.x.x.x` 格式的字符串 `REG_SZ`)
 
@@ -986,6 +1033,11 @@ TODO -->
 ---
 
 由于 Wifi Stick 的 RNDIS 网卡 没有自动获取 IP, 且没有交由 NetworkManager 管理, Wifi Stick 无路由也无该网段的 IP 进行请求
+
+> [!WARNNG]
+> 由于 Linux 内核对 RNDIS 的设备枚举采用了 ACM 伪装 (而非 微软规范) 的写法, 导致在 Windows 7 操作系统上进行如上配置开启 ICS (Internet Connection Sharing) 后会诱发驱动崩溃导致蓝屏
+>
+> 要解决该问题, 只能 [替换 Linux 内核以使用微软规范 RNDIS 设备枚举](#替换-linux-内核以使用微软规范-rndis-设备枚举)
 
 解决方法是将 USB 接口模式切换器 更新至 `Commit: b54ade0e85d6724de892c9cc5e761c82a24df59d` 或更新版本 ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/b54ade0e85d6724de892c9cc5e761c82a24df59d) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-b54ade0) ), 并在 RNDIS 模式下长按按钮进入子模式切换模式, 并短按按钮将 RNDIS 由 LED 常亮的 RNDIS 主模式切换为 LED 慢闪的 RNDIS 从模式
 
@@ -999,6 +1051,63 @@ RNDIS 从模式会自动从 RNDIS 虚拟网卡的 DHCP 包中获取上游分配�
 
 当 **当子网掩码 >= `/30` 时, RNDIS 会强制回退到 RNDIS 主模式**以免 IP 无法分配导致无法访问 Wifi Stick
 
+
+### 替换 Linux 内核以使用微软规范 RNDIS 设备枚举
+
+为解决 Windows 7 操作系统下使用 ICS 诱发驱动崩溃, 我们需要将 Linux 内核的 RNDIS 设备枚举修改为微软标准
+
+| | 接口 class/sub/proto | Windows 匹配 | 使用者 |
+| :-: | :-: | :-: | :-: |
+|  写法 A / 微软规范 |  0xE0 / 01 / 03 (Wireless/RF/RNDIS) | 系统老 INF USB\Class_E0&SubClass_01&Prot_03 -> usb8023 | Android 手机 |
+| 写法 B / ACM 伪装 | 0x02 / 02 / 0xFF (CDC-ACM vendor) | 无系统 INF 匹配, 仅使用 MS OS compat | Linux Rndis Usb Gadget Function (`f_rndis`) |
+
+> 参考 <https://170721.xyz/shizuku/065919.html> / <https://www.kancloud.cn/handsomehacker/openstick/2637565>
+
+我们需要修改 RNDIS 的 USB 设备枚举为微软标准
+
+```diff
+diff --git a/drivers/usb/gadget/function/f_rndis.c b/drivers/usb/gadget/function/f_rndis.c
+index ee95e8f5f..d23eca221 100644
+--- a/drivers/usb/gadget/function/f_rndis.c
++++ b/drivers/usb/gadget/function/f_rndis.c
+@@ -115,9 +115,15 @@ static struct usb_interface_descriptor rndis_control_intf = {
+ 	/* .bInterfaceNumber = DYNAMIC */
+ 	/* status endpoint is optional; this could be patched later */
+ 	.bNumEndpoints =	1,
+-	.bInterfaceClass =	USB_CLASS_COMM,
+-	.bInterfaceSubClass =   USB_CDC_SUBCLASS_ACM,
+-	.bInterfaceProtocol =   USB_CDC_ACM_PROTO_VENDOR,
++	/* RNDIS 控制接口按微软白皮书写成 Wireless Controller (0xE0/01/03),
++	 * 与 Android 手机(如 OPPO 22d9:2766)一致 —— Windows 老 INF
++	 * (usb8023 "Remote NDIS based Internet Sharing Device") 按
++	 * USB\Class_E0&SubClass_01&Prot_03 匹配;原 ACM 伪装(0x02/02/FF)
++	 * 无系统 INF 匹配,只能靠 MS OS compat,Win7 + ICS 下蓝屏(0xD1)。
++	 * Linux host 的 rndis_host id_table 同时收 0xE0/01/03 与 0x02/02/FF。 */
++	.bInterfaceClass =	USB_CLASS_WIRELESS_CONTROLLER,
++	.bInterfaceSubClass =	1,
++	.bInterfaceProtocol =	3,
+ 	/* .iInterface = DYNAMIC */
+ };
+ 
+@@ -176,9 +182,9 @@ rndis_iad_descriptor = {
+ 
+ 	.bFirstInterface =	0, /* XXX, hardcoded */
+ 	.bInterfaceCount = 	2,	// control + data
+-	.bFunctionClass =	USB_CLASS_COMM,
+-	.bFunctionSubClass =	USB_CDC_SUBCLASS_ETHERNET,
+-	.bFunctionProtocol =	USB_CDC_PROTO_NONE,
++	.bFunctionClass =	USB_CLASS_WIRELESS_CONTROLLER,
++	.bFunctionSubClass =	1,
++	.bFunctionProtocol =	3,
+ 	/* .iFunction = DYNAMIC */
+ };
+```
+
+或者使用对修改完成的仓库 [wifi-stick-linux](https://aka.lovemilk.top/github/wifi-stick-linux), **并在使用 GitHub Action 构建时勾选 `enable_rndis_ms_iad`**
+
+要输入修改完成的内核, 请参阅 [更新或替换 Linux 内核](#更新或替换-linux-内核)
+
+并在安装完成后将接 [口模式切换工具](#配置-usb-接口模式) 更新至 `Commit: 69d73774b1801b99487c135fb61e746deb05ec2b` ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/69d73774b1801b99487c135fb61e746deb05ec2b) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-69d7377)) 或更新版本
 
 ### Wifi Stick 修复基带驱动
 按照 [提取或挂载 system 分区](#1-提取或挂载-system-分区) 或其他方法提取出 modem 分区, 并将分区内的文件全部内容复制至 Wifi Stick 的 `/lib/firmware`
@@ -1025,6 +1134,103 @@ sudo cp –v <mount>/image/modem* mba.* /lib/firmware
 ```sh
 sudo mmcli -m 0
 ```
+
+### 更新或替换 Linux 内核
+在部分情况下, 默认编译的内核可能无法满足我们的需求, 或存在兼容性问题 (例如按钮无法正常工作)
+
+为此, 我们需要更新或替换 Linux 内核以满足自定义需求
+
+要使用新的 Linux 内核, 我们需要同时更新 `linux-image` 与 `linux-headers` 软件包, 并刷写实际存储有内核本体的 boot 分区
+
+对于 `ufi001c` 的同一刷机包设备, 可以使用 *修复过的 boot.img* (deb 包大部分情况下可不更新): **ufi001c-boot.img** ([当前网站](/static/ufi001c-boot.img) / [GitHub Release](https://aka.lovemilk.top/github/notes/releases/tag/ufi001c-boot)) 并直接刷入即可
+
+> 如果您的设备内核编译配置与我们的配置不一样, 请在源系统内先安装 `linux-image` 和 `linux-headers` 两个 deb 包后再刷入 boot 分区
+> 
+> deb 包可以在构建 Artifacts 的 `deb-packages-<hash>` 下载
+> 
+> ```sh
+> sudo dpkg -i linux-*.deb
+> ```
+
+#### 修复按钮无法工作
+
+对于其他设备, 可以自行修改设备树并编译打包 (仅打包 boot.img 皆可). 由于我们没有修改内核编译配置, 要使用修复完成的 boot.img, 在固件正常刷入之后, **仅须覆盖刷写 boot 分区**, 不需要改变其他分区
+
+例如, 设备为 `ufi001c`, 那么需要将内核源码仓库的
+
+```path
+arch/arm64/boot/dts/qcom/msm8916-handsome-openstick-ufi001c.dts
+```
+
+内的
+
+```dts
+reset {
+    label = "Restart";
+    gpios = <&msmgpio 37 GPIO_ACTIVE_LOW>;
+    linux,code = <KEY_RESTART>;
+};
+```
+
+的 `GPIO_ACTIVE_LOW` 改为 `GPIO_ACTIVE_HIGH`
+
+```dts
+reset {
+    label = "Restart";
+    gpios = <&msmgpio 37 GPIO_ACTIVE_HIGH>;
+    linux,code = <KEY_RESTART>;
+};
+```
+
+最下方的
+
+```dts
+&msmgpio {
+	msmgpio_leds: msmgpio-leds {
+		pins = "gpio0","gpio1","gpio2","gpio3","gpio20","gpio21","gpio22";
+		function = "gpio";
+
+		bias-disabled;
+	};
+
+	gpio_keys_default: gpio_keys_default {
+		pins = "gpio37";
+		function = "gpio";
+
+		drive-strength = <8>;
+		input-enable;
+		bias-pull-up;
+	};
+};
+```
+
+的 `bias-pull-up` 改为 `bias-pull-down`
+
+```dts
+&msmgpio {
+	msmgpio_leds: msmgpio-leds {
+		pins = "gpio0","gpio1","gpio2","gpio3","gpio20","gpio21","gpio22";
+		function = "gpio";
+
+		bias-disabled;
+	};
+
+	gpio_keys_default: gpio_keys_default {
+		pins = "gpio37";
+		function = "gpio";
+
+		drive-strength = <8>;
+		input-enable;
+		bias-pull-down;
+	};
+};
+```
+
+> 感谢 敬爱的<pe>[dezige131](https://github.com/dezige131)</pe> 对设备树修改与 boot.img 打包支持
+
+或者使用对 `ufi001c` 修复完成的仓库 [wifi-stick-linux](https://aka.lovemilk.top/github/wifi-stick-linux) 并使用 GitHub Action 构建
+
+构建 Artifacts 的 `<device>-boot-<hash>` (例如 `ufi001c-boot-5efceb9ea5d1c76064b13e79b31de582490b4a16`) 为对应设备型号的 Zip 压缩包, 包含 boot 镜像
 
 ### Wifi Stick 连接 WIFI 后速率过慢
 

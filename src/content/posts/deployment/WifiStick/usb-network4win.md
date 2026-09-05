@@ -9,6 +9,9 @@ category: deployment::WifiStick
 > 本文内容可能已过时  
 > 本文更新版的内容已被整合至 [Wifi Stick (随身 WIFI 棒子) 基础安装配置](/posts/deployment/WifiStick/installation)
 
+> [!WARNING]
+> 本文的部分 RNDIS 配置可能会在 Windows 7 上开启 ICS (Internet Connection Sharing) 后诱发驱动崩溃导致蓝屏, 请查看上述的新版内容
+
 本文主要介绍如何在随身 WIFI 棒子上配置 USB 网路共享 (RNDIS), 以便 Windows 可以自动识别
 
 由于我所使用的 [OpenStick](https://www.kancloud.cn/handsomehacker/openstick) 项目默认已经配置了适用于 \*nux 的 USB 网路共享脚本, 需要直接修改该脚本, 否则 USB 接口会被占用导致无法修改
