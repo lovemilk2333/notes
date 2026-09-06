@@ -942,6 +942,11 @@ sudo systemctl reload caddy.service
 
 一个可能的解决方法是禁用复合设备, 将融合设备修改为纯 RNDIS 设备, 参考 [配置 USB 接口模式](#配置-usb-接口模式) 修改为仅 RNDIS 网路传输
 
+> [!WARNING]
+> 由于 Linux 内核对 RNDIS 的设备枚举采用了 ACM 伪装 (而非 微软规范) 的写法, 导致在 Windows 7 操作系统上开启 ICS (Internet Connection Sharing) 后会诱发驱动崩溃导致蓝屏
+>
+> 要解决该问题, 只能 [替换 Linux 内核以使用微软规范 RNDIS 设备枚举](#替换-linux-内核以使用微软规范-rndis-设备枚举)
+
 ### 连接 Linux/Unix 设备
 
 对于 Linux 和 macOS 等 \*nux 操作系统, 请将 Wifi Stick 插入 USB 接口, 后列出网卡及其 IP 地址
@@ -1034,7 +1039,7 @@ TODO -->
 
 由于 Wifi Stick 的 RNDIS 网卡 没有自动获取 IP, 且没有交由 NetworkManager 管理, Wifi Stick 无路由也无该网段的 IP 进行请求
 
-> [!WARNNG]
+> [!WARNING]
 > 由于 Linux 内核对 RNDIS 的设备枚举采用了 ACM 伪装 (而非 微软规范) 的写法, 导致在 Windows 7 操作系统上进行如上配置开启 ICS (Internet Connection Sharing) 后会诱发驱动崩溃导致蓝屏
 >
 > 要解决该问题, 只能 [替换 Linux 内核以使用微软规范 RNDIS 设备枚举](#替换-linux-内核以使用微软规范-rndis-设备枚举)
