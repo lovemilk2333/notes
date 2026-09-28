@@ -159,17 +159,23 @@ tar -xzf selkies-gstreamer-portable-v<version>_amd64.tar.gz -C ~
 ```ini
 SELKIES_ADDR=0.0.0.0
 SELKIES_PORT=<port>
-SELKIES_USER=<user>
-SELKIES_PASS=<password>
-SELKIES_ENCODER=x264enc
-SELKIES_RESIZE=false
+SELKIES_MODE=webrtc
+SELKIES_BASIC_AUTH_USER=<user>
+SELKIES_BASIC_AUTH_PASSWORD=<password>
+SELKIES_ENCODER=h264enc
+SELKIES_USE_CPU=true
+SELKIES_ENABLE_RESIZE=false
+SELKIES_MANUAL_WIDTH=1920
+SELKIES_MANUAL_HEIGHT=1080
+SELKIES_STUN_HOST=<stun-host>
+SELKIES_STUN_PORT=<stun-port>
 ```
 
 > [!NOTE]
-> 编码器名称必须在 `selkies-gstreamer-run --help` 输出的可选值列表中. 本机使用 `vah264enc` (VA-API 硬件编码) 时, 便携包自带的 VA-API 插件与系统 intel-media-driver 不兼容, 构建视频管线时报 `'NoneType' object has no attribute 'set_property'`, 故改用软件编码 `x264enc`
+> 编码器名称必须在 `selkies-gstreamer-run --help` 输出的可选值列表中. 本机使用 `h264enc` 并设置 `SELKIES_USE_CPU=true`, 让 Selkies 使用软件编码. 该参数只切换视频编码器, 不改变 X11 捕获的 Display
 
 > [!NOTE]
-> 对于无法使用 GPU 的虚拟机或者 GPU 性能较弱设备 (如我使用的 Intel UHD Graphics P630[^uhdp630]), 使用 `x264enc` 可能出现跳帧问题, 可尝试 `svtav1enc` 或 `av1enc` 编码方式
+> 对于无法使用 GPU 的虚拟机或者 GPU 性能较弱设备 (如我使用的 Intel UHD Graphics P630[^uhdp630]), 使用 CPU 编码可能出现跳帧问题, 可尝试降低分辨率或帧率
 
 在如下文件写入 Unit
 
@@ -180,14 +186,15 @@ SELKIES_RESIZE=false
 ```ini
 [Unit]
 Description=Selkies GStreamer Service
-# 必须和上面定义的 KDE Unit 名称对应, `Wants` 同理
-After=headless-x11-kde.service
-Wants=headless-x11-kde.service
+# 必须和 KasmVNC Unit 名称对应, `Wants` 同理
+After=kasmvnc.service
+Wants=kasmvnc.service
 
 [Service]
 Type=simple
 # 设置默认环境变量, 参考官方文档
 Environment=DISPLAY=:0
+Environment=XAUTHORITY=%h/.local/state/kasmvnc.auth
 Environment=PIPEWIRE_LATENCY=128/48000
 Environment=XDG_RUNTIME_DIR=%t
 Environment=PIPEWIRE_RUNTIME_DIR=%t
@@ -199,11 +206,14 @@ EnvironmentFile=%h/selkies-gstreamer/selkies.env
 ExecStart=%h/selkies-gstreamer/selkies-gstreamer-run \
     --addr=${SELKIES_ADDR} \
     --port=${SELKIES_PORT} \
-    --enable_https=false \
-    --basic_auth_user=${SELKIES_USER} \
-    --basic_auth_password=${SELKIES_PASS} \
+    --enable-https=false \
     --encoder=${SELKIES_ENCODER} \
-    --enable_resize=${SELKIES_RESIZE}
+    --manual-width=${SELKIES_MANUAL_WIDTH} \
+    --manual-height=${SELKIES_MANUAL_HEIGHT} \
+    --enable-resize=${SELKIES_ENABLE_RESIZE} \
+    --framerate=60 \
+    --video-on-start=true \
+    --use-cpu=${SELKIES_USE_CPU}
 
 Restart=always
 RestartSec=5s
@@ -498,7 +508,13 @@ network:
 
 GPU 加速请按需启用
 
-找到设备上的 Render 设备, 对于拥有单个 GPU 的设备一般来说为 `/dev/dri/renderD128`, 同时拥有核显与独显的设备一般来说编号较大者为独显, 常见于 `/dev/dri/renderD129`
+先检查 Render 设备及其 PCIe 路径
+
+```sh
+ls -l /dev/dri /dev/dri/by-path/*-render 2>/dev/null
+```
+
+若存在 PCIe Render 设备, 使用实际存在的设备路径. 例如 `/dev/dri/renderD128`
 
 ```path
 ~/.vnc/kasmvnc.yaml
@@ -517,6 +533,18 @@ desktop:
 ```
 
 `hw3d` 开启后, KasmVNC 的 X Server 会提供 DRI3 扩展, 应用可自行分配 GPU 缓冲并直接渲染, 即使 Xvnc 不提供 GLX 也能获得硬件加速
+
+若不存在 PCIe Render 设备, 只保留分辨率配置, 不要填写 `desktop.gpu`
+
+```yml
+desktop:
+  resolution:
+    width: 1920
+    height: 1080
+```
+
+> [!WARNING]
+> `drinode` 必须指向实际存在且当前用户可访问的 Render 设备. 没有 PCIe Render 设备时仍填写该字段, 可能导致 KasmVNC 中的 KDE 启动动画结束后黑屏
 
 > [!NOTE]
 > 分辨率必须通过 `desktop.resolution` 指定, `vncserver -geometry` 参数在新版本中不会生效
@@ -538,12 +566,9 @@ desktop:
 
 在会话内运行 `eglinfo` 确认渲染器为 `iris` (Intel) 等硬件驱动名称即配置成功
 
-### 使用不同方法共存部署
+### 使用 KasmVNC 作为主会话
 
-目前, 将 Selkies 与 KasmVNC 共存部署共有两种方法 (任选其一即可):
-
-1. [使用 KasmVNC 作为 X11 Session 启动者](#11-禁用-kde-启动程序) (推荐, 配合 `hw3d` 可获得 GPU 加速)
-2. [使用 kasmxproxy 转发现有 X11 Display](#21-使用-kasmxproxy-转发现有-x11-display) (应用运行在 dummy 驱动的 Xorg 上, 只能获得软件渲染)
+KasmVNC 直接启动 KDE 的 X11 Session, Selkies 捕获同一个 Display. 不再启动独立的 Xorg, 也不使用 `kasmxproxy` 转发画面.
 
 ### 1.1 禁用 KDE 启动程序
 
@@ -555,9 +580,21 @@ systemctl --user disable --now headless-x11-kde.service
 
 ### 1.2 启动 DE
 
-`vncserver` 默认在第一个客户端连接时才执行 `~/.vnc/xstartup` 启动 DE, 这会导致没有客户端连接时 Selkies 无画面可采集
+创建 `~/.vnc/xstartup`, 使 KasmVNC 启动前面配置的 KDE X11 脚本
 
-因此我们使用 `-noxstartup` 创建空白 X11 Session, 并在 Systemd Unit 中等待 X Server 就绪后直接启动先前写好的 `~/.xinitrc`
+```sh
+#!/usr/bin/sh
+
+exec ~/.xinitrc
+```
+
+配置可执行权限
+
+```sh
+chmod +x ~/.vnc/xstartup
+```
+
+Selkies 需要在没有客户端连接 KasmVNC 时也能采集画面, 因此不能使用 `-noxstartup`
 
 ### 1.3 配置 KasmVNC 为 Systemd Unit
 
@@ -574,10 +611,14 @@ After=network.target
 
 [Service]
 Type=simple
-Environment=XAUTHORITY=%h/.Xauthority
-# 先等待 X Server 可以接受连接再启动 DE, 否则 Plasma 会因连接被拒而立即退出
-ExecStart=/usr/bin/sh -c '/usr/bin/vncserver -kill :0 >/dev/null 2>&1; /usr/bin/vncserver :0 -noxstartup && { i=0; until DISPLAY=:0 XAUTHORITY=%h/.Xauthority /usr/bin/xset q >/dev/null 2>&1; do i=$((i+1)); [ $i -ge 150 ] && exit 1; sleep 0.2; done; }; export DISPLAY=:0; exec %h/.xinitrc'
-ExecStop=/usr/bin/sh -c '/usr/bin/vncserver -kill :0 || true'
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=%h/.local/state/kasmvnc.auth
+Environment=XDG_SESSION_TYPE=x11
+Environment=XDG_CURRENT_DESKTOP=KDE
+Environment=DESKTOP_SESSION=plasma
+ExecStartPre=/usr/bin/sh -c '/usr/bin/vncserver -kill :0 >/dev/null 2>&1 || true; rm -f /tmp/.X0-lock /tmp/.X11-unix/X0'
+ExecStart=/usr/bin/vncserver :0 -fg -xstartup %h/.vnc/xstartup -geometry 1920x1080 -depth 24 -SecurityTypes None -DisableBasicAuth
+ExecStop=/usr/bin/vncserver -kill :0
 
 Restart=on-failure
 RestartSec=5
@@ -589,20 +630,11 @@ StandardError=journal
 WantedBy=default.target
 ```
 
-由于我们禁用了 `headless-x11-kde.service`, 需要将 Selkies Systemd Unit 的等待服务设置为 `kasmvnc.service`
+将 Selkies Systemd Unit 的等待服务设置为 `kasmvnc.service`
 
 ```path
 ~/.config/systemd/user/selkies.service
 ```
-
-修改
-
-```ini
-After=headless-x11-kde.service
-Wants=headless-x11-kde.service
-```
-
-为
 
 ```ini
 After=kasmvnc.service
@@ -614,119 +646,6 @@ Wants=kasmvnc.service
 ```sh
 systemctl --user daemon-reload
 systemctl --user restart selkies.service
-systemctl --user enable --now kasmvnc.service
-```
-
-### 2.1 使用 kasmxproxy 转发现有 X11 Display
-
-> [!WARNING]
-> 该方法中应用运行在 `xf86-video-dummy` 驱动的 Xorg 上, 只能获得软件渲染, 且多一层屏幕拷贝开销, 仅在无法使用 [方法 1](#12-启动-de) 时使用
-
-先前的 `headless-x11-kde.service` 我们已经在 Display `:0` 启动了一个 X11 Session, 我们需要使用 `kasmxproxy` 转发这个 Display
-
-### 2.2 配置 KasmVNC 与 kasmxproxy 为 Systemd Unit
-> 对 `vncserver` 使用 `-noxstartup` 选项以创建空白的 X11 Session, 不启动 DE
-
-```path
-~/.config/systemd/user/kasmvnc.service
-```
-写入
-```ini
-[Unit]
-Description=KasmVNC Service
-After=network.target
-
-[Service]
-Type=simple
-# 不能使用 ExecStartPre, 因为 vncserver 启动不是立即的
-ExecStart=/usr/bin/sh -c '/usr/bin/vncserver :99 -noxstartup && /usr/bin/kasmxproxy -a :0 -v :99 -r -f ${KASM_FPS:-60}'
-ExecStop=/usr/bin/vncserver -kill :99
-
-Restart=on-failure
-RestartSec=5
-
-[Install]
-WantedBy=default.target
-```
-> 如果需要自动修改远程显示器大小, 请携带 `-r` 参数  
-> 参数配置请参阅 <https://kasmweb.com/kasmvnc/docs/1.3.4/man/kasmxproxy.html#options>
-
-### 2.3 配置剪切板同步
-由于我们使用 `kasmxproxy` 转发了 Display 的内容, 使得 KasmVNC 读取屏幕以及写入剪切板的目标并不是实际上 X11 Session 所在屏幕, 我们需要使用 `xclip` 工具并编写脚本轮询同步剪切板
-
-安装
-```sh
-yay -S xclip
-```
-
-```path
-~/.config/systemd/user/kasmvnc-clipboard.sh
-```
-写入
-```sh
-#!/bin/bash
-export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
-
-LAST_0=""
-LAST_99=""
-
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Clipboard Sync Service Started..."
-echo "Monitoring :0 (KDE) <-> :99 (KasmVNC)"
-
-while true; do
-    CUR_0=$(/usr/bin/xclip -display :0 -o -selection clipboard 2>/dev/null)
-    CUR_99=$(/usr/bin/xclip -display :99 -o -selection clipboard 2>/dev/null)
-
-    if [[ "$CUR_0" != "$LAST_0" && -n "$CUR_0" ]]; then
-        echo -n "$CUR_0" | /usr/bin/xclip -display :99 -i -selection clipboard
-        LAST_0="$CUR_0"
-        LAST_99="$CUR_0"
-        echo "[$(date '+%H:%M:%S')] Sync: :0 -> :99"
-
-    elif [[ "$CUR_99" != "$LAST_99" && -n "$CUR_99" ]]; then
-        echo -n "$CUR_99" | /usr/bin/xclip -display :0 -i -selection clipboard
-        LAST_99="$CUR_99"
-        LAST_0="$CUR_99"
-        echo "[$(date '+%H:%M:%S')] Sync: :99 -> :0"
-    fi
-
-    sleep 0.25
-done
-```
-
-配置为 Systemd Unit
-```path
-~/.config/systemd/user/kasmvnc-clipboard.service
-```
-写入
-```ini
-[Unit]
-Description=KasmVNC Clipboard Sync
-After=headless-x11-kde.service kasmvnc.service
-Requires=headless-x11-kde.service kasmvnc.service
-
-[Service]
-ExecStart=/usr/bin/bash "%h/.config/systemd/user/kasmvnc-clipboard.sh"
-
-StandardOutput=journal
-StandardError=journal
-
-Restart=on-failure
-RestartSec=5
-
-[Install]
-WantedBy=default.target
-```
-
-重载并启用服务
-```sh
-systemctl --user daemon-reload
-systemctl --user enable --now kasmvnc-clipboard.service
-```
-
-### 重载并启用服务
-```sh
-systemctl --user daemon-reload
 systemctl --user enable --now kasmvnc.service
 ```
 
