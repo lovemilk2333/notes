@@ -73,7 +73,7 @@ export const navBarConfig: NavBarConfig = {
 			external: true, // Show an external link icon and will open in a new tab
 		},
 		{
-			name: "*本网站迁移通知",
+			name: "*网站已迁移通知",
 			url: "/posts/blogs/remake-notice/"
 		}
 	],
