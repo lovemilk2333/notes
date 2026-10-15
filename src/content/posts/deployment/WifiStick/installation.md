@@ -534,6 +534,9 @@ sudo evtest --grab /dev/input/event0
 
 接下来, 我们要配置 RNDIS 等不同 USB 接口用途, 为了方便调试, 我们可以安装 `iproute2` (也就是常见发行版内的 `ip` 命令)
 
+> [!NOTE]
+> 部分 RNDIS 功能需要 `ip` 命令可被执行, 此时 `iproute2` 软件包是必选的
+
 ```sh
 sudo apt install iproute2
 ```
@@ -562,7 +565,7 @@ sudo chmod +x /usr/local/bin/usb-switcher
 
 安装依赖
 ```sh
-sudo apt install dnsmasq udhcpc
+sudo apt install dnsmasq udhcpc iproute2
 ```
 
 2. 配置启动脚本

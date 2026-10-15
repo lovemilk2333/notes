@@ -186,6 +186,18 @@ patch:
 
 ### Rime [雾凇拼音](https://github.com/iDvel/rime-ice) 设置自定义词库
 
+默认情况下, 雾凇拼音使用如下配置预定义自定义词库文件
+```yml
+# rime_ice.schema.yaml
+custom_phrase:
+  dictionary: ""
+  user_dict: custom_phrase
+  db_class: stabledb
+  enable_completion: false
+  enable_sentence: false
+  initial_quality: 99
+```
+
 对于 fcitx5 用户, 在如下目录
 ```path
 ~/.local/share/fcitx5/rime
@@ -193,30 +205,14 @@ patch:
 
 创建/编辑如下文件
 ```path
-default.custom.yaml
-```
-
-并写入
-```yml
-translator/dictionary:
-  - <name>
-```
-其中, `<name>` 是下方要创建的 dict (词库) 文件名称, 确保同目录下有 `<name>.dict.yaml`, 且 `<name>.dict.yaml` 内的 `name` 字段为 `<name>`
-
-创建并写入任意的 `<name>.dict.yaml` (以 `custom_phrase.dict.yaml` 为例)
-
-```path
-custom_phrase.dict.yaml
+custom_phrase.txt
 ```
 写入
-```yaml
----
-name: custom_phrase
-version: "1.0"
-sort: by_weight
-...
-自定词组	拼音代码	权重
-# 此处按照 `词组\t拼音\t权重(不知道可以填写 1)` 格式写自定义词组, 一行一个. 例如:
+```txt
+# 自定义短语（雾凇拼音 table_translator@custom_phrase）
+# 以 Tab 分割：词汇<Tab>编码<Tab>权重
+# 此行之后不能写注释
+
 词组	cizu	1
 ```
 
