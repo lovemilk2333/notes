@@ -1,6 +1,6 @@
 ---
 title: Wifi Stick (随身 WIFI 棒子) 基础安装配置
-published: 2026-08-13
+published: 2026-10-22
 tags: [Linux, Debian, RNDIS, USB, Caddy, ReversedProxy]
 category: deployment::WifiStick
 ---
@@ -8,6 +8,16 @@ category: deployment::WifiStick
 本文主要讲述如何安装 Wifi Stick, 并对 USB 网路共享 (RNDIS), 串口通讯, 本地文件服务器等进行配置
 
 我所购买的 Wifi Stick 采用 903 主板方案, 大部分情况下兼容 ufi-001c 方案, SoC 为 高通骁龙 410
+
+---
+
+> [!IMPORTANT]
+> 由于 eMudhra CA 证书出现泄露 ([CVE-2026-114406](https://www.cve.org/CVERecord?id=CVE-2026-114406)), 各位用户请尽快更新至 >= 如下版本, 或参考 [CVE 与漏洞修复](#cve-与漏洞修复)
+> 
+> | 项目 | 版本/Commit |
+> | :-: | :- |
+> | Rootfs (刷机包) | <https://aka.lovemilk.top/github/wifi-stick-linux/commit/8823b434a4cec02eacdf45d07ea6566dc16d5df5> |
+> | wifi-stick-usb-switcher | <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/23cb64f8716caa52425e18b2c89b454460a0557f> |
 
 ## 安装
 
@@ -428,6 +438,8 @@ sudo systemctl restart ssh
 > ```sh
 > ssh-keygen -R <IP/domain>
 > ```
+
+### *[重要]* 修复 [CVE-2026-114406](#cve-2026-114406)
 
 ### Wifi Stick 使用基带 (蜂窝网络/移动数据)
 参见 [Wifi Stick 修复基带驱动](#wifi-stick-修复基带驱动)
@@ -1450,3 +1462,35 @@ sudo systemctl enable --now caddy-tls-ask.service
 ```sh
 sudo systemctl reload caddy.service
 ```
+
+---
+
+## CVE 与漏洞修复
+
+### CVE-2026-114406
+> <https://emudhra.we-have-a-problem.com/>
+
+为修复该漏洞, 我们须取消信任被泄漏的 CA
+
+最佳做法是将 Debian 的 `ca-certificates` 包更新至如下版本之一或更高版本: 20250419~deb12u2, 20250419+deb13u1, 20260816+nmu1
+
+若您的 Debian 版本过低且无法升级, 可以使用如下命令通过配置项屏蔽信任
+```sh
+sed -i \
+  -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+  -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
+  /etc/ca-certificates.conf && update-ca-certificates
+```
+
+后运行
+
+```sh
+curl https://dv-g3b-emudhra.we-have-a-problem.com/
+curl https://dv-g3b-aaa-emudhra.we-have-a-problem.com/
+```
+
+TLS 连接均错误即为屏蔽成功
+
+---
+
+同时, 您也需要将 Go 的版本升级至 >= 1.27.3 或 1.26.10, 并将 (若已安装) ** [接口模式切换工具](#配置-usb-接口模式) 更新至 `Commit: 23cb64f8716caa52425e18b2c89b454460a0557f` ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/23cb64f8716caa52425e18b2c89b454460a0557f) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-23cb64f)) 或更新版本**
