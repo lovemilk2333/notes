@@ -17,7 +17,7 @@ category: deployment::WifiStick
 > | 项目 | 版本/Commit |
 > | :-: | :- |
 > | Rootfs (刷机包) | <https://aka.lovemilk.top/github/wifi-stick-linux/commit/8823b434a4cec02eacdf45d07ea6566dc16d5df5> |
-> | wifi-stick-usb-switcher | <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/23cb64f8716caa52425e18b2c89b454460a0557f> |
+> | wifi-stick-usb-switcher | <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/23cb64f8716caa52425e18b2c89b454460a0557f> / <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-23cb64f> |
 
 ## 安装
 
@@ -842,6 +842,8 @@ sudo systemctl enable --now caddy.service
 > Caddy 会请求 `<URI>?domain=<domain>`, 并在 API 返回非 200 时拒绝生成 TLS 证书
 > 
 > 完整实现与配置请参阅 [Caddy 动态 TLS 签发名称质询服务](#caddy-动态-tls-签发名称质询服务)
+
+<!-- TODO 在拥有 Root Key 情况下签发任意 IP 子 Cert -->
 
 4. 重载 Caddy 配置
 
