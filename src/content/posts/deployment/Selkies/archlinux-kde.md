@@ -58,6 +58,84 @@ fi
 chmod +x ~/.xinitrc
 ```
 
+> [!NOTE]
+> 由于 KDE 6.8 移除了对 X11 的支持, 我们需要将如下软件包保留 (降级) 至如下版本
+> 
+> | Package | Version |
+> |---|---|
+> | aurorae | 6.7.5-1 |
+> | bluedevil | 1:6.7.5-1 |
+> | breeze | 6.7.5-1 |
+> | breeze-cursors | 6.7.5-1 |
+> | breeze-gtk | 6.7.5-1 |
+> | discover | 6.7.5-1 |
+> | drkonqi | 6.7.5-1 |
+> | flatpak-kcm | 6.7.5-1 |
+> | kactivitymanagerd | 6.7.5-1 |
+> | kde-cli-tools | 6.7.5-1 |
+> | kde-gtk-config | 6.7.5-1 |
+> | kdecoration | 6.7.5-1 |
+> | kdeplasma-addons | 6.7.5-1 |
+> | kgamma | 6.7.5-1 |
+> | kglobalacceld | 6.7.5-1 |
+> | kinfocenter | 6.7.5-1 |
+> | kmenuedit | 6.7.5-1 |
+> | knighttime | 6.7.5-1 |
+> | kpipewire | 6.7.5-1 |
+> | krdp | 6.7.5-1 |
+> | kscreen | 6.7.5-1 |
+> | kscreenlocker | 6.7.5-1 |
+> | ksshaskpass | 6.7.5-1 |
+> | ksystemstats | 6.7.5-1 |
+> | kwallet-pam | 6.7.5-1 |
+> | kwayland | 6.7.5-1 |
+> | kwin | **6.7.5-3** |
+> | kwin-x11 | **6.7.5-3** |
+> | kwrited | 6.7.5-1 |
+> | layer-shell-qt | 6.7.5-1 |
+> | libkscreen | 6.7.5-1 |
+> | libksysguard | 6.7.5-1 |
+> | libplasma | 6.7.5-1 |
+> | milou | 6.7.5-1 |
+> | ocean-sound-theme | 6.7.5-1 |
+> | oxygen | 6.7.5-1 |
+> | oxygen-cursors | 6.7.5-1 |
+> | oxygen-sounds | 6.7.5-1 |
+> | plasma-activities | 6.7.5-1 |
+> | plasma-activities-stats | 6.7.5-1 |
+> | plasma-browser-integration | 6.7.5-1 |
+> | plasma-desktop | 6.7.5-1 |
+> | plasma-disks | 6.7.5-1 |
+> | plasma-firewall | 6.7.5-1 |
+> | plasma-integration | 6.7.5-1 |
+> | plasma-keyboard | 6.7.5-1 |
+> | plasma-login-manager | 6.7.5-1 |
+> | plasma-nm | 6.7.5-1 |
+> | plasma-pa | 6.7.5-1 |
+> | plasma-systemmonitor | 6.7.5-1 |
+> | plasma-thunderbolt | 6.7.5-1 |
+> | plasma-vault | 6.7.5-1 |
+> | plasma-welcome | 6.7.5-1 |
+> | plasma-workspace | **6.7.5-3** |
+> | plasma-workspace-wallpapers | 6.7.5-1 |
+> | plasma-x11-session | **6.7.5-3** |
+> | plasma5support | 6.7.5-1 |
+> | polkit-kde-agent | 6.7.5-1 |
+> | powerdevil | 6.7.5-2 |
+> | print-manager | 1:6.7.5-1 |
+> | qqc2-breeze-style | 6.7.5-1 |
+> | sddm-kcm | 6.7.5-1 |
+> | spectacle | 1:6.7.5-1 |
+> | systemsettings | 6.7.5-1 |
+> | union | 6.7.5-1 |
+> | xdg-desktop-portal-kde | 6.7.5-1 |
+> 
+> 要降级可以使用 `downgrade` 工具, 安装
+> ```sh
+> sudo pacman -S downgrade
+> ```
+> 或使用 [CachyOS 提供的降级工具](/posts/apps/linux/cachyos/downgrade-packages/)
+
 ### 配置 X11 虚拟显示器
 
 在 X11 配置目录写入如下配置文件
@@ -618,7 +696,7 @@ Environment=XDG_CURRENT_DESKTOP=KDE
 Environment=DESKTOP_SESSION=plasma
 ExecStartPre=/usr/bin/sh -c '/usr/bin/vncserver -kill :0 >/dev/null 2>&1 || true; rm -f /tmp/.X0-lock /tmp/.X11-unix/X0'
 ExecStart=/usr/bin/vncserver :0 -fg -xstartup %h/.vnc/xstartup -geometry 1920x1080 -depth 24 -SecurityTypes None -DisableBasicAuth
-ExecStop=/usr/bin/vncserver -kill :0
+ExecStop=/usr/bin/sh -c '/usr/bin/vncserver -kill :0 >/dev/null 2>&1 || true'
 
 Restart=on-failure
 RestartSec=5
