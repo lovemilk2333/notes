@@ -51,6 +51,8 @@ sudo sed -i~ -E 's/=.\$\(command -v (nft|ip6?tables-legacy).*/=/g' \
 <https://github.com/waydroid/waydroid/issues/1113#issuecomment-2513210548>
 
 ## 部分应用不支持鼠标事件
+
+### 使用 `persist.waydroid.fake_touch`
 > <https://docs.bazzite.gg/Installing_and_Managing_Software/Waydroid_Setup_Guide/#mouse-clicks-to-touch-input>
 ```sh
 waydroid prop set persist.waydroid.fake_touch "<app-id>"
@@ -58,3 +60,11 @@ waydroid prop set persist.waydroid.fake_touch "<app-id>"
 其中, `app-id` 为软件包名或包名通配符 (例如 `"com.example.app.*"`), 使用该命令启用 Waydroid Mouse-Touch 转换
 
 如果仍未成功, 可以尝试在宿主机系统内 (Linux 内) 就产生触控事件, 例如使用数位板点击
+
+
+### 使用 Waydroid-Helper 按键映射器
+```sh
+paru -S waydroid-helper-bin
+```
+
+打开 Waydroid-Helper 后选择 Waydroid 实例, 并启用按键映射器, 后单击 *F1* 切换至映射模式并将窗口焦点切换至映射器透明叠加层

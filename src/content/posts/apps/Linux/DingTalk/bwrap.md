@@ -39,7 +39,7 @@ Exec = /usr/bin/sh -c 'if [ -L /usr/bin/dingtalk ] || [ -f /usr/bin/dingtalk ]; 
 ### 安装 Bwrap 与 DingTalk
 ```sh
 sudo pacman -S bubblewrap
-yay -S dingtalk-bin
+paru -S dingtalk-bin
 ```
 
 ### 配置 Bwrap 隔离脚本

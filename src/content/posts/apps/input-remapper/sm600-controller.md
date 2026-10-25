@@ -11,7 +11,7 @@ category: app::input-remapper
  \
 适用于 ArchLinux
 ```sh
-yay -S input-remapper-git
+paru -S input-remapper-git
 sudo systemctl enable --now input-remapper
 ```
 

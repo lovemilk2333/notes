@@ -509,7 +509,7 @@ sudo systemctl disable --now sddm
 安装 KasmVNC Server
 
 ```sh
-yay -S kasmvncserver-bin openssl-1.1
+paru -S kasmvncserver-bin openssl-1.1
 ```
 
 > [!WARNING]

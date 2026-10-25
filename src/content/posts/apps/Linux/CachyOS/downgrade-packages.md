@@ -11,7 +11,7 @@ description: 在 CachyOS 上使用 CachyOS 提供的脚本降级 CachyOS 专有�
 ## 安装
 安装 AUR 软件包 `cachyos-downgrade-git`
 ```sh
-yay -S cachyos-downgrade-git
+paru -S cachyos-downgrade-git
 ```
 
 或者,

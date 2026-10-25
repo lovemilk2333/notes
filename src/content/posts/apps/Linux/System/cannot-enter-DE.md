@@ -13,13 +13,13 @@ category: app::linux::system
 ## 解决方法
 卸载 *optimus*
 
-0. 使用 `yay -Qo` 查找到 *optimus* 的实际包名
+0. 使用 `paru -Qo` 查找到 *optimus* 的实际包名
 
 > [!IMPORTANT]
 > 这是个小坑, AUR 的 *optimus-manager-git* 安装生成的包名不是 *optimus-manager-git*, 而是类似于 `optimus-manager.python-xxxx` 什么的, 导致我没有成功卸载卡了好久
 
 ```sh
-yay -Qo /etc/modprobe.d/optimus-manager.conf
+paru -Qo /etc/modprobe.d/optimus-manager.conf
 ```
 
 1. 清除 Xorg 配置文件
@@ -29,7 +29,7 @@ sudo optimus-manager --cleanu
 
 2. 卸载 *optimus*
 ```sh
-yay -R optimus-manager-qt <real-package-name-of-optimus-manager>
+paru -R optimus-manager-qt <real-package-name-of-optimus-manager>
 ```
 
 3. 重新生成 initfs

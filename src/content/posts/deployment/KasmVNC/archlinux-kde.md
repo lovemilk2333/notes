@@ -19,7 +19,7 @@ sudo pacman -S plasma-meta plasma-x11-session konsole dolphin pipewire
 ## 安装 KasmVNC
 1. 使用 AUR 安装
 ```sh
-yay -S kasmvncserver-bin openssl-1.1
+paru -S kasmvncserver-bin openssl-1.1
 ```
 
 2. 生成初始配置

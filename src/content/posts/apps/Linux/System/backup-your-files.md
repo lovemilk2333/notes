@@ -11,7 +11,7 @@ category: app::linux::system
 备份主要 Syncthing 跨设备(或跨磁盘)实时同步文件作为备份
 
 ```sh
-yay -S syncthing
+paru -S syncthing
 ```
 
 ## 配置
@@ -102,7 +102,7 @@ sudo chmod g+s /path/to/backuponly
 
 如果需要在 `backup` 用户同用户下备份, 可以使用 `mutagen` 文件监听与同步工具:
 ```sh
-yay -S mutagen.io-bin
+paru -S mutagen.io-bin
 ```
 
 安装完成后, 可以在 `backup` 用户运行如下命令以创建同步
@@ -267,7 +267,7 @@ find /path/to/backup \( -name ".stversions" -type d -o -name ".sync-conflict-*" 
 ### 使用 Rmlint 移除或链接相同文件
 1. 安装
 ```sh
-yay -S rmlint
+paru -S rmlint
 ```
 
 2. 在目标目录下运行 `rmlint`  

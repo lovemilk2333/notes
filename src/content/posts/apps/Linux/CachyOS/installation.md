@@ -53,7 +53,7 @@ bash <(curl -L shorin.xyz/archsetup)
 > [!IMPORTANT]
 > CachyOS 默认的 Niri 与 一键脚本有冲突, 请使用 **Super/Meta/Command + T** (若打不开时请使用 **Alt + T**) 打开终端, 运行如下命令卸载冲突的 Noctalia (系列包)
 > ```sh
-> yay -R noctalia-qs noctalia-shell cachyos-niri-noctalia
+> paru -R noctalia-qs noctalia-shell cachyos-niri-noctalia
 > ```
 
 选择 Niri + DMS 或 Niri + DMS - git 安装, 并在安装 DMS 时选择 Niri 与 Kitty (常用应用可选安装)
@@ -540,7 +540,7 @@ CMake Error at CMakeLists.txt:3 (cmake_minimum_required):
 可以使用 yay 的 `--editmenu` 选项, 并在提示如下内容是输入要修改范围, 例如 `1`
 
 ```txt
-$ yay -S xxx --editmenu
+$ paru -S xxx --editmenu
 
 ...
 
@@ -570,7 +570,7 @@ sudo downgrade microsoft-edge-stable-bin
 
 实测, 148.0.3967.54 (正式版本) (64 位) 已经修复, 请大家尽快升级 `microsoft-edge-stable-bin`
 ```sh
-sudo yay -Sy microsoft-edge-stable-bin
+sudo paru -Sy microsoft-edge-stable-bin
 ```
 
 ### 修复 Microsoft Edge 会不断激活存在/播放媒体 (特别是视频) 的页面
