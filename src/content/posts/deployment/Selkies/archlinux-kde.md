@@ -419,25 +419,29 @@ sudo loginctl enable-linger $USER
 
 ### KDE 显示无音频设备导致无法调节系统音量
 
-我们可以使用 `pactl` 加载虚拟音频模块, 并将其设为系统默认输出
+我们可以使用 Pipewire 配置加载虚拟音频模块, 并将其设为系统默认输出
 
-为了自动化地设置虚拟音频输出, 请在 `~/.xinitrc` 的 `exec` 前添加如下内容
+为了自动化地设置虚拟音频输出, 请在 `~/.config/pipewire/pipewire.conf.d/*.conf` 写入如下内容
 
-```sh
-VIRTUAL_SINK_NAME="default"
-
-if ! pactl list sinks short | awk '{print $2}' | grep -Fxq "$VIRTUAL_SINK_NAME"; then
-  pactl load-module module-null-sink sink_name="$VIRTUAL_SINK_NAME" sink_properties=device.description="$VIRTUAL_SINK_NAME" >/dev/null 2>&1
-fi
-
-pactl set-default-sink "$VIRTUAL_SINK_NAME" >/dev/null 2>&1
+```conf
+context.objects = [
+    { factory = adapter
+        args = {
+            factory.name     = support.null-audio-sink
+            node.name        = "default-output"
+            node.description = "default-output"
+            media.class      = Audio/Sink
+            audio.position   = [ FL FR ]
+        }
+    }
+]
 ```
 
 > [!NOTE]
 > 无实体音频输入设备的机器还需要将默认录音源指向虚拟输出的 Monitor, 否则 Selkies 的音频管线会因找不到默认源而失败 (报 `Failed to connect stream: No such entity`)
 
 ```sh
-pactl set-default-source "$VIRTUAL_SINK_NAME.monitor" >/dev/null 2>&1
+pactl set-default-source "default-output.monitor" >/dev/null 2>&1
 ```
 
 ### Selkies 客户端网路环境无法访问 TURN/STUN Server 或者 443 端口, 导致无法建立连接
