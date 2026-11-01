@@ -17,7 +17,7 @@ category: deployment::WifiStick
 > | 项目 | 版本/Commit |
 > | :-: | :- |
 > | Rootfs (刷机包) | <https://aka.lovemilk.top/github/wifi-stick-linux/commit/8823b434a4cec02eacdf45d07ea6566dc16d5df5> |
-> | wifi-stick-usb-switcher | <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/23cb64f8716caa52425e18b2c89b454460a0557f> / <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-23cb64f> |
+> | USB 接口模式切换器 (wifi-stick-usb-switcher) | <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/23cb64f8716caa52425e18b2c89b454460a0557f> / <https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-23cb64f> |
 
 ## 安装
 
@@ -615,12 +615,35 @@ sudo chmod +x /usr/local/lib/usb-switcher/start.sh
 ```ini
 [Unit]
 Description=wifi-stick-usb-switcher
+After=local-fs.target
 
 [Service]
 Type=simple
+User=root
 ExecStart=/usr/local/lib/usb-switcher/start.sh
+# enable in need
+# ExecStart=/usr/local/lib/usb-switcher/start.sh --tls-service --tls-root-key /etc/usb-switcher/ca.key --tls-root-cert /etc/usb-switcher/ca.crt
 Restart=on-failure
 RestartSec=5s
+
+# The daemon needs root for configfs, network configuration, input devices,
+# LED sysfs, and the optional shutdown command. Bound its Linux capabilities
+# to those operations instead of granting the full root capability set.
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_SYS_BOOT CAP_KILL CAP_SETUID CAP_SETGID
+NoNewPrivileges=true
+
+# Keep the host filesystem read-only except for paths the daemon and its
+# RNDIS helpers need to update. /tmp stays shared for the daemon IPC socket.
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=false
+ReadWritePaths=/sys/kernel/config/usb_gadget /sys/class/leds /etc/resolv.conf /tmp
+ReadWritePaths=-/etc/NetworkManager/conf.d
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
 
 [Install]
 WantedBy=multi-user.target
@@ -803,6 +826,10 @@ sudo systemctl enable --now caddy.service
 
 ```Caddyfile
 {  # 全局配置
+    skip_install_trust
+	http_port 0
+	https_port 0
+	auto_https disable_redirects
 }
 
 
@@ -829,7 +856,7 @@ sudo systemctl enable --now caddy.service
 > [!WARNING]
 > 动态生成 TLS 证书仅限受信任环境, 无校验情况下任意域名均可作为合法的 TLS 目标 Host
 > 
-> 要在非可信环境下动态生成 TLS 证书, 请配置 **TLS 签发名称质询服务**
+> 要在非可信环境下动态生成 TLS 证书, 请配置 **TLS 签发名称质询服务**, 或者
 > 
 > ```Caddyfile
 > {  # 全局配置
@@ -842,8 +869,16 @@ sudo systemctl enable --now caddy.service
 > Caddy 会请求 `<URI>?domain=<domain>`, 并在 API 返回非 200 时拒绝生成 TLS 证书
 > 
 > 完整实现与配置请参阅 [Caddy 动态 TLS 签发名称质询服务](#caddy-动态-tls-签发名称质询服务)
-
-<!-- TODO 在拥有 Root Key 情况下签发任意 IP 子 Cert -->
+> 
+> 若您安装了 USB 接口模式切换器 `Commit: da38ca076defb826f46ad7e2c43b59d9c7c15ca8` 或更新版本 ([commit](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/commit/da38ca076defb826f46ad7e2c43b59d9c7c15ca8) | [release](https://aka.lovemilk.top/github/wifi-stick-usb-switcher/releases/tag/rolling-da38ca0) ), 可以直接提供 `--tls-service` 参数以在默认 `http://127.0.0.1:50996/ask` 上开启 TLS 域名质询服务. 该服务仅在 RNDIS 模式且请求 Domain 与 RNDIS 网卡 IP 相符合时返回 200, 否则一律返回 403
+> 
+> 若您需要通过 IP 地址进行 HTTPS 访问, 由于 Caddy 默认证书签发流程不会为 IP 地址提供合法的 SNI, 我们可以将 `http://127.0.0.1:50996/generate` 作为 Caddy TLS `get_certificate` 接口使用, 并为 USB 接口模式切换器 提供 `--tls-root-key` 与 `--tls-root-cert` 为您根私钥与根证书路径
+> 
+> ```Caddyfile
+> tls {
+>   get_certificate http "http://127.0.0.1:50996/generate"
+> }
+> ```
 
 4. 重载 Caddy 配置
 
