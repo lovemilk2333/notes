@@ -375,6 +375,8 @@ adb reboot bootloader
 
 刷入完成后脚本会自动让 Wifi Stick 重启, 同时请注意脚本输入, 这里可能包含初始化信息, 如 Wifi Stick 默认热点名称及 IP 地址, root 默认密码等
 
+> 若您需要仅刷写内核, 请参阅 [更新或替换 Linux 内核](#更新或替换-linux-内核)
+
 ### 连接 Wifi Stick SSH
 
 不同固件的 Wifi Stick 连接方式各异, 但基本上就是连接 Wifi Stick 提供的热点或使用 RNDIS 作为 USB 网卡连接, 然后再 SSH 至其的 IP 地址
@@ -629,16 +631,19 @@ RestartSec=5s
 # The daemon needs root for configfs, network configuration, input devices,
 # LED sysfs, and the optional shutdown command. Bound its Linux capabilities
 # to those operations instead of granting the full root capability set.
-CapabilityBoundingSet=CAP_SYS_ADMIN CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_SYS_BOOT CAP_KILL CAP_SETUID CAP_SETGID
-NoNewPrivileges=true
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_SYS_BOOT CAP_KILL CAP_SETUID CAP_SETGID CAP_CHOWN
+# fix adbd
+NoNewPrivileges=false
 
 # Keep the host filesystem read-only except for paths the daemon and its
 # RNDIS helpers need to update. /tmp stays shared for the daemon IPC socket.
 ProtectSystem=strict
-ProtectHome=true
+ProtectHome=false
 PrivateTmp=false
 ReadWritePaths=/sys/kernel/config/usb_gadget /sys/class/leds /etc/resolv.conf /tmp
 ReadWritePaths=-/etc/NetworkManager/conf.d
+# dbus config
+ReadWritePaths=/etc/dbus-1/system.d
 ProtectControlGroups=true
 RestrictRealtime=true
 RestrictSUIDSGID=true
