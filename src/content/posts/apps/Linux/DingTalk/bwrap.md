@@ -62,7 +62,13 @@ mkdir -p "$SANDBOX_HOME"
 export XDG_DOWNLOAD_DIR="$HOME/Downloads"
 
 exec bwrap \
-    --ro-bind / / \
+    --ro-bind /usr /usr \
+    --ro-bind /lib /lib \
+    --ro-bind /lib64 /lib64 \
+    --ro-bind /bin /bin \
+    --ro-bind /etc /etc \
+    --ro-bind /opt/dingtalk /opt/dingtalk \
+    --ro-bind "/run/user/$(id -u)" "/run/user/$(id -u)" \
     --dev /dev \
     --proc /proc \
     --tmpfs /tmp \
@@ -72,6 +78,10 @@ exec bwrap \
     --share-net \
     --die-with-parent \
     --setenv XDG_DOWNLOAD_DIR "$HOME/Downloads" \
+    --setenv GDK_BACKEND x11 \
+    --setenv GTK_IM_MODULE fcitx \
+    --setenv QT_IM_MODULE fcitx \
+    --setenv XMODIFIERS @im=fcitx \
     /usr/lib/dingtalk_raw "$@"
 ```
 

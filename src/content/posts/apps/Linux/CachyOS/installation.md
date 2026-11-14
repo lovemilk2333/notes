@@ -218,6 +218,32 @@ custom_phrase.txt
 
 后重新部署输入法即可
 
+### Fcitx5 输入法框架在部分 X11 应用不可用
+添加如下环境变量
+
+```ini
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx:
+SDL_IM_MODULE=fcitx
+GLFW_IM_MODULE=ibus
+```
+
+例如, 在
+```path
+/etc/environment
+```
+
+写入
+
+```ini
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx:
+SDL_IM_MODULE=fcitx
+GLFW_IM_MODULE=ibus
+```
+
 ### Dolphin 文件管理器无法识别打开方式 / 默认打开方式重置
 1. 安装依赖包
 ```sh
@@ -283,10 +309,15 @@ plasma-apply-colorscheme <name>
 > 同时写入是为了 Niri 和在 Niri 启动前的 Services 全部都可以作用到
 ```path
 /etc/environment
+```
 
+或
+
+```path
 ~/.config/niri/config.kdl
 ```
 的 `environment` 部分修改或写入
+
 ```ini
 QT_QPA_PLATFORMTHEME=qt5ct
 QT_QPA_PLATFORMTHEME_QT6=qt5ct
