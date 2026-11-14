@@ -11,8 +11,8 @@ Selkies 设计上就是为了高性能游戏或远程桌面串流设计的, 可�
 
 同时, Selkies 支持免配置音频传输, 仅需保证后端兼容 `PulseAudio` (例如 PulseAudio 与 PipeWire-Pulse)
 
-> [!NOTE]
-> Selkies 暂未支持 Wayland
+> [!IMPORTANT]
+> 目前 Selkies 已经支持 Wayland, 本文已经过时, 请参阅 [Selkies WebUI 操控方案 (NEW) | 部署适用于 ArchLinux KDE (Wayland) 桌面环境的 Selkies](/deployment/Selkies/archlinux-kde.new) 以查看更新版本的教程
 
 ## 安装并配置基于 X11 的 KDE 桌面环境
 

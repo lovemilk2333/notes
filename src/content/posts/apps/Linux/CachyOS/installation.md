@@ -934,3 +934,54 @@ systemctl --user restart pipewire pipewire-pulse wireplumber
 ```
 
 对于 Chromium, 为了避免在通话 (WebRTC) 时自动调节麦克风增益大小, 请转到 <chrome://flags/#enable-webrtc-allow-input-volume-adjustment> 选择 `Disabed`, 并重启浏览器
+
+### 中文 XDG 文件夹
+
+若您在 XDG (X11) 初始化前启动了 KDE 或其他桌面环境, 会导致在 `$HOME` 下生成 `下载/` `桌面/` (而非 `Downloads/` `Desktop/`) 等文件夹
+
+我们有两种方法解决该问题
+
+#### 1. 修改各个文件夹的默认位置
+编辑
+```path
+~/.config/user-dirs.dirs
+```
+文件并修改为如下内容
+
+```ini
+XDG_DESKTOP_DIR="$HOME/Desktop"
+XDG_DOWNLOAD_DIR="$HOME/Downloads"
+XDG_TEMPLATES_DIR="$HOME/Templates"
+XDG_PUBLICSHARE_DIR="$HOME/Public"
+XDG_DOCUMENTS_DIR="$HOME/Documents"
+XDG_MUSIC_DIR="$HOME/Music"
+XDG_PICTURES_DIR="$HOME/Pictures"
+XDG_VIDEOS_DIR="$HOME/Videos"
+XDG_PROJECTS_DIR="$HOME/"
+```
+
+后运行如下命令更新配置
+```sh
+LC_ALL=C xdg-user-dirs-update --force
+```
+
+确认无误后, 删除旧文件夹 (注意复制或移动需要的文件)
+```sh
+rm -d ~/{下载,公共,图片,文档,桌面,模板,视频,音乐}
+```
+
+#### 2. 为各个文件夹创建软链接
+运行如下命令创建链接
+
+```sh
+cd ~
+ln -s 下载 Downloads
+ln -s 公共 Public
+ln -s 图片 Pictures
+ln -s 文档 Documents
+ln -s 桌面 Desktop
+ln -s 模板 Templates
+ln -s 视频 Videos
+ln -s 音乐 Music
+```
+
