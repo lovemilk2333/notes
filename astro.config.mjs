@@ -63,6 +63,19 @@ export default defineConfig({
             },
         }), expressiveCode({
             themes: [expressiveCodeConfig.theme, expressiveCodeConfig.theme],
+            shiki: {
+                langAlias: {
+                    path: "plaintext",
+                    conf: "plaintext",
+                    Caddyfile: "plaintext",
+                    dts: "plaintext",
+                    tree: "plaintext",
+                    x11: "plaintext",
+                    udev: "plaintext",
+                    env: "dotenv",
+                    compose: "yaml",
+                },
+            },
             plugins: [
                 pluginCollapsibleSections(),
                 pluginLineNumbers(),
